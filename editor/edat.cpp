@@ -1,3 +1,5 @@
+#pragma once
+
 class edat {
     public:
         static const int num_cols = 31;

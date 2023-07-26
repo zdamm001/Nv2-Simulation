@@ -1,16 +1,17 @@
+#pragma once
 #include <vector>
 
 #include "..\\editor\\edat.cpp"
 #include "..\\math\\mathutils.cpp"
 #include "..\\math\\vec2.cpp"
 #include "entities\\Entity_Base.cpp"
+#include "ninja\\Ninja.cpp"
 
 using namespace std;
 
 class Grid_Segment {};
 class Grid_Edges {};
 class Grid_Entity {};
-class Ninja {};
 class SimpleRenderer;
 
 class Simulator {

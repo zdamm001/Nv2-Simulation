@@ -1,8 +1,9 @@
+#pragma once
+
 #include "..\\..\\math\\vec2.cpp"
 #include "..\\Simulator.cpp"
+#include "..\\ninja\\Ninja.cpp"
 
-class collision_result_physical;
-class collision_result_logical;
 class EntityGraphics;
 
 class Entity_Base {

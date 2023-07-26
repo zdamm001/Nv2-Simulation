@@ -1,3 +1,4 @@
+#pragma once
 #include <cmath>
 #include <string>
 
@@ -7,9 +8,8 @@ class vec2 {
     public:
         double x;
         double y;
-
+    public:
         vec2(double x = 0, double y = 0);
-
         static vec2 FromDir(double radians);
         static vec2 VecTo(const vec2& start, const vec2& end);
         vec2 VecPerp(const vec2& v);
