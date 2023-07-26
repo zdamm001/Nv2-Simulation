@@ -2,6 +2,7 @@
 
 #include "..\\editor\\edat.cpp"
 #include "..\\math\\mathutils.cpp"
+#include "..\\math\\vec2.cpp"
 
 using namespace std;
 
@@ -32,7 +33,7 @@ class Simulator {
         //GraphicsManager* HACKY_gfx;
         //SoundManager* HACKY_sfx;
     public:
-        Simulator(std::vector<int> tileIDs, Grid_Segment segGrid, Grid_Edges edgeGrid, Grid_Entity objGrid, std::vector<Entity_Base*> objList, std::vector<Ninja*> playerList)
+        Simulator(vector<int> tileIDs, Grid_Segment segGrid, Grid_Edges edgeGrid, Grid_Entity objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList)
             : tileIDs(tileIDs), segGrid(segGrid), edgeGrid(edgeGrid), objGrid(objGrid), objList(objList), playerList(playerList), frame_num(0), num_gold_collected_during_tick(playerList.size(), 0), STATEFLAG_won(false)/*, HACKY_gfx(nullptr), HACKY_sfx(nullptr)*/
         {
             MathUtils::SetRandomSeed(1);
