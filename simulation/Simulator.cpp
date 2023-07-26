@@ -3,10 +3,10 @@
 #include "..\\editor\\edat.cpp"
 #include "..\\math\\mathutils.cpp"
 #include "..\\math\\vec2.cpp"
+#include "entities\\Entity_Base.cpp"
 
 using namespace std;
 
-class Entity_Base {};
 class Grid_Segment {};
 class Grid_Edges {};
 class Grid_Entity {};
@@ -39,7 +39,17 @@ class Simulator {
 };
 
 Simulator::Simulator(vector<int> tileIDs, Grid_Segment segGrid, Grid_Edges edgeGrid, Grid_Entity objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList)
-    : tileIDs(tileIDs), segGrid(segGrid), edgeGrid(edgeGrid), objGrid(objGrid), objList(objList), playerList(playerList), frame_num(0), num_gold_collected_during_tick(playerList.size(), 0), STATEFLAG_won(false)/*, HACKY_gfx(nullptr), HACKY_sfx(nullptr)*/ {
+    : tileIDs(tileIDs), 
+      segGrid(segGrid), 
+      edgeGrid(edgeGrid), 
+      objGrid(objGrid), 
+      objList(objList), 
+      playerList(playerList), 
+      frame_num(0), 
+      num_gold_collected_during_tick(playerList.size(), 0), 
+      STATEFLAG_won(false) {
+      //HACKY_gfx(nullptr)
+      //HACKY_sfx(nullptr)
     mathutils::SetRandomSeed(1);
 }
 
