@@ -1,13 +1,4 @@
-#pragma once
-
-class collision_result_logical {
-    public:
-        double vec_x;
-        double vec_y;
-    public:
-        collision_result_logical();
-        void Clear();
-};
+#include "collision_result_logical.h"
 
 collision_result_logical::collision_result_logical() {
     Clear();
