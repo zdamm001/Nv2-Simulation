@@ -12,5 +12,5 @@ class Base64 {
         static const vector<int> decodeChars;
     public:
         static string encode(const ByteArray& data);
-
+        static ByteArray decode(const string& input);
 };
