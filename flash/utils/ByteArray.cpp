@@ -17,3 +17,27 @@ unsigned char ByteArray::operator[](unsigned int index) const {
 void ByteArray::writeByte(unsigned char byte) {
     data.push_back(byte);
 }
+
+void ByteArray::compress() {
+    // Compress the data using zlib
+    uLongf compressedSize = compressBound(data.size()); // Get the upper bound of the compressed size
+    vector<unsigned char> compressedData(compressedSize); // Create a temporary buffer to hold compressed data
+    int result = ::compress(&compressedData[0], &compressedSize, &data[0], data.size());
+    if (result == Z_OK) {
+        data.assign(compressedData.begin(), compressedData.begin() + compressedSize); // Resize to actual compressed size
+    } else {
+        data.clear(); // Clear the data to indicate compression failure
+    }
+}
+
+void ByteArray::uncompress() {
+    // Decompress the data using zlib
+    uLongf decompressedSize = data.size() * 2; // Initial guess at decompressed size
+    vector<unsigned char> decompressedData(decompressedSize); // Create a temporary buffer to hold decompressed data
+    int result = ::uncompress(&decompressedData[0], &decompressedSize, &data[0], data.size());
+    if (result == Z_OK) {
+        data.assign(decompressedData.begin(), decompressedData.begin() + decompressedSize); // Resize to actual decompressed size
+    } else {
+        data.clear(); // Clear the data to indicate decompression failure
+    }
+}
