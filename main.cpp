@@ -96,5 +96,19 @@ int main() {
         cout << int(data4[i]) << ' ';
     }
     cout << endl;
+    string replay3 = "eNrtnNuWwiAMRUHk/3951DWtvRAgkLaoe7/OlEshyQmh3m4v3ES8mzO37W5vQnj36dwdAGBAYpKVX8vhw8PVAQDYMnkYXxJQkm+apViu+bkXVfvPQZVG7+2EX7T2+cQ9+HwK2iT1bxkJ5PesFRFYLFXRc1aB6ByHsGbY1bXPVMh94FDxm0y528JUrEd6hjAGAKK6e6TF3x1GU/mFu6eThwchD2EO4CI79hyegfn5k5cIKkg64VgFc4RPi72GlNZaJv53UxkK9fn2bNnFiKKv+MS+qeh8QssAiXfQconkpC22sYT8ZTtdNyb7PlWQTvgbc4dqMPj+JhI+PeN0n87JGY8sRuNx67XXYn4akbfbM/MT6VsOQjw6LYgXRlP33qY3demu/dWEpSE3Sf9Re7jVmM9UXU9UdJNxxKKfjilpuW8uoyndajZCtwXpSYkS4Pws2keC06nRK+NL09Xwyjp3vggOgG5sLe+iPwCaxbvRfcpBjVDKueqvvqni/SasE+MBflPLePVnCAiZn6iLO1XsKR2b1u4t3j8Mq0GrDEYsHp1QdV2Oo+qYf23YnTIQGQlDlfTGyhXb22t4UqjTNV6Ysp/Y/IxQUlx+JtsxMqLW18nP5p8TMwxPVleCXOEN9HYXx/HFvat3zGLKsWJ1G6sUWf4/5x9of1239jCMhW02rKmg6WssL06mq+nd4w3XzpI4XRnFyBy/yNVUJWDWdtWcIuXnq29aO5AuDyNNYWFPlcJro3OKrReFXEtpAWcLcH4enTFlu8icDQrb3k/4QKkwml3eJ73dho9LUDswjKJLuwzZnxzvIkT3EJWTS5/dLGg/WMOEu1KG18pck5Zrnt1v+q32dUbSl7MGALDR/n/GpyiF";
+    cout << replay3 << endl;
+    ByteArray data5 = Base64::decode(replay3);
+    cout << data5.length() << endl;
+    data5.uncompress();
+    cout << data5.length() << endl;
+    //for (int i = 0; i < data5.length(); ++i) {
+    //    cout << int(data5[i]) << ' ';
+    //}
+    //cout << endl;
+    data5.compress();
+    string encoded = Base64::encode(data5);
+    cout << encoded << endl;
+    cout << (replay3 == encoded) << endl;
     return 0;
 }
