@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <zlib.h>
+#include <iostream>
 
 using namespace std;
 

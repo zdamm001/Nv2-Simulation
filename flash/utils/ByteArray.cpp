@@ -26,25 +26,26 @@ void ByteArray::compress() {
     if (result == Z_OK) {
         data.assign(compressedData.begin(), compressedData.begin() + compressedSize); // Resize to actual compressed size
     } else {
+        cerr << "Compression Error: " << zError(result) << endl;
         data.clear(); // Clear the data to indicate compression failure
     }
 }
 
-#include <iostream>
-
 void ByteArray::uncompress() {
     // Decompress the data using zlib
-    uLongf decompressedSize = 8192; // Initial guess at decompressed size
+    uLongf decompressedSize = data.size() * 50; // Initial guess at decompressed size
     vector<unsigned char> decompressedData(decompressedSize); // Create a temporary buffer to hold decompressed data
     int result = ::uncompress(&decompressedData[0], &decompressedSize, &data[0], data.size());
+    while (result == Z_BUF_ERROR) {
+        cerr << "Decompression Error: " << zError(result) << endl;
+        decompressedSize *= 2;
+        decompressedData.resize(decompressedSize);
+        result = ::uncompress(&decompressedData[0], &decompressedSize, &data[0], data.size());
+    }
     if (result == Z_OK) {
         data.assign(decompressedData.begin(), decompressedData.begin() + decompressedSize); // Resize to actual decompressed size
-    } else if (result == Z_MEM_ERROR) {
-        cout << "Z_MEM_ERROR" << endl;
-    } else if (result == Z_BUF_ERROR) {
-        cout << "Z_BUF_ERROR" << endl;
     } else {
-        cout << "Z_ERROR" << endl;
+        cerr << "Decompression Error: " << zError(result) << endl;
         data.clear(); // Clear the data to indicate decompression failure
     }
 }
