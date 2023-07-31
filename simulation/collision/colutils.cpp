@@ -21,14 +21,32 @@ int colutils::getSingleClosestPoint_Signed(Grid_Segment& gridSegment, vec2& poin
         if (distanceSquared < closestDistanceSquared) {
             closestPointResult.Copy(closestPoint);
             closestDistanceSquared = distanceSquared;
-
-            if (isPointBackfacing) {
-                closestDistanceSign = -1;
-            } else {
-                closestDistanceSign = 1;
-            }
+            closestDistanceSign = (isPointBackfacing) ? -1 : 1;
         }
     }
 
     return closestDistanceSign;
+}
+
+double colutils::Penetration_Square_vs_Point(const vec2& squareCenter, double contactRadius, const vec2& pointPosition, vec2& penetrationNormal) {
+    double dx = pointPosition.x - squareCenter.x;
+    double dy = pointPosition.y - squareCenter.y;
+    double penetrationY = contactRadius - abs(dy);
+
+    if (penetrationY > 0) {
+        double penetrationX = contactRadius - abs(dx);
+        if (penetrationX > 0) {
+            if (penetrationY <= penetrationX) {
+                penetrationNormal.x = 0;
+                penetrationNormal.y = (dy <= 0) ? -1.0 : 1.0;
+                return penetrationY;
+            } else {
+                penetrationNormal.y = 0;
+                penetrationNormal.x = (dx <= 0) ? -1.0 : 1.0;
+                return penetrationX;
+            }
+        }
+    }
+
+    return 0.0;
 }
