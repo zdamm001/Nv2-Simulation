@@ -20,4 +20,6 @@ class colutils {
         static bool Overlap_Circle_Vs_Circle(const vec2& center1, double radius1, const vec2& center2, double radius2);
         static double TimeOfIntersection_Circle_vs_Circle(const vec2& circlePos1, const vec2& circleVel1, const vec2& circlePos2, const vec2& circleVel2, double totalRadius);
         static double TimeOfIntersection_Point_vs_Lineseg(const vec2& pointPos, const vec2& pointVel, const vec2& segmentStart, const vec2& segmentEnd, double totalRadius);
+        static double TimeOfIntersection_Circle_vs_Arc(const vec2& circlePos, const vec2& circleVel, const vec2& arcCenter, const vec2& arcStart, const vec2& arcEnd, double circleRadius);
+        static double TimeOfIntersection_Circle_vs_Arc_HELPER(const vec2& circlePos, const vec2& circleVel, const vec2& arcCenter, const vec2& arcStart, const vec2& arcEnd, double radius);
 };

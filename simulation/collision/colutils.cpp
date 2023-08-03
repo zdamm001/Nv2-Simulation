@@ -168,3 +168,76 @@ double colutils::TimeOfIntersection_Point_vs_Lineseg(const vec2& pointPos, const
         }
     }
 }
+
+double TimeOfIntersection_Circle_vs_Arc(const vec2& circlePos, const vec2& circleVel, const vec2& arcCenter, const vec2& arcStart, const vec2& arcEnd, double circleRadius) {
+    double dx = arcStart.x - arcCenter.x;
+    double dy = arcStart.y - arcCenter.y;
+    double arcRadius = sqrt(dx * dx + dy * dy);
+
+    double t0 = TimeOfIntersection_Circle_vs_Arc_HELPER(circlePos, circleVel, arcCenter, arcStart, arcEnd, arcRadius + circleRadius);
+    double t1 = TimeOfIntersection_Circle_vs_Arc_HELPER(circlePos, circleVel, arcCenter, arcStart, arcEnd, arcRadius - circleRadius);
+
+    return min(t0, t1);
+}
+
+double TimeOfIntersection_Circle_vs_Arc_HELPER(const vec2& circlePos, const vec2& circleVel, const vec2& arcCenter, const vec2& arcStart, const vec2& arcEnd, double radius) {
+    vec2 pos = circlePos.Minus(arcCenter);
+
+    double a = circleVel.Dot(circleVel);
+    double b = 2 * pos.Dot(circleVel);
+    double c = pos.Dot(pos) - (radius * radius);
+
+    const double EPSILON = 0.0001;
+
+    if (abs(a) < EPSILON) {
+        return 2;
+    } else {
+        double discriminant = b * b - 4 * a * c;
+        if (discriminant < 0) {
+            return 2;
+        } else {
+            double d = -0.5 * (b - sqrt(discriminant));
+            double root_1 = d / a;
+            double root_2 = c / d;
+
+            double dx = arcStart.x - arcCenter.x;
+            double dy = arcStart.y - arcCenter.y;
+            double vx = arcEnd.x - arcStart.x;
+            double vy = arcEnd.y - arcStart.y;
+            double v0x = arcStart.x - arcCenter.x;
+            double v0y = arcStart.y - arcCenter.y;
+            double v1x = arcEnd.x - arcCenter.x;
+            double v1y = arcEnd.y - arcCenter.y;
+
+            double vp0 = (vx * -v0y) + (vy * v0x);
+            double vp1 = (vx * -v1y) + (vy * v1x);
+
+            if (root_1 < 0) {
+                root_1 = 2;
+            }
+            if (root_2 < 0) {
+                root_2 = 2;
+            }
+            if (root_1 <= 1) {
+                double d1x = (circlePos.x + (root_1 * circleVel.x)) - arcCenter.x;
+                double d1y = (circlePos.y + (root_1 * circleVel.y)) - arcCenter.y;
+                double d1p0 = (d1x * -v0y) + (d1y * v0x);
+                double d1p1 = (d1x * -v1y) + (d1y * v1x);
+                if ((d1p0 * vp0 <= 0) || (d1p1 * vp1 >= 0)) {
+                    root_1 = 2;
+                }
+            }
+            if (root_2 <= 1) {
+                double d2x = (circlePos.x + (root_2 * circleVel.x)) - arcCenter.x;
+                double d2y = (circlePos.y + (root_2 * circleVel.y)) - arcCenter.y;
+                double d2p0 = (d2x * -v0y) + (d2y * v0x);
+                double d2p1 = (d2x * -v1y) + (d2y * v1x);
+                if ((d2p0 * vp0 <= 0) || (d2p1 * vp1 >= 0)) {
+                    root_2 = 2;
+                }
+            }
+
+            return min(root_1, root_2);
+        }
+    }
+}
