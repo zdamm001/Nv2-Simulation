@@ -18,43 +18,43 @@ double vec2::VecDot(const vec2& v1, const vec2& v2) {
     return v1.x * v2.x + v1.y * v2.y;
 }
 
-vec2 vec2::To(const vec2& end) {
+vec2 vec2::To(const vec2& end) const {
     return vec2(end.x - x, end.y - y);
 }
 
-vec2 vec2::Perp() {
+vec2 vec2::Perp() const {
     return vec2(-y, x);
 }
 
-double vec2::PerpDot(const vec2& v) {
+double vec2::PerpDot(const vec2& v) const {
     return -y * v.x + x * v.y;
 }
 
-vec2 vec2::Clone() {
+vec2 vec2::Clone() const {
     return vec2(x, y);
 }
 
-vec2 vec2::Plus(const vec2& v) {
+vec2 vec2::Plus(const vec2& v) const {
     return vec2(x + v.x, y + v.y);
 }
 
-vec2 vec2::Minus(const vec2& v) {
+vec2 vec2::Minus(const vec2& v) const {
     return vec2(x - v.x, y - v.y);
 }
 
-double vec2::Dot(const vec2& v) {
+double vec2::Dot(const vec2& v) const {
     return x * v.x + y * v.y;
 }
 
-double vec2::Len() {
+double vec2::Len() const {
     return sqrt(x * x + y * y);
 }
 
-double vec2::LenSq() {
+double vec2::LenSq() const {
     return x * x + y * y;
 }
 
-string vec2::ToString() {
+string vec2::ToString() const {
     return "(" + to_string(x) + "," + to_string(y) + ")";
 }
 
