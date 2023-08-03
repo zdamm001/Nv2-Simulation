@@ -92,40 +92,79 @@ bool colutils::Overlap_Circle_Vs_Circle(const vec2& center1, double radius1, con
     return false;
 }
 
-double TimeOfIntersection_Circle_vs_Circle(const vec2& circleCenter1, const vec2& circleCenter2, const vec2& motionStart1, const vec2& motionStart2, double circleRadius) {
-    double dx = circleCenter1.x - circleCenter2.x;
-    double dy = circleCenter1.y - circleCenter2.y;
+double colutils::TimeOfIntersection_Circle_vs_Circle(const vec2& circlePos1, const vec2& circleVel1, const vec2& circlePos2, const vec2& circleVel2, double totalRadius) {
+    double velX = circleVel1.x - circleVel2.x;
+    double velY = circleVel1.y - circleVel2.y;
 
-    double dxStart = motionStart1.x - motionStart2.x;
-    double dyStart = motionStart1.y - motionStart2.y;
+    double posX = circlePos1.x - circlePos2.x;
+    double posY = circlePos1.y - circlePos2.y;
 
-    double distanceSquaredEnd = dx * dx + dy * dy;
-    double distanceSquaredStart = dxStart * dxStart + dyStart * dyStart;
+    double a = velX * velX + velY * velY;
+    double b = 2 * (posX * velX + posY * velY);
+    double c = posX * posX + posY * posY - totalRadius * totalRadius;
 
-    double velocityX = dx - dxStart;
-    double velocityY = dy - dyStart;
+    const double EPSILON = 0.0001;
 
-    double velocitySquared = velocityX * velocityX + velocityY * velocityY;
-    double sumOfRadiiSquared = (2 * circleRadius) * (2 * circleRadius);
-
-    const double epsilon = 0.0001;
-    if (distanceSquaredStart <= sumOfRadiiSquared) {
+    if (c <= 0) {
         return -1;
+    } else {
+        if (abs(a) < EPSILON) {
+            return 2;
+        } else {
+            if (b >= 0) {
+                return 2;
+            } else {
+                double discriminant = b * b - 4 * a * c;
+                if (discriminant < 0) {
+                    return 2;
+                } else {
+                    double d = -0.5 * (b - sqrt(discriminant));
+                    double root_1 = d / a;
+                    double root_2 = c / d;
+                    return min(root_1, root_2);
+                }
+            }
+        }
     }
+}
 
-    if (fabs(velocitySquared) < epsilon) {
-        return 2;
+double colutils::TimeOfIntersection_Point_vs_Lineseg(const vec2& pointPos, const vec2& pointVel, const vec2& segmentStart, const vec2& segmentEnd, double totalRadius) {
+    double dx = segmentEnd.x - segmentStart.x;
+    double dy = segmentEnd.y - segmentStart.y;
+    double segmentLength = sqrt(dx * dx + dy * dy);
+    dx /= segmentLength;
+    dy /= segmentLength;
+    double nx = -dy;
+    double ny = dx;
+
+    double px = pointPos.x - segmentStart.x;
+    double py = pointPos.y - segmentStart.y;
+
+    double pn = nx * px + ny * py;
+    double vn = nx * pointVel.x + ny * pointVel.y;
+
+    double pd = dx * px + dy * py;
+
+    double relpos = abs(pn) - totalRadius;
+
+    if (relpos < 0) {
+        if (pd < 0 || pd > segmentLength) {
+            return 2;
+        } else {
+            return -1;
+        }
+    } else {
+        if (pn * vn >= 0) {
+            return 2;
+        } else {
+            double t = relpos / abs(vn);
+            double vd = dx * pointVel.x + dy * pointVel.y;
+            double intersectionPos = pd + t * vd;
+            if (intersectionPos < 0 || intersectionPos > segmentLength) {
+                return 2;
+            } else {
+                return t;
+            }
+        }
     }
-
-    double t = -(dxStart * velocityX + dyStart * velocityY) / velocitySquared;
-    if (t >= 1 || t <= 0) {
-        return 2;
-    }
-
-    double closestDistanceSquared = distanceSquaredStart + t * (distanceSquaredEnd - distanceSquaredStart);
-    if (closestDistanceSquared < sumOfRadiiSquared) {
-        return t;
-    }
-
-    return 2;
 }
