@@ -1,11 +1,7 @@
 #include "Grid_Segment.h"
 
 Grid_Segment::Grid_Segment(int num_cols, int num_rows, double cell_size)
-    : Grid_Base(num_cols, num_rows, cell_size) {
-    cells.resize(numcells);
-    for (int i = 0; i < numcells; i++) {
-        cells[i] = vector<Segment>();
-    }
+    : Grid_Base(num_cols, num_rows, cell_size), cells(numcells, vector<Segment>()) {
     TEMP_ray_pos = vec2();
     TEMP_ray_vec = vec2();
     TEMP_temp_p = vec2();
