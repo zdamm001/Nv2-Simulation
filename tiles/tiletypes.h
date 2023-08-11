@@ -62,6 +62,7 @@ class tiletypes {
         static vector<int> XFORM_FLIPV;
     public:
         tiletypes() = delete;
-        int GetTypeFromChar(int charIndex);
-        char GetDebugCharFromID(int id);
+        static void Initialize();
+        static int GetTypeFromChar(int charIndex);
+        static char GetDebugCharFromID(int id);
 };
