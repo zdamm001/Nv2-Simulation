@@ -11,6 +11,7 @@ class edgedefs {
         static vector<int> edgestates_Y;
     public:
         edgedefs() = delete;
+        static void Initialize();
         static int GetEdgeState_X(int tileID, int offset);
         static int GetEdgeState_Y(int tileID, int offset);
     private:
