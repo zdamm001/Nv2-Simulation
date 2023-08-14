@@ -16,10 +16,10 @@ class SimpleRenderer;
 
 class Simulator {
     public:
-        const int GRID_NUM_COLS = edat::num_cols + 2;
-        const int GRID_NUM_ROWS = edat::num_rows + 2;
-        const double GRID_CELL_SIZE = 24;
-        const double GRID_CELL_HALFWIDTH = GRID_CELL_SIZE / 2;
+        static const int GRID_NUM_COLS = edat::num_cols + 2;
+        static const int GRID_NUM_ROWS = edat::num_rows + 2;
+        static const double GRID_CELL_SIZE = 24;
+        static const double GRID_CELL_HALFWIDTH = GRID_CELL_SIZE / 2;
     private:
         vector<Entity_Base*> objList;
         vector<int> tileIDs;
