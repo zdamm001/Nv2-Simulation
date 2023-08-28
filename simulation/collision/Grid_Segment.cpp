@@ -1,7 +1,7 @@
 #include "Grid_Segment.h"
 
 Grid_Segment::Grid_Segment(int num_cols, int num_rows, double cell_size)
-    : Grid_Base(num_cols, num_rows, cell_size), cells(numcells, vector<Segment>()) {
+    : Grid_Base(num_cols, num_rows, cell_size), cells(numcells, vector<Segment*>()) {
     TEMP_ray_pos = vec2();
     TEMP_ray_vec = vec2();
     TEMP_temp_p = vec2();
@@ -11,7 +11,7 @@ Grid_Segment::Grid_Segment(int num_cols, int num_rows, double cell_size)
 void Grid_Segment::DEBUG_Draw(SimpleRenderer& rend) {
     for (int i = 0; i < cells.size(); i++) {
         for (int j = 0; j < cells[i].size(); j++) {
-            cells[i][j].DebugDraw(rend);
+            cells[i][j]->DebugDraw(rend);
         }
     }
 }
@@ -121,11 +121,11 @@ double Grid_Segment::IntersectRayVsCellContents(int u, int v, const vec2& ray_po
     TEMP_temp_n.y = 0;
     
     int index = GetCellIndexFromGridspacePosition(u, v);
-    const vector<Segment>& segList = cells[index];
+    const vector<Segment*>& segList = cells[index];
     
     for (size_t i = 0; i < segList.size(); i++) {
-        const Segment& seg = segList[i];
-        double curr_t = seg.IntersectWithRay(ray_pos, ray_vec, 0, TEMP_temp_p, TEMP_temp_n);
+        const Segment* seg = segList[i];
+        double curr_t = seg->IntersectWithRay(ray_pos, ray_vec, 0, TEMP_temp_p, TEMP_temp_n);
         
         if (curr_t == -1) {
             return -1;
@@ -139,7 +139,7 @@ double Grid_Segment::IntersectRayVsCellContents(int u, int v, const vec2& ray_po
     return best_t;
 }
 
-vector<Segment> Grid_Segment::DEBUG_GetCellContentsFromGridspacePosition(int u, int v) {
+vector<Segment*> Grid_Segment::DEBUG_GetCellContentsFromGridspacePosition(int u, int v) {
     int index = GetCellIndexFromGridspacePosition(u, v);
     return cells[index];
 }
@@ -150,7 +150,7 @@ void Grid_Segment::Clear() {
     }
 }
 
-void Grid_Segment::AddSegToCell(int cell_u, int cell_v, Segment& seg) {
+void Grid_Segment::AddSegToCell(int cell_u, int cell_v, Segment* seg) {
     int index = GetCellIndexFromGridspacePosition(cell_u, cell_v);
     if (index < 0 || index >= cells.size()) {
         return;
@@ -158,23 +158,23 @@ void Grid_Segment::AddSegToCell(int cell_u, int cell_v, Segment& seg) {
     cells[index].push_back(seg);
 }
 
-void Grid_Segment::DOOR_AddSegment(int cell_index, Segment& seg) {
+void Grid_Segment::DOOR_AddSegment(int cell_index, Segment* seg) {
     if (cell_index < 0 || cell_index >= numcells) {
         return;
     }
-    vector<Segment>& cell = cells[cell_index];
+    vector<Segment*>& cell = cells[cell_index];
     if (find(cell.begin(), cell.end(), seg) != cell.end()) {
         return;
     }
     cells[cell_index].push_back(seg);
 }
 
-void Grid_Segment::DOOR_RemoveSegment(int cell_index, Segment& seg) {
+void Grid_Segment::DOOR_RemoveSegment(int cell_index, Segment* seg) {
     if (cell_index < 0 || cell_index >= numcells) {
         return;
     }
-    vector<Segment>& cell = cells[cell_index];
-    vector<Segment>::iterator it = find(cell.begin(), cell.end(), seg);
+    vector<Segment*>& cell = cells[cell_index];
+    vector<Segment*>::iterator it = find(cell.begin(), cell.end(), seg);
     if (it == cell.end()) {
         return;
     }
@@ -185,7 +185,7 @@ int Grid_Segment::DOOR_GetCellIndexFromGridspacePosition(int u, int v) {
     return GetCellIndexFromGridspacePosition(u, v);
 }
 
-void Grid_Segment::GatherCellContentsFromWorldspaceRegion(double min_x, double min_y, double max_x, double max_y, vector<Segment>& out_segList) {
+void Grid_Segment::GatherCellContentsFromWorldspaceRegion(double min_x, double min_y, double max_x, double max_y, vector<Segment*>& out_segList) {
     int min_u = WorldspaceToGridspace(min_x);
     int max_u = WorldspaceToGridspace(max_x);
     int min_v = WorldspaceToGridspace(min_y);
@@ -199,7 +199,7 @@ void Grid_Segment::GatherCellContentsFromWorldspaceRegion(double min_x, double m
             if (index < 0) {
                 //continue;
             }
-            vector<Segment>& cell = cells[index];
+            vector<Segment*>& cell = cells[index];
             out_segList.insert(out_segList.end(), cell.begin(), cell.end());
         }
     }

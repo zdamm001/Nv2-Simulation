@@ -7,7 +7,7 @@
 
 class Grid_Segment : public Grid_Base {
     private:
-        vector<vector<Segment>> cells;
+        vector<vector<Segment*>> cells;
         vec2 TEMP_ray_pos;
         vec2 TEMP_ray_vec;
         vec2 TEMP_temp_p;
@@ -20,11 +20,11 @@ class Grid_Segment : public Grid_Base {
     private:
         double IntersectRayVsCellContents(int u, int v, const vec2& ray_pos, const vec2& ray_vec, vec2& out_pos, vec2& out_normal);
     public:
-        vector<Segment> DEBUG_GetCellContentsFromGridspacePosition(int u, int v);
+        vector<Segment*> DEBUG_GetCellContentsFromGridspacePosition(int u, int v);
         void Clear();
-        void AddSegToCell(int cell_u, int cell_v, Segment& seg);
-        void DOOR_AddSegment(int cell_index, Segment& seg);
-        void DOOR_RemoveSegment(int cell_index, Segment& seg);
+        void AddSegToCell(int cell_u, int cell_v, Segment* seg);
+        void DOOR_AddSegment(int cell_index, Segment* seg);
+        void DOOR_RemoveSegment(int cell_index, Segment* seg);
         int DOOR_GetCellIndexFromGridspacePosition(int u, int v);
-        void GatherCellContentsFromWorldspaceRegion(double min_x, double min_y, double max_x, double max_y, vector<Segment>& out_segList);
+        void GatherCellContentsFromWorldspaceRegion(double min_x, double min_y, double max_x, double max_y, vector<Segment*>& out_segList);
 };
