@@ -13,14 +13,14 @@ class Entity_Base {
     public:
         Entity_Base();
         virtual ~Entity_Base() = default;
-        virtual void GAME_SetUID(unsigned int param1) final;
+        virtual void GAME_SetUID(unsigned int uid) final;
         virtual unsigned int GetUID() const final;
         virtual int GRID_GetGridIndex() const final;
-        virtual void GRID_SetGridIndex(int param1) final;
-        virtual bool CollideVsCircle_Physical(collision_result_physical& param1, const vec2& param2, const vec2& param3, const vec2& param4, double param5);
-        virtual bool CollideVsCircle_Logical(Simulator* param1, Ninja& param2, collision_result_logical& param3, const vec2& param4, const vec2& param5, const vec2& param6, double param7, double param8);
-        virtual void Think(Simulator* param1);
-        virtual void Move(Simulator* param1);
+        virtual void GRID_SetGridIndex(int gridIndex) final;
+        virtual bool CollideVsCircle_Physical(collision_result_physical& result, const vec2& circleCenter, const vec2& circleVelocity, const vec2& squareCenter, double circleRadius);
+        virtual bool CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon);
+        virtual void Think(Simulator* sim);
+        virtual void Move(Simulator* sim);
         virtual EntityGraphics* GenerateGraphicComponent();
-        virtual void Debug_Draw(SimpleRenderer& param1);
+        virtual void Debug_Draw(SimpleRenderer& rend);
 };

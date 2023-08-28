@@ -18,19 +18,19 @@ void Entity_Base::GRID_SetGridIndex(int gridIndex) {
     grid_index = gridIndex;
 }
 
-bool Entity_Base::CollideVsCircle_Physical(collision_result_physical& param1, const vec2& param2, const vec2& param3, const vec2& param4, double param5) {
+bool Entity_Base::CollideVsCircle_Physical(collision_result_physical& result, const vec2& circleCenter, const vec2& circleVelocity, const vec2& squareCenter, double circleRadius) {
     return false;
 }
 
-bool Entity_Base::CollideVsCircle_Logical(Simulator* param1, Ninja& param2, collision_result_logical& param3, const vec2& param4, const vec2& param5, const vec2& param6, double param7, double param8) {
+bool Entity_Base::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {
     return false;
 }
 
-void Entity_Base::Think(Simulator* param1) {
+void Entity_Base::Think(Simulator* sim) {
 
 }
 
-void Entity_Base::Move(Simulator*aram1) {
+void Entity_Base::Move(Simulator* sim) {
 
 }
 
@@ -38,6 +38,6 @@ EntityGraphics* Entity_Base::GenerateGraphicComponent() {
     return nullptr;
 }
 
-void Entity_Base::Debug_Draw(SimpleRenderer& param1) {
+void Entity_Base::Debug_Draw(SimpleRenderer& rend) {
 
 }
