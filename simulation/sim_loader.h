@@ -1,12 +1,12 @@
 #pragma once
 #include <vector>
 
-class Editor_State {public: const vector<unsigned int>& tileIDs; const vector<vector<unsigned int>>& entities;};
+#include "..\\editor\\Editor_State.h"
 #include "..\\editor\\edat.h"
 #include "..\\flash\\utils\\ByteArray.h"
 #include "..\\math\\mathutils.h"
 #include "..\\math\\vec2.h"
-class SimpleInput;
+class SimpleInput {};
 #include "collision\\Grid_Edges.h"
 #include "collision\\Grid_Entity.h"
 #include "collision\\Grid_Segment.h"
@@ -43,7 +43,7 @@ using namespace std;
 class sim_loader {
     public:
         sim_loader() = delete;
-        static Simulator LoadLevel_EditorState(const vector<int>& playerKeys, const vector<unsigned int>& playerColors, const SimpleInput& input, const ByteArray& replayData, int playerCount, const Editor_State& editorState);
+        static Simulator* LoadLevel_EditorState(const vector<int>& playerKeys, const vector<unsigned int>& playerColors, const SimpleInput& input, const ByteArray& replayData, int playerCount, const Editor_State& editorState);
     private:
         static void LoadLevel_EditorState_Tiles(const vector<unsigned int>& tileIDs, vector<int>& tiles, Grid_Segment& gridSegment, Grid_Edges& gridEdges, int numCols, int numRows, double cellSize, double cellHalfWidth);
         static void LoadLevel_BuildTileSegs(Grid_Segment& gridSegment, double cellSize, double cellHalfWidth, int colIndex, int rowIndex, int tileType, const vector<int>& neighborTiles);

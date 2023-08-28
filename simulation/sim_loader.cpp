@@ -1,6 +1,6 @@
 #include "sim_loader.h"
 
-Simulator sim_loader::LoadLevel_EditorState(const vector<int>& playerKeys, const vector<unsigned int>& playerColors, const SimpleInput& input, const ByteArray& replayData, int playerCount, const Editor_State& editorState) {
+Simulator* sim_loader::LoadLevel_EditorState(const vector<int>& playerKeys, const vector<unsigned int>& playerColors, const SimpleInput& input, const ByteArray& replayData, int playerCount, const Editor_State& editorState) {
     mathutils::GenerateNewRandomSeed();
 
     vector<int> tileIDGrid(Simulator::GRID_NUM_COLS * Simulator::GRID_NUM_ROWS, tiletypes::FULL);
@@ -33,7 +33,7 @@ Simulator sim_loader::LoadLevel_EditorState(const vector<int>& playerKeys, const
     for (size_t i = 0; i < ninjaSpawnLocations.size(); ++i) {
         InputSource_Base* inputSource = nullptr;
         
-        if (replayData.IsEmpty()) {
+        if (replayData.isEmpty()) { //fix later
             inputSource = new InputSource_Recorder(input, playerKeys[i * 3 % playerKeys.size()], playerKeys[(i * 3 + 1) % playerKeys.size()], playerKeys[(i * 3 + 2) % playerKeys.size()]);
         } else {
             inputSource = new InputSource_Playback(replayData);
@@ -42,7 +42,7 @@ Simulator sim_loader::LoadLevel_EditorState(const vector<int>& playerKeys, const
         ninjas[i] = Ninja(i, inputSource, ninjaSpawnLocations[i].x, ninjaSpawnLocations[i].y, playerColors[i]);
     }
 
-    return Simulator(tileIDGrid, gridSegment, gridEdges, gridEntity, entities, ninjas);
+    return new Simulator(tileIDGrid, gridSegment, gridEdges, gridEntity, entities, ninjas);
 }
 
 void sim_loader::LoadLevel_EditorState_Tiles(const vector<unsigned int>& tileIDs, vector<int>& tileIDGrid, Grid_Segment& gridSegment, Grid_Edges& gridEdges, int numCols, int numRows, double cellSize, double cellHalfWidth) {
@@ -116,7 +116,7 @@ void LoadLevel_InitTileIDGridWithBoundaryEdges(vector<int>& tileIDGrid, int numC
 }
 
 void sim_loader::LoadLevel_BuildTileSegs(Grid_Segment& gridSegment, double cellSize, double cellHalfWidth, int colIndex, int rowIndex, int tileType, const vector<int>& neighborTiles) {
-    vector<Segment> segments = tiledefs::GenerateTileSegments_Filtered(tileType, neighborTiles, colIndex * cellSize + cellHalfWidth, rowIndex * cellSize + cellHalfWidth, cellHalfWidth);
+    vector<Segment*> segments = tiledefs::GenerateTileSegments_Filtered(tileType, neighborTiles, colIndex * cellSize + cellHalfWidth, rowIndex * cellSize + cellHalfWidth, cellHalfWidth);
     
     for (size_t i = 0; i < segments.size(); ++i) {
         gridSegment.AddSegToCell(colIndex, rowIndex, segments[i]);
