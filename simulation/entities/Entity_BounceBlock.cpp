@@ -15,7 +15,7 @@ Entity_BounceBlock::Entity_BounceBlock(Grid_Entity& gridEntity, double x, double
     gridEntity.ENTITY_Add(pos, this);
 }
 
-bool Entity_BounceBlock::CollideVsCircle_Physical(collision_result_physical& collisionResult, const vec2& circleCenter, const vec2& circleVelocity, const vec2& squareCenter, double circleRadius) {
+bool Entity_BounceBlock::CollideVsCircle_Physical(collision_result_physical& result, const vec2& circleCenter, const vec2& circleVelocity, const vec2& squareCenter, double circleRadius) {
     this->n.x = 0;
     this->n.y = 0;
     double penetration = colutils::Penetration_Square_vs_Point(this->pos, this->r + circleRadius, circleCenter, this->n);
@@ -28,13 +28,75 @@ bool Entity_BounceBlock::CollideVsCircle_Physical(collision_result_physical& col
         this->pos.y -= impact * this->n.y;
         this->vel.y -= impact * this->n.y;
 
-        collisionResult.isHardCollision = false;
-        collisionResult.nx = this->n.x;
-        collisionResult.ny = this->n.y;
-        collisionResult.pen = this->mass * penetration;
+        result.isHardCollision = false;
+        result.nx = this->n.x;
+        result.ny = this->n.y;
+        result.pen = this->mass * penetration;
 
         return true;
     }
 
     return false;
+}
+
+bool Entity_BounceBlock::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {
+    if (ninja != nullptr) {
+        this->n.x = 0;
+        this->n.y = 0;
+        double penetration = colutils::Penetration_Square_vs_Point(this->pos, epsilon + this->r + circleRadius, circlePosition, this->n);
+        if (penetration != 0) {
+            result.vec_x = this->n.x;
+            result.vec_y = this->n.y;
+            return true;
+        }
+    }
+    return false;
+}
+
+void Entity_BounceBlock::Think(Simulator* sim) {
+    if (!this->isSleeping) {
+        double dx = this->anchor.x - this->pos.x;
+        double dy = this->anchor.y - this->pos.y;
+        double distanceSq = dx * dx + dy * dy;
+
+        if (this->vel.LenSq() < 0.05 && distanceSq < 0.05) {
+            this->pos.Copy(this->anchor);
+            this->vel.x = 0;
+            this->vel.y = 0;
+            this->isSleeping = true;
+        }
+    }
+}
+
+void Entity_BounceBlock::Move(Simulator* sim) {
+    this->vel.Scale(this->damp);
+    this->pos.x += this->vel.x;
+    this->pos.y += this->vel.y;
+    double dx = this->anchor.x - this->pos.x;
+    double dy = this->anchor.y - this->pos.y;
+    dx *= this->stiff;
+    dy *= this->stiff;
+    this->pos.x += dx;
+    this->pos.y += dy;
+    this->vel.x += dx;
+    this->vel.y += dy;
+    sim->objGrid.ENTITY_Move(this->pos, this);
+}
+
+EntityGraphics* Entity_BounceBlock::GenerateGraphicComponent() {
+    //return new EntityGraphics_BounceBlock(this);
+}
+
+void Entity_BounceBlock::GFX_UpdateState(EntityGraphics_BounceBlock* graphic) {
+    //graphic->pos.x = this->pos.x;
+    //graphic->pos.y = this->pos.y;
+}
+
+void Entity_BounceBlock::Debug_Draw(SimpleRenderer& rend) {
+    if (this->isSleeping) {
+        //rend.SetStyle(0, 0, 30);
+    } else {
+        //rend.SetStyle(0, 0, 100);
+    }
+    //rend.DrawSquare(this->pos.x, this->pos.y, this->r);
 }
