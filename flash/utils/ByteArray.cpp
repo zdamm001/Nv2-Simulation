@@ -49,3 +49,77 @@ void ByteArray::uncompress() {
         data.clear(); // Clear the data to indicate decompression failure
     }
 }
+
+void ByteArray::setPosition(unsigned int newPosition) {
+    if (newPosition <= data.size()) {
+        position = newPosition;
+    }
+}
+
+string ByteArray::readUTF() {
+    unsigned short length = 0;
+    if (position + 2 <= data.size()) {
+        length = (data[position] << 8) | data[position + 1];
+        position += 2;
+    } else {
+        return "";
+    }
+
+    if (position + length <= data.size()) {
+        string utfString(data.begin() + position, data.begin() + position + length);
+        position += length;
+        return utfString;
+    } else {
+        return "";
+    }
+}
+
+void ByteArray::readBytes(ByteArray& bytes) {
+    readBytes(bytes, 0, 0);
+}
+
+void ByteArray::readBytes(ByteArray& bytes, unsigned int offset, unsigned int length) {
+    if (length == 0) {
+        length = data.size() - position;
+    }
+
+    if (position + length <= data.size()) {
+        for (unsigned int i = 0; i < length; ++i) {
+            bytes.writeByte(data[position + i]);
+        }
+        bytes.setPosition(offset);
+        position += length;
+    }
+}
+
+bool ByteArray::isEmpty() const {
+    return data.empty(); //original has no isEmpty just null check
+}
+
+unsigned int ByteArray::bytesAvailable() const {
+    return data.size() - position;
+}
+
+unsigned char ByteArray::readUnsignedByte() {
+    if (position < data.size()) {
+        unsigned char byteValue = data[position];
+        ++position;
+        return byteValue;
+    } else {
+        return 0;
+    }
+}
+
+short ByteArray::readShort() {
+    if (position + 2 <= data.size()) {
+        short shortValue = (data[position] << 8) | data[position + 1];
+        position += 2;
+        return shortValue;
+    } else {
+        return 0;
+    }
+}
+
+unsigned int ByteArray::getPosition() const {
+    return position;
+}
