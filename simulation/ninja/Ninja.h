@@ -3,18 +3,20 @@
 #include <string>
 #include <vector>
 
+#include "..\\..\\audiovisual\\entitygraphics\\Entity_GraphicsNinja.h"
 #include "..\\..\\math\vec2.h"
+class SimpleRenderer {};
+#include "..\\collision\\Segment.h"
+#include "..\\collision\\colutils.h"
 #include "..\\entities\\Entity_Base.h"
+#include "..\\entities\\Entity_Thwomp.h"
 #include "..\\entities\\collision_result_logical.h"
 #include "..\\entities\\collision_result_physical.h"
+class InputSource_Base {};
 #include "..\\sim_globals.h"
+#include "Ragdoll.h"
 
 using namespace std;
-
-class InputSource_Base;
-class Ragdoll {};
-class EntityGraphics_Ninja {public: EntityGraphics_Ninja(EntityGraphics_Ninja*);};
-class Segment;
 
 class Ninja {
     public:
@@ -67,7 +69,7 @@ class Ninja {
         double impulse_scale;
         int pID;
         Ragdoll raggy;
-        EntityGraphics_Ninja ninja_gfx;
+        EntityGraphics_Ninja* ninja_gfx;
         double crush_threshold;
         vec2 crush_vec;
         double crush_dist;
@@ -77,7 +79,7 @@ class Ninja {
         vec2 death_force;
         vec2 TEMP_near_pos;
         vector<Entity_Base*> objList;
-        vector<Segment> segList;
+        vector<Segment*> segList;
         vec2 seg_cp;
         vector<double> wallList_X;
         vector<double> wallList_Y;
@@ -90,13 +92,40 @@ class Ninja {
         vec2 public_vel;
         unsigned int gfxColor;
     public:
-        Ninja(int param1, InputSource_Base* param2, double param3, double param4, unsigned int param5);
+        Ninja(int pID, InputSource_Base* input, double x, double y, unsigned int color);
+        void DEBUG_SetPosVel(const vec2& pos, const vec2& vel);
+        void DEBUG_Respawn(const vec2& pos);
+        int GetIndex();
+        vec2 GetPos();
+        vec2 GetVel();
+        double GetRadius();
+        bool IsDead();
+        Ragdoll& DEBUG_GetRagdoll();
+        void APP_Enable();
+        void APP_Disable();
         void Integrate();
         void PreCollision();
         void SolveInternalConstraints();
         void PostCollision(Simulator* sim);
-        void RespondToCollision(double param1, double param2, double param3, bool param4, bool param5);
+        void RespondToCollision(double collisionNormalX, double collisionNormalY, double collisionPenetration, bool isHardCollision, bool isThwompCollision);
         void CollideVsObjects(Simulator* sim);
         void CollideVsTiles(Simulator* sim);
-        void Think(Simulator* sim, unsigned int frame_num);
+        void Think(Simulator* sim, unsigned int frame_num); //fix wrong variables here
+    private:
+        void ACTION_Jump(double jumpDirX, double jumpDirY);
+        void ACTION_Fall();
+        void ACTION_Wallslide();
+        void ACTION_Skid();
+        void ACTION_Run(double moveDirection);
+        void ACTION_Stand();
+        void ACTION_Die();
+        void ACTION_Win();
+        void HELPER_ExitCurrentState();
+    public:
+        void SIM_Launch(double launchForceX, double launchForceY);
+        bool SIM_Kill(int enemyType, double deathPosX, double deathPosY, double deathForceX, double deathForceY);
+        bool SIM_Win();
+        EntityGraphics_Ninja* GenerateGraphicComponent();
+        void GFX_UpdateState(EntityGraphics_Ninja* graphics);
+        void Draw(SimpleRenderer& rend);
 };
