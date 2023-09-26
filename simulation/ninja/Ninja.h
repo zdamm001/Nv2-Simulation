@@ -1,4 +1,5 @@
 #pragma once
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <string>
 #include <vector>
@@ -12,7 +13,7 @@ class SimpleRenderer {};
 #include "..\\entities\\Entity_Thwomp.h"
 #include "..\\entities\\collision_result_logical.h"
 #include "..\\entities\\collision_result_physical.h"
-class InputSource_Base {};
+#include "..\\inputsource\\InputSource_Base.h"
 #include "..\\sim_globals.h"
 #include "Ragdoll.h"
 
@@ -30,7 +31,7 @@ class Ninja {
         static const unsigned int PSTATE_AWAITINGDEATH;
         static const unsigned int PSTATE_CELEBRATING;
         static const unsigned int PSTATE_DISABLED;
-        static const vector<string> PSTATE_TO_STRING;
+        static vector<string> PSTATE_TO_STRING;
         InputSource_Base* inputsource;
     private:
         vec2 pos;
@@ -93,6 +94,7 @@ class Ninja {
         unsigned int gfxColor;
     public:
         Ninja(int pID, InputSource_Base* input, double x, double y, unsigned int color);
+        static void Initialize();
         void DEBUG_SetPosVel(const vec2& pos, const vec2& vel);
         void DEBUG_Respawn(const vec2& pos);
         int GetIndex();

@@ -11,18 +11,20 @@ const unsigned int Ninja::PSTATE_AWAITINGDEATH = 7;
 const unsigned int Ninja::PSTATE_CELEBRATING = 8;
 const unsigned int Ninja::PSTATE_DISABLED = 9;
 
-const vector<string> Ninja::PSTATE_TO_STRING = {
-    "standing", 
-    "running", 
-    "skidding", 
-    "jumping", 
-    "falling",
-    "wallsliding", 
-    "dead", 
-    "waiting to die", 
-    "celebration", 
-    "disabled"
-};
+vector<string> Ninja::PSTATE_TO_STRING(10);
+
+void Ninja::Initialize() {
+    PSTATE_TO_STRING[PSTATE_STANDING] = "standing";
+    PSTATE_TO_STRING[PSTATE_RUNNING] = "running";
+    PSTATE_TO_STRING[PSTATE_SKIDDING] = "skidding";
+    PSTATE_TO_STRING[PSTATE_JUMPING] = "jumping";
+    PSTATE_TO_STRING[PSTATE_FALLING] = "falling";
+    PSTATE_TO_STRING[PSTATE_WALLSLIDING] = "wallsliding";
+    PSTATE_TO_STRING[PSTATE_DEAD] = "dead";
+    PSTATE_TO_STRING[PSTATE_AWAITINGDEATH] = "waiting to die";
+    PSTATE_TO_STRING[PSTATE_CELEBRATING] = "celebration";
+    PSTATE_TO_STRING[PSTATE_DISABLED] = "disabled";
+}
 
 Ninja::Ninja(int pID, InputSource_Base* input, double x, double y, unsigned int color)
     : pID(pID), 
@@ -61,29 +63,12 @@ Ninja::Ninja(int pID, InputSource_Base* input, double x, double y, unsigned int 
       wallN(0, 0), 
       floorN(0, -1),
       fcount(1), 
-      fvec(0, 0), 
-      raggy(), 
+      fvec(0, 0),
       ninja_gfx(nullptr), 
       crush_threshold(0.05),
-      crush_vec(), 
       crush_dist(0), 
       crush_flag(false), 
-      death_type(sim_globals::DEATHTYPE_TIME),
-      death_pos(), 
-      death_force(), 
-      TEMP_near_pos(), 
-      objList(), 
-      segList(), 
-      seg_cp(), 
-      wallList_X(),
-      wallList_Y(), 
-      result_logical(), 
-      result_physical(), 
-      cp(), 
-      tempV(), 
-      tempP(), 
-      public_pos(),
-      public_vel() { }
+      death_type(sim_globals::DEATHTYPE_TIME) { }
 
 void Ninja::DEBUG_SetPosVel(const vec2& pos, const vec2& vel) {
     if (this->curState == PSTATE_DEAD) {
@@ -299,16 +284,16 @@ void Ninja::CollideVsObjects(Simulator* sim) {
     }
 }
 
-void Ninja::CollideVsTiles(Simulator* simulator) {
+void Ninja::CollideVsTiles(Simulator* sim) {
     int maxIterations = 32;
     
     if (curState == PSTATE_DEAD) {
-        //raggy.CollideVsTiles(simulator);
+        //raggy.CollideVsTiles(sim);
     } else {
         int closestPointSign = 0;
         cp.x = 0;
         cp.y = 0;
-        for (int iterationCount = 0; iterationCount < maxIterations && (closestPointSign = colutils::GetSingleClosestPoint_Signed(simulator.segGrid, pos, r, cp)) != 0; ++iterationCount) {
+        for (int iterationCount = 0; iterationCount < maxIterations && (closestPointSign = colutils::GetSingleClosestPoint_Signed(sim->segGrid, pos, r, cp)) != 0; ++iterationCount) {
             double deltaX = pos.x - cp.x;
             double deltaY = pos.y - cp.y;
             double distance = sqrt(deltaX * deltaX + deltaY * deltaY);
@@ -334,10 +319,10 @@ void Ninja::Think(Simulator* sim, unsigned int frame_num) {
     vector<vec2> currentPosePos;
     vector<vec2> currentPoseVel;
 
-    inputsource->Tick(frame_num);
-    bool rightButtonDown = inputsource->IsButtonDown_Right();
-    bool leftButtonDown = inputsource->IsButtonDown_Left();
-    bool jumpButtonDown = inputsource->IsButtonDown_Jump();
+    //inputsource->Tick(frame_num);
+    bool rightButtonDown = false;//inputsource->IsButtonDown_Right();
+    bool leftButtonDown = false;//inputsource->IsButtonDown_Left();
+    bool jumpButtonDown = false;//inputsource->IsButtonDown_Jump();
     bool isNewJumpPress = jumpButtonDown && !wasJdown;
 
     if (curState == PSTATE_DISABLED) {
@@ -349,7 +334,7 @@ void Ninja::Think(Simulator* sim, unsigned int frame_num) {
     if (curState == PSTATE_AWAITINGDEATH) {
         currentPosePos.clear();
         currentPoseVel.clear();
-        if (ninja_gfx != nullptr && ninja_gfx->hasValidPose) {
+        if (ninja_gfx != nullptr/* && ninja_gfx->hasValidPose*/) {
             currentPosePos.resize(6);
             currentPoseVel.resize(6);
             //ninja_gfx->NINJA_GetCurrentPose(currentPosePos, currentPoseVel);
@@ -358,7 +343,7 @@ void Ninja::Think(Simulator* sim, unsigned int frame_num) {
         if (death_type == sim_globals::DEATHTYPE_EXPLOSIVE || death_type == sim_globals::DEATHTYPE_SUICIDE) {
             //raggy.ExplodeRagdoll(sim);
         }
-        sim->HACKY_GetParticleManager().Spawn_BloodSpurt(death_pos.x, death_pos.y, death_force.x, death_force.y, 3 + static_cast<int>(floor(rand() / (RAND_MAX + 1.0) * 4)));
+        //sim->HACKY_GetParticleManager().Spawn_BloodSpurt(death_pos.x, death_pos.y, death_force.x, death_force.y, 3 + static_cast<int>(floor(rand() / (RAND_MAX + 1.0) * 4)));
         bool randomSoundChoice = (rand() / static_cast<double>(RAND_MAX)) < 0.5;
         if (death_type == sim_globals::DEATHTYPE_EXPLOSIVE) {
             if (randomSoundChoice) {
@@ -443,7 +428,7 @@ void Ninja::Think(Simulator* sim, unsigned int frame_num) {
                     jumpDirX = 1.5;
                     jumpDirY = 0.7;
                 }
-                sim->HACKY_GetParticleManager().Spawn_JumpDust(this->pos.x - this->wallN.x * this->r, this->pos.y - this->wallN.y * this->r, this->wallN.x * 90);
+                //sim->HACKY_GetParticleManager().Spawn_JumpDust(this->pos.x - this->wallN.x * this->r, this->pos.y - this->wallN.y * this->r, this->wallN.x * 90);
                 this->ACTION_Jump(this->wallN.x * jumpDirX, this->wallN.y - jumpDirY);
                 return;
             }
@@ -456,7 +441,7 @@ void Ninja::Think(Simulator* sim, unsigned int frame_num) {
                 double wallSlideFrictionForce = -this->wallFriction * absVelY;
                 this->tempV.Copy(this->vel);
                 this->vel.y *= this->wallFriction;
-                sim->HACKY_GetParticleManager().Spawn_WallDust(this->pos, this->r, this->wallN, min(4.0, absVelY));
+                //sim->HACKY_GetParticleManager().Spawn_WallDust(this->pos, this->r, this->wallN, min(4.0, absVelY));
                 return;
             }
             if (velY > 0 && moveDirection * this->wallN.x < 0) {
@@ -477,8 +462,8 @@ void Ninja::Think(Simulator* sim, unsigned int frame_num) {
         this->vel.x = velX;
 
         if (this->curState > 2) {
-            sim->HACKY_GetParticleManager().Spawn_LandDust(this->pos.x - this->floorN.x * this->r, this->pos.y - this->floorN.y * this->r, 90 + atan2(this->floorN.y, this->floorN.x) / M_PI * 180, abs(this->vel.x) + this->vel.y);
-            this->ninja_gfx->HACKY_PlayOneshotSound("land");
+            //sim->HACKY_GetParticleManager().Spawn_LandDust(this->pos.x - this->floorN.x * this->r, this->pos.y - this->floorN.y * this->r, 90 + atan2(this->floorN.y, this->floorN.x) / M_PI * 180, abs(this->vel.x) + this->vel.y);
+            //this->ninja_gfx->HACKY_PlayOneshotSound("land");
 
             if (velX * moveDirection > 0) {
                 this->ACTION_Run(moveDirection);
@@ -488,7 +473,7 @@ void Ninja::Think(Simulator* sim, unsigned int frame_num) {
             return;
         }
         if (isNewJumpPress) {
-            sim->HACKY_GetParticleManager().Spawn_JumpDust(this->pos.x - this->floorN.x * this->r, this->pos.y - this->floorN.y * this->r, 90 + atan2(this->floorN.y, this->floorN.x) / M_PI * 180);
+            //sim->HACKY_GetParticleManager().Spawn_JumpDust(this->pos.x - this->floorN.x * this->r, this->pos.y - this->floorN.y * this->r, 90 + atan2(this->floorN.y, this->floorN.x) / M_PI * 180);
 
             if (moveDirection * this->floorN.x < 0) {
                 this->ACTION_Jump(0, -0.7);
@@ -520,7 +505,7 @@ void Ninja::Think(Simulator* sim, unsigned int frame_num) {
 
                 double skidAngle = atan2(this->floorN.x, -this->floorN.y) * (180 / M_PI);
 
-                sim->HACKY_GetParticleManager().Spawn_FloorDust(this->pos, this->r, this->floorN, skidAngle, skidForceSign, skidForceMag);
+                //sim->HACKY_GetParticleManager().Spawn_FloorDust(this->pos, this->r, this->floorN, skidAngle, skidForceSign, skidForceMag);
 
                 this->tempV.Copy(this->vel);
 
@@ -613,7 +598,7 @@ void Ninja::ACTION_Jump(double jumpDirX, double jumpDirY) {
     this->vel.y += jumpDirY * (this->jumpAmt + this->jump_y_bias) * this->impulse_scale;
 
     this->jumptimer = 0;
-    this->ninja_gfx->HACKY_PlayOneshotSound("jump");
+    //this->ninja_gfx->HACKY_PlayOneshotSound("jump");
 }
 
 void Ninja::ACTION_Fall() {
@@ -696,7 +681,7 @@ bool Ninja::SIM_Win() {
 }
 
 EntityGraphics_Ninja* Ninja::GenerateGraphicComponent() {
-    ninja_gfx = new EntityGraphics_Ninja(this, gfxColor);
+    //ninja_gfx = new EntityGraphics_Ninja(this, gfxColor);
     return ninja_gfx;
 }
 
