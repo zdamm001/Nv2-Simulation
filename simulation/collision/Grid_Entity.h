@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <algorithm>
 
 #include "..\\..\\math\\vec2.h"
 #include "..\\entities\\Entity_Base.h"

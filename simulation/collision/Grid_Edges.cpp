@@ -93,7 +93,7 @@ bool Grid_Edges::IsEmpty(int u, int v, int dir_u, int dir_v) {
 bool Grid_Edges::ScanHorizontal(int min_v, int max_v, int start_u, int end_u) {
     int du = end_u - start_u;
     if (du != 0) {
-        int dir_u = du / std::abs(du);
+        int dir_u = du / abs(du);
         return ScanHorizontal_Directed(min_v, max_v, start_u, end_u, dir_u);
     }
     return true;
@@ -116,7 +116,7 @@ bool Grid_Edges::ScanHorizontal_Directed(int min_v, int max_v, int start_u, int 
 bool Grid_Edges::ScanVertical(int min_u, int max_u, int start_v, int end_v) {
     int dv = end_v - start_v;
     if (dv != 0) {
-        int dir_v = dv / std::abs(dv);
+        int dir_v = dv / abs(dv);
         return ScanVertical_Directed(min_u, max_u, start_v, end_v, dir_v);
     }
     return true;

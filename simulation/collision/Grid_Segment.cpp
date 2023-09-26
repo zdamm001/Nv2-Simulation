@@ -124,7 +124,7 @@ double Grid_Segment::IntersectRayVsCellContents(int u, int v, const vec2& ray_po
     const vector<Segment*>& segList = cells[index];
     
     for (size_t i = 0; i < segList.size(); i++) {
-        const Segment* seg = segList[i];
+        Segment* seg = segList[i];
         double curr_t = seg->IntersectWithRay(ray_pos, ray_vec, 0, TEMP_temp_p, TEMP_temp_n);
         
         if (curr_t == -1) {
