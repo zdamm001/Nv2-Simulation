@@ -1,4 +1,5 @@
 #pragma once
+#define _USE_MATH_DEFINES
 #include <cmath>
 
 using namespace std;
@@ -20,5 +21,5 @@ class mathutils {
         static double WrapAngle_Shortest(double angle);
         static double WrapAngle_Directed(double angle, double direction);
         static double WrapAngle_Pos(double angle);
-        static double InterpolateOrn(double startAngle, double endAngle, double factor, double direction = 0);
+        static double InterpolateOrn(double startAngle, double endAngle, double factor, double direction);
 };
