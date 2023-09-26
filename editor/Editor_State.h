@@ -10,6 +10,7 @@ class Editor_State {
     public:
         vector<unsigned int> tileIDs;
         vector<vector<unsigned int>> entities;
+    public:
         Editor_State();
         static Editor_State Load_From_Bytes(ByteArray& bytes); //endianness might mess this up
 };

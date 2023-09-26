@@ -2,7 +2,7 @@
 
 #include "Segment_Linear.h"
 #include "..\\..\\math\\vec2.h"
-class SimpleRenderer {};
+class SimpleRenderer;
 
 class Segment_Linear_DoubleSided : public Segment_Linear {
     public:
