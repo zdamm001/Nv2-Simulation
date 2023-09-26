@@ -1,5 +1,14 @@
 #include "edat.h"
 
+vector<unsigned int> edat::HELPER_MIRROR_MOVE(4);
+vector<unsigned int> edat::MAP_TILETYPE_TO_TILEID(8);
+//vector<Class> edat::MAP_ETYPE_TO_MC(21);
+//vector<Class> edat::MAP_ETYPE_TO_MC_SELECTED(21);
+vector<vec2> edat::HELPER_MAP_DIR_TO_VEC(8);
+vector<vec2> edat::HELPER_MAP_ETYPE_TO_COLSHAPE(21);
+vector<unsigned int> edat::STRUCT_SIZE(18);
+vector<unsigned int> edat::MAP_STRUCT_TO_ETYPE(18);
+
 void edat::Initialize() {
     HELPER_MIRROR_MOVE[MOVE_SURFACE_CW] = MOVE_SURFACE_CCW;
     HELPER_MIRROR_MOVE[MOVE_SURFACE_CCW] = MOVE_SURFACE_CW;
