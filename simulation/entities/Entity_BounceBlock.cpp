@@ -1,6 +1,6 @@
 #include "Entity_BounceBlock.h"
 
-Entity_BounceBlock::Entity_BounceBlock(Grid_Entity& gridEntity, double x, double y)
+Entity_BounceBlock::Entity_BounceBlock(Grid_Entity& entities, double x, double y)
   : pos(x, y),
     vel(0, 0),
     anchor(x, y),
@@ -12,13 +12,13 @@ Entity_BounceBlock::Entity_BounceBlock(Grid_Entity& gridEntity, double x, double
     if (sim_globals::sim_rate == 60) {
         damp = 0.98;
     }
-    gridEntity.ENTITY_Add(pos, this);
+    entities.ENTITY_Add(pos, this);
 }
 
-bool Entity_BounceBlock::CollideVsCircle_Physical(collision_result_physical& result, const vec2& circleCenter, const vec2& circleVelocity, const vec2& squareCenter, double circleRadius) {
+bool Entity_BounceBlock::CollideVsCircle_Physical(collision_result_physical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius) {
     this->n.x = 0;
     this->n.y = 0;
-    double penetration = colutils::Penetration_Square_vs_Point(this->pos, this->r + circleRadius, circleCenter, this->n);
+    double penetration = colutils::Penetration_Square_vs_Point(this->pos, this->r + circleRadius, circlePosition, this->n);
 
     if (penetration != 0) {
         double impact = (1 - this->mass) * penetration;
