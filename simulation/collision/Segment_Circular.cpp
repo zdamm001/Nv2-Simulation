@@ -1,6 +1,8 @@
 #include "Segment_Circular.h"
 
 const vec2 Segment_Circular::zero_vec = vec2(0, 0);
+vec2 Segment_Circular::cp = vec2();
+vec2 Segment_Circular::ray_point = vec2();
 
 Segment_Circular::Segment_Circular(double x_center, double y_center, double x0, double y0, double x1, double y1)
     : p0(x0, y0), p1(x1, y1), pC(x_center, y_center), aabb(min(p0.x, p1.x), min(p0.y, p1.y), max(p0.x, p1.x), max(p0.y, p1.y)) {}
@@ -146,7 +148,7 @@ double Segment_Circular::IntersectWithRay(const vec2& ray_pos, const vec2& ray_v
         t2 = colutils::TimeOfIntersection_Circle_vs_Arc(ray_pos, ray_vec, pC, p0, p1, ray_radius);
     }
     
-    double tmin = min(t0, t1, t2);
+    double tmin = min(min(t0, t1), t2);
     
     if (tmin <= 1 && tmin >= 0) {
         ray_point.x = ray_pos.x + (tmin * ray_vec.x);
