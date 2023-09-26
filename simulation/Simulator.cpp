@@ -166,25 +166,25 @@ int Simulator::APP_GetNumGoldCollectedDuringTick(int pID) {
 
 bool Simulator::APP_IsPlaybackFinished() {
     for (int i = 0; i < playerList.size(); ++i) {
-        if (!playerList[i]->inputsource->IsReplayFinished()) {
-            return false;
-        }
+        //if (!playerList[i]->inputsource->IsReplayFinished()) {
+        //    return false;
+        //}
     }
     return true;
 }
 
 void Simulator::APP_GetReplayData(vector<string>& outReplayData) {
     for (int i = 0; i < playerList.size(); ++i) {
-        string replayData = playerList[i]->inputsource->DumpString();
-        outReplayData.push_back(replayData);
+        //string replayData = playerList[i]->inputsource->DumpString();
+        //outReplayData.push_back(replayData);
     }
 }
 
 vector<vector<ByteArray>> Simulator::APP_GetReplayBytes() {
     vector<vector<ByteArray>> replayBytes;
     for (int i = 0; i < playerList.size(); ++i) {
-        vector<ByteArray> replayData = playerList[i]->inputsource->DumpFrames();
-        replayBytes.push_back(replayData);
+        //vector<ByteArray> replayData = playerList[i]->inputsource->DumpFrames();
+        //replayBytes.push_back(replayData);
     }
     return replayBytes;
 }
@@ -227,11 +227,11 @@ void Simulator::DEBUG_ToggleRagdoll(const vec2& mousePos) {
 void Simulator::DEBUG_ToggleExploded() {
     for (int i = 0; i < playerList.size(); ++i) {
         if (playerList[i]->IsDead()) {
-            if (playerList[i]->DEBUG_GetRagdoll().DEBUG_IsExploded()) {
-                playerList[i]->DEBUG_GetRagdoll().UnexplodeRagdoll();
-            } else {
-                playerList[i]->DEBUG_GetRagdoll().ExplodeRagdoll(this);
-            }
+            //if (playerList[i]->DEBUG_GetRagdoll().DEBUG_IsExploded()) {
+            //    playerList[i]->DEBUG_GetRagdoll().UnexplodeRagdoll();
+            //} else {
+            //    playerList[i]->DEBUG_GetRagdoll().ExplodeRagdoll(this);
+            //}
         }
     }
 }
@@ -239,7 +239,7 @@ void Simulator::DEBUG_ToggleExploded() {
 void Simulator::DEBUG_GrabRagdoll(const vec2& pos, const vec2& vel) {
     for (int i = 0; i < playerList.size(); ++i) {
         if (playerList[i]->IsDead()) {
-            playerList[i]->DEBUG_GetRagdoll().TESTING_SetPosVel(pos, vel);
+            //playerList[i]->DEBUG_GetRagdoll().TESTING_SetPosVel(pos, vel);
         }
     }
 }
