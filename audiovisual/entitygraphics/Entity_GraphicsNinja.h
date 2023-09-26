@@ -6,6 +6,7 @@
 
 class MovieClip;
 class EntityGraphics {};
+class Ninja;
 
 class EntityGraphics_Ninja : public EntityGraphics {
     public:
@@ -24,7 +25,7 @@ class EntityGraphics_Ninja : public EntityGraphics {
         static const int RAGDOLL_LEG_R = 3;
         static const int RAGDOLL_LEG_L = 4;
     private:
-        Ninja& entity;
+        Ninja* entity;
         MovieClip* sndLoopMC;
         MovieClip* sndMC;
         MovieClip* mc_sprite;
@@ -41,4 +42,6 @@ class EntityGraphics_Ninja : public EntityGraphics {
         double run_anim_leftovers;
         double scaling_factor;
         int prev_frame;
+    public:
+        EntityGraphics_Ninja();
 };
