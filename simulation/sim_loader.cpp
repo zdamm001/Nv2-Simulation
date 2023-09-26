@@ -1,6 +1,6 @@
 #include "sim_loader.h"
 
-Simulator* sim_loader::LoadLevel_EditorState(const vector<int>& playerKeys, const vector<unsigned int>& playerColors, const SimpleInput& input, const ByteArray& replayData, int playerCount, const Editor_State& editorState) {
+Simulator* sim_loader::LoadLevel_EditorState(const vector<int>& playerKeys, const vector<unsigned int>& playerColors, SimpleInput& input, ByteArray& replayData, int playerCount, const Editor_State& editorState) {
     mathutils::GenerateNewRandomSeed();
 
     vector<int> tileIDGrid(Simulator::GRID_NUM_COLS * Simulator::GRID_NUM_ROWS, tiletypes::FULL);
@@ -28,18 +28,18 @@ Simulator* sim_loader::LoadLevel_EditorState(const vector<int>& playerKeys, cons
         ninjaSpawnLocations[1].x += 4;
     }
 
-    vector<Ninja> ninjas(ninjaSpawnLocations.size());
+    vector<Ninja*> ninjas(ninjaSpawnLocations.size());
 
     for (size_t i = 0; i < ninjaSpawnLocations.size(); ++i) {
         InputSource_Base* inputSource = nullptr;
         
-        if (replayData.isEmpty()) { //fix later
+        if (replayData.length() == 0) { //fix later
             inputSource = new InputSource_Recorder(input, playerKeys[i * 3 % playerKeys.size()], playerKeys[(i * 3 + 1) % playerKeys.size()], playerKeys[(i * 3 + 2) % playerKeys.size()]);
         } else {
-            inputSource = new InputSource_Playback(replayData);
+            inputSource = new InputSource_Playback(&replayData);
         }
         
-        ninjas[i] = Ninja(i, inputSource, ninjaSpawnLocations[i].x, ninjaSpawnLocations[i].y, playerColors[i]);
+        ninjas[i] = new Ninja(i, inputSource, ninjaSpawnLocations[i].x, ninjaSpawnLocations[i].y, playerColors[i]);
     }
 
     return new Simulator(tileIDGrid, gridSegment, gridEdges, gridEntity, entities, ninjas);
@@ -50,12 +50,10 @@ void sim_loader::LoadLevel_EditorState_Tiles(const vector<unsigned int>& tileIDs
     gridEdges.Clear();
     LoadLevel_InitTileIDGridWithBoundaryEdges(tileIDGrid, numCols, numRows);
 
-    int currentIndex = 0;
-    while (currentIndex < tileIDs.size()) {
-        int colIndex = 1 + currentIndex % edat::num_cols;
-        int rowIndex = 1 + currentIndex / edat::num_cols;
-        tileIDGrid[colIndex + rowIndex * numCols] = tileIDs[currentIndex];
-        currentIndex++;
+    for (int i = 0; i < tileIDs.size(); ++i) {
+        int colIndex = 1 + i % edat::num_cols;
+        int rowIndex = 1 + i / edat::num_cols;
+        tileIDGrid[colIndex + rowIndex * numCols] = tileIDs[i];
     }
 
     vector<int> neighborTiles(4, tiletypes::EMPTY);
@@ -92,7 +90,7 @@ void sim_loader::LoadLevel_EditorState_Tiles(const vector<unsigned int>& tileIDs
     }
 }
 
-void LoadLevel_InitTileIDGridWithBoundaryEdges(vector<int>& tileIDGrid, int numCols, int numRows) {
+void sim_loader::LoadLevel_InitTileIDGridWithBoundaryEdges(vector<int>& tileIDGrid, int numCols, int numRows) {
     int numCells = numCols * numRows;
 
     for (int i = 0; i < numCells; ++i) {
@@ -187,7 +185,7 @@ void sim_loader::LoadLevel_EditorState_Entities(const vector<vector<unsigned int
             perpendicularVector.Scale(12);
             vec2 sideA = entityPosition.Plus(perpendicularVector);
             vec2 sideB = entityPosition.Minus(perpendicularVector);
-            Segment_Linear_DoubleSided doorSegment(sideA.x, sideA.y, sideB.x, sideB.y);
+            Segment_Linear_DoubleSided* doorSegment = new Segment_Linear_DoubleSided(sideA.x, sideA.y, sideB.x, sideB.y);
 
             if (entityType == edat::ETYPE_DOOR_REGULAR) {
                 Entity_Door_Regular* regularDoor = new Entity_Door_Regular(gridEntity, gridSegment, cellIndex, doorSegment, gridEdges, edgeCells, isVertical, entityX, entityY);
@@ -298,7 +296,7 @@ void sim_loader::LoadLevel_EditorState_Entities(const vector<vector<unsigned int
     }
 }
 
-void Helper_RegisterEntity(vector<Entity_Base*>& entities, Entity_Base* entity) {
+void sim_loader::Helper_RegisterEntity(vector<Entity_Base*>& entities, Entity_Base* entity) {
     entity->GAME_SetUID(entities.size());
     entities.push_back(entity);
 }

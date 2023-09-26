@@ -31,9 +31,9 @@ class SimpleInput {};
 #include "entities\\Entity_Rocket.h"
 #include "entities\\Entity_Thwomp.h"
 #include "entities\\Entity_Turret.h"
-class InputSource_Base;
-class InputSource_Playback;
-class InputSource_Recorder;
+#include "inputsource\\InputSource_Base.h"
+#include "inputsource\\InputSource_Playback.h"
+#include "inputsource\\InputSource_Recorder.h"
 #include "ninja\\Ninja.h"
 #include "..\\tiles\\tiledefs.h"
 #include "..\\tiles\\tiletypes.h"
@@ -43,9 +43,10 @@ using namespace std;
 class sim_loader {
     public:
         sim_loader() = delete;
-        static Simulator* LoadLevel_EditorState(const vector<int>& playerKeys, const vector<unsigned int>& playerColors, const SimpleInput& input, const ByteArray& replayData, int playerCount, const Editor_State& editorState);
+        static Simulator* LoadLevel_EditorState(const vector<int>& playerKeys, const vector<unsigned int>& playerColors, SimpleInput& input, ByteArray& replayData, int playerCount, const Editor_State& editorState);
     private:
         static void LoadLevel_EditorState_Tiles(const vector<unsigned int>& tileIDs, vector<int>& tiles, Grid_Segment& gridSegment, Grid_Edges& gridEdges, int numCols, int numRows, double cellSize, double cellHalfWidth);
+        static void LoadLevel_InitTileIDGridWithBoundaryEdges(vector<int>& tileIDGrid, int numCols, int numRows);
         static void LoadLevel_BuildTileSegs(Grid_Segment& gridSegment, double cellSize, double cellHalfWidth, int colIndex, int rowIndex, int tileType, const vector<int>& neighborTiles);
         static void LoadLevel_BuildTileEdges(Grid_Edges& gridEdges, int colIndex, int rowIndex, int tileType);
         static void LoadLevel_EditorState_Entities(const vector<vector<unsigned int>>& entityData, Grid_Segment& gridSegment, Grid_Edges& gridEdges, Grid_Entity& gridEntity, vector<Entity_Base*>& entities, vector<vec2>& ninjaSpawnLocations, double cellSize, double cellHalfWidth);
