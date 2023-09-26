@@ -18,7 +18,7 @@ void Entity_Base::GRID_SetGridIndex(int gridIndex) {
     grid_index = gridIndex;
 }
 
-bool Entity_Base::CollideVsCircle_Physical(collision_result_physical& result, const vec2& circleCenter, const vec2& circleVelocity, const vec2& squareCenter, double circleRadius) {
+bool Entity_Base::CollideVsCircle_Physical(collision_result_physical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius) {
     return false;
 }
 
