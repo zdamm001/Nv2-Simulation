@@ -3,7 +3,7 @@
 
 // #include "..\\..\\audiovisual\\GraphicsManager.h"
 // #include "audiovisual\\SoundManager.h"
-// #include "data\\AccountDetails.h"
+#include "data\\AccountDetails.h"
 // #include "data\\AttractMode.h"
 // #include "data\\EpisodeData.h"
 // #include "data\\GameStats.h"
@@ -15,7 +15,7 @@
 #include "global\\GameStates.h"
 #include "global\\MenuStates.h"
 // #include "global\\SavedProperties.h"
-// #include "ui\\GlobalKeys.h"
+#include "ui\\GlobalKeys.h"
 #include "ui\\PlayerKeys.h"
 // #include "ui\\TimeFormatter.h"
 #include "..\\..\editor\\Editor_State.h"
@@ -43,9 +43,9 @@ class App_MultiPurpose : public Actor, public App {
     public:
         // AttractMode* attractMode;
         SimpleInput input;
-        // GlobalKeys* globalKeys;
+        GlobalKeys* globalKeys;
         // SimpleRenderer* debugRenderer;
-        Options options;
+        Options* options;
         // EpisodeData* episodeData;
         // GameStats* stats;
         // SharedObject* sharedObject;
@@ -53,7 +53,7 @@ class App_MultiPurpose : public Actor, public App {
         PlayerKeys* soloKeys;
         // Sprite* gameStage;
         // Sprite* uiStage;
-        // AccountDetails* account;
+        AccountDetails* account;
     private:
         //TimeFormatter* _timeFormatter;
         Simulator* _sim;
