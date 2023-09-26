@@ -1,3 +1,4 @@
+#pragma once
 #include <vector>
 #include <sstream>
 
@@ -5,13 +6,13 @@ using namespace std;
 
 class PlayerKeys {
     public:
-        static const unsigned int JUMP = 0;
-        static const unsigned int LEFT = 1;
-        static const unsigned int RIGHT = 2;
-        static const unsigned int SUICIDE = 3;
+        static inline const unsigned int JUMP = 0;
+        static inline const unsigned int LEFT = 1;
+        static inline const unsigned int RIGHT = 2;
+        static inline const unsigned int SUICIDE = 3;
     private:
-        static const unsigned int NUMBER_OF_PLAYER_KEYS = 4;
-        static const unsigned int MAX_NUMBER_OF_PLAYERS = 4;
+        static inline const unsigned int NUMBER_OF_PLAYER_KEYS = 4;
+        static inline const unsigned int MAX_NUMBER_OF_PLAYERS = 4;
         vector<int> _playerBindings;
     public:
         PlayerKeys();
