@@ -1,7 +1,8 @@
 #pragma once
-
 #include <vector>
 #include <string>
+
+#include "..\\flash\\utils\\ByteArray.h"
 
 using namespace std;
 
@@ -29,9 +30,13 @@ class sim_globals {
         static const int ENEMYTYPE_THWOMP;
         static const int ENEMYTYPE_MINE;
         static const int ENEMYTYPE_DEBUG;
-        static const vector<string> ETYPE_TO_STRING;
-        static const vector<int> ETYPE_TO_DTYPE;
+        static vector<string> ETYPE_TO_STRING;
+        static vector<int> ETYPE_TO_DTYPE;
         static bool HORRIBLY_HACKY_DOES_STRING_TO_BA_ERROR_EXIST;
     public:
         sim_globals() = delete;
+        static void Initialize();
+        static string BAtoString(ByteArray& bytes);
+        static ByteArray StringtoBA(string hexString);
+        static unsigned int BAS_hint(char hexChar);
 };
