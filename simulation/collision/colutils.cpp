@@ -1,5 +1,8 @@
 #include "colutils.h"
 
+vec2 colutils::closestPoint = vec2();
+vector<Segment*> colutils::segmentList = vector<Segment*>();
+
 int colutils::GetSingleClosestPoint_Signed(Grid_Segment& gridSegment, vec2& point, double radius, vec2& closestPointResult) {
     bool isPointBackfacing = false;
     double distanceSquared = 0.0;
@@ -169,7 +172,7 @@ double colutils::TimeOfIntersection_Point_vs_Lineseg(const vec2& pointPos, const
     }
 }
 
-double TimeOfIntersection_Circle_vs_Arc(const vec2& circlePos, const vec2& circleVel, const vec2& arcCenter, const vec2& arcStart, const vec2& arcEnd, double circleRadius) {
+double colutils::TimeOfIntersection_Circle_vs_Arc(const vec2& circlePos, const vec2& circleVel, const vec2& arcCenter, const vec2& arcStart, const vec2& arcEnd, double circleRadius) {
     double dx = arcStart.x - arcCenter.x;
     double dy = arcStart.y - arcCenter.y;
     double arcRadius = sqrt(dx * dx + dy * dy);
@@ -180,7 +183,7 @@ double TimeOfIntersection_Circle_vs_Arc(const vec2& circlePos, const vec2& circl
     return min(t0, t1);
 }
 
-double TimeOfIntersection_Circle_vs_Arc_HELPER(const vec2& circlePos, const vec2& circleVel, const vec2& arcCenter, const vec2& arcStart, const vec2& arcEnd, double radius) {
+double colutils::TimeOfIntersection_Circle_vs_Arc_HELPER(const vec2& circlePos, const vec2& circleVel, const vec2& arcCenter, const vec2& arcStart, const vec2& arcEnd, double radius) {
     vec2 pos = circlePos.Minus(arcCenter);
 
     double a = circleVel.Dot(circleVel);
