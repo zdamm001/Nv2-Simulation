@@ -1,6 +1,8 @@
 #include "Segment_Linear.h"
 
 const vec2 Segment_Linear::zero_vec = vec2(0, 0);
+vec2 Segment_Linear::cp = vec2();
+vec2 Segment_Linear::ray_point = vec2();
 
 Segment_Linear::Segment_Linear(double x0, double y0, double x1, double y1)
     : p0(x0, y0), p1(x1, y1), aabb(min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1)) { }
