@@ -25,4 +25,6 @@ class ByteArray {
         unsigned char readUnsignedByte();
         short readShort();
         unsigned int getPosition() const;
+        unsigned char readByte();
+        void length(unsigned int newLength);
 };

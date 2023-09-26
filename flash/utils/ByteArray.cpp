@@ -1,6 +1,6 @@
 #include "ByteArray.h"
 
-ByteArray::ByteArray() {};
+ByteArray::ByteArray() : position(0), data(0) {};
 
 unsigned int ByteArray::length() const {
     return data.size();
@@ -15,7 +15,12 @@ unsigned char ByteArray::operator[](unsigned int index) const {
 }
 
 void ByteArray::writeByte(unsigned char byte) {
-    data.push_back(byte);
+    if (position >= data.size()) {
+        data.push_back(byte);
+    } else {
+        data[position] = byte;
+    }
+    position++;
 }
 
 void ByteArray::compress() {
@@ -82,7 +87,7 @@ void ByteArray::readBytes(ByteArray& bytes, unsigned int offset, unsigned int le
     if (length == 0) {
         length = data.size() - position;
     }
-
+    //OFFSET IS WRONG
     if (position + length <= data.size()) {
         for (unsigned int i = 0; i < length; ++i) {
             bytes.writeByte(data[position + i]);
@@ -122,4 +127,18 @@ short ByteArray::readShort() {
 
 unsigned int ByteArray::getPosition() const {
     return position;
+}
+
+unsigned char ByteArray::readByte() {
+    if (position < data.size()) {
+        unsigned char byteValue = data[position];
+        ++position;
+        return byteValue;
+    } else {
+        return 0;
+    }
+}
+
+void ByteArray::length(unsigned int newLength) {
+    data.resize(newLength);
 }
