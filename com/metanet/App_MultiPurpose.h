@@ -17,17 +17,17 @@
 // #include "global\\SavedProperties.h"
 #include "ui\\GlobalKeys.h"
 #include "ui\\PlayerKeys.h"
-// #include "ui\\TimeFormatter.h"
+#include "ui\\TimeFormatter.h"
 #include "..\\..\editor\\Editor_State.h"
 // #include "..\\..\\flash\\display\\Bitmap.h"
 // #include "..\\..\\flash\\display\\Sprite.h"
 // #include "..\\..\\flash\\net\\SharedObject.h"
-// #include "..\\..\\flash\\ui\\Keyboard.h"
+#include "..\\..\\flash\\ui\\Keyboard.h"
 #include "..\\..\\flash\\utils\\ByteArray.h"
 // #include "..\\..\\flash\\utils\\getTimer.h"
 // #include "..\\..\\org\\robotlegs\\mvcs\\Actor.h"
-// #include "..\\..\\simpleFramework\\SimpleInput.h"
-// #include "..\\..\\simpleFramework\\SimpleRenderer.h"
+#include "..\\..\\simpleFramework\\SimpleInput.h"
+#include "..\\..\\simpleFramework\\SimpleRenderer.h"
 #include "..\\..\\simulation\\Simulator.h"
 #include "..\\..\\simulation\\sim_globals.h"
 #include "..\\..\\simulation\\sim_loader.h"
@@ -44,7 +44,7 @@ class App_MultiPurpose : public Actor, public App {
         // AttractMode* attractMode;
         SimpleInput input;
         GlobalKeys* globalKeys;
-        // SimpleRenderer* debugRenderer;
+        SimpleRenderer* debugRenderer;
         Options* options;
         // EpisodeData* episodeData;
         // GameStats* stats;
@@ -55,7 +55,7 @@ class App_MultiPurpose : public Actor, public App {
         // Sprite* uiStage;
         AccountDetails* account;
     private:
-        //TimeFormatter* _timeFormatter;
+        TimeFormatter _timeFormatter;
         Simulator* _sim;
         // GraphicsManager* _gfx;
         // SoundManager* _sfx;
@@ -166,6 +166,6 @@ class App_MultiPurpose : public Actor, public App {
         bool victory();
     public:
         bool beingPlayed();
-        bool gameState();
-        void uiState();
+        int gameState();
+        int uiState();
 };
