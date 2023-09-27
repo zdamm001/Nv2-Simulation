@@ -166,25 +166,25 @@ int Simulator::APP_GetNumGoldCollectedDuringTick(int pID) {
 
 bool Simulator::APP_IsPlaybackFinished() {
     for (int i = 0; i < playerList.size(); ++i) {
-        //if (!playerList[i]->inputsource->IsReplayFinished()) {
-        //    return false;
-        //}
+        if (!playerList[i]->inputsource->IsReplayFinished()) {
+            return false;
+        }
     }
     return true;
 }
 
 void Simulator::APP_GetReplayData(vector<string>& outReplayData) {
     for (int i = 0; i < playerList.size(); ++i) {
-        //string replayData = playerList[i]->inputsource->DumpString();
-        //outReplayData.push_back(replayData);
+        string replayData = playerList[i]->inputsource->DumpString();
+        outReplayData.push_back(replayData);
     }
 }
 
-vector<vector<ByteArray>> Simulator::APP_GetReplayBytes() {
-    vector<vector<ByteArray>> replayBytes;
+vector<ByteArray> Simulator::APP_GetReplayBytes() {
+    vector<ByteArray> replayBytes;
     for (int i = 0; i < playerList.size(); ++i) {
-        //vector<ByteArray> replayData = playerList[i]->inputsource->DumpFrames();
-        //replayBytes.push_back(replayData);
+        ByteArray replayData = playerList[i]->inputsource->DumpFrames();
+        replayBytes.push_back(replayData);
     }
     return replayBytes;
 }

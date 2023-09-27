@@ -69,7 +69,7 @@ class Simulator {
         int APP_GetNumGoldCollectedDuringTick(int pID);
         bool APP_IsPlaybackFinished();
         void APP_GetReplayData(vector<string>& outReplayData);
-        vector<vector<ByteArray>> APP_GetReplayBytes();
+        vector<ByteArray> APP_GetReplayBytes();
         void DEBUG_SetPlayerPosVel(const vec2& pos, const vec2& vel);
         void DEATHMATCH_RespawnPlayer(int pID);
         void DEATHMATCH_GibPlayer(int pID, double deathPosX, double deathPosY, double deathForceX, double deathForceY);
