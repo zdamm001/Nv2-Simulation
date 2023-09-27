@@ -1,0 +1,114 @@
+#include <iostream>
+
+#include "com\\foxarc\\util\\Base64.h"
+#include "flash\\utils\\ByteArray.h"
+#include "base64.h"
+
+using namespace std;
+
+int main() {
+    ByteArray a;
+    a.writeByte('T');
+    a.writeByte('E');
+    a.writeByte('S');
+    a.writeByte('T');
+    a.compress();
+    string b = Base64::encode(a);
+    cout << b << endl;
+    ByteArray c = Base64::decode(b);
+    c.uncompress();
+    cout << a[0] << a[1] << a[2] << a[3] << endl;
+    a.uncompress();
+    cout << a[0] << a[1] << a[2] << a[3] << endl;
+    cout << c[0] << c[1] << c[2] << c[3] << endl;
+    string replay = "eNpjYUEHrEzMGBAMgAwWVmoCFnIBAwAJoAL4";
+    ByteArray data = Base64::decode(replay);
+    for (int i = 0; i < data.length(); ++i) {
+        cout << int(data[i]) << ' ';
+    }
+    cout << endl;
+    string decoded2 = base64_decode(replay);
+    for (int i = 0; i < data.length(); ++i) {
+        cout << int(decoded2[i]) << ' ';
+    }
+    data.uncompress();
+    cout << endl << data.length() << endl;
+    for (int i = 0; i < data.length(); ++i) {
+        cout << int(data[i]) << ' ';
+    }
+    cout << endl;
+    data.compress();
+    cout << Base64::encode(data) << endl;
+    data.uncompress();
+    cout << endl << data.length() << endl;
+    for (int i = 0; i < data.length(); ++i) {
+        cout << int(data[i]) << ' ';
+    }
+    cout << endl;
+    cout << replay << endl;
+    cout << base64_encode(reinterpret_cast<const unsigned char*>(decoded2.c_str()), decoded2.length()) << endl;
+    ByteArray data_ = Base64::decode(replay);
+    cout << Base64::encode(data_) << endl;
+    string replay2 = "eNpjZGQAAAAIAAM=";
+    ByteArray data2 = Base64::decode(replay2);
+    data2.uncompress();
+    cout << endl << data2.length() << endl;
+    for (int i = 0; i < data2.length(); ++i) {
+        cout << int(data2[i]) << ' ';
+    }
+    data2.compress();
+    cout << endl << Base64::encode(data2) << endl;
+    for (int i = 0; i < 3; ++i) {
+        data2.uncompress();
+        data2.compress();
+        cout << Base64::encode(data2) << endl;
+    }
+    cout << replay2 << endl;
+    ByteArray data3 = Base64::decode(replay2);
+    for (int i = 0; i < data3.length(); ++i) {
+        cout << int(data3[i]) << ' ';
+    }
+    cout << endl;
+    data3.uncompress();
+    data3.compress();
+    for (int i = 0; i < data3.length(); ++i) {
+        cout << int(data3[i]) << ' ';
+    }
+    cout << endl;
+    cout << replay << endl;
+    ByteArray data4 = Base64::decode(replay);
+    for (int i = 0; i < data4.length(); ++i) {
+        cout << int(data4[i]) << ' ';
+    }
+    cout << endl;
+    data4.uncompress();
+    for (int i = 0; i < data4.length(); ++i) {
+        cout << int(data4[i]) << ' ';
+    }
+    cout << endl;
+    data4.compress();
+    for (int i = 0; i < data4.length(); ++i) {
+        cout << int(data4[i]) << ' ';
+    }
+    cout << endl;
+    data4.uncompress();
+    for (int i = 0; i < data4.length(); ++i) {
+        cout << int(data4[i]) << ' ';
+    }
+    cout << endl;
+    string replay3 = "eNrtnNuWwiAMRUHk/3951DWtvRAgkLaoe7/OlEshyQmh3m4v3ES8mzO37W5vQnj36dwdAGBAYpKVX8vhw8PVAQDYMnkYXxJQkm+apViu+bkXVfvPQZVG7+2EX7T2+cQ9+HwK2iT1bxkJ5PesFRFYLFXRc1aB6ByHsGbY1bXPVMh94FDxm0y528JUrEd6hjAGAKK6e6TF3x1GU/mFu6eThwchD2EO4CI79hyegfn5k5cIKkg64VgFc4RPi72GlNZaJv53UxkK9fn2bNnFiKKv+MS+qeh8QssAiXfQconkpC22sYT8ZTtdNyb7PlWQTvgbc4dqMPj+JhI+PeN0n87JGY8sRuNx67XXYn4akbfbM/MT6VsOQjw6LYgXRlP33qY3demu/dWEpSE3Sf9Re7jVmM9UXU9UdJNxxKKfjilpuW8uoyndajZCtwXpSYkS4Pws2keC06nRK+NL09Xwyjp3vggOgG5sLe+iPwCaxbvRfcpBjVDKueqvvqni/SasE+MBflPLePVnCAiZn6iLO1XsKR2b1u4t3j8Mq0GrDEYsHp1QdV2Oo+qYf23YnTIQGQlDlfTGyhXb22t4UqjTNV6Ysp/Y/IxQUlx+JtsxMqLW18nP5p8TMwxPVleCXOEN9HYXx/HFvat3zGLKsWJ1G6sUWf4/5x9of1239jCMhW02rKmg6WssL06mq+nd4w3XzpI4XRnFyBy/yNVUJWDWdtWcIuXnq29aO5AuDyNNYWFPlcJro3OKrReFXEtpAWcLcH4enTFlu8icDQrb3k/4QKkwml3eJ73dho9LUDswjKJLuwzZnxzvIkT3EJWTS5/dLGg/WMOEu1KG18pck5Zrnt1v+q32dUbSl7MGALDR/n/GpyiF";
+    cout << replay3 << endl;
+    ByteArray data5 = Base64::decode(replay3);
+    cout << data5.length() << endl;
+    data5.uncompress();
+    cout << data5.length() << endl;
+    //for (int i = 0; i < data5.length(); ++i) {
+    //    cout << int(data5[i]) << ' ';
+    //}
+    //cout << endl;
+    data5.compress();
+    string encoded = Base64::encode(data5);
+    cout << encoded << endl;
+    cout << (replay3 == encoded) << endl;
+    return 0;
+}
