@@ -21,7 +21,7 @@ class Keyboard {
         static inline unsigned int RIGHT = 39;
         static inline unsigned int DOWN = 40;
         static inline unsigned int INSERT = 45;
-        static inline unsigned int DELETE = 46;
+        static inline unsigned int DELETE_ = 46;
         static inline unsigned int NUMBER_0 = 48;
         static inline unsigned int NUMBER_1 = 49;
         static inline unsigned int NUMBER_2 = 50;
