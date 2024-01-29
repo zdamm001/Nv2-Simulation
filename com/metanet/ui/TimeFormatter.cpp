@@ -1,6 +1,8 @@
 #include "TimeFormatter.h"
 
-string formatTime(int ticks, int sim_rate) {
+TimeFormatter::TimeFormatter() {}
+
+string TimeFormatter::formatTime(int ticks, int sim_rate) {
     double seconds = static_cast<double>(ticks) / sim_rate;
     istringstream ssin(to_string(seconds));
     vector<string> secondParts;
