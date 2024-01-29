@@ -18,6 +18,7 @@
                 "flash/utils/*.cpp",
                 "-lz",
                 "math/*.cpp",
+                "simpleFramework/*.cpp",
                 "simulation/*.cpp",
                 "simulation/collision/*.cpp",
                 "simulation/entities/*.cpp",
