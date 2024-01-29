@@ -142,3 +142,30 @@ unsigned char ByteArray::readByte() {
 void ByteArray::length(unsigned int newLength) {
     data.resize(newLength);
 }
+
+int ByteArray::readInt() {
+    if (position + 4 <= data.size()) {
+        int intValue = (data[position] << 24) | (data[position + 1] << 16) | (data[position + 2] << 8) | data[position + 3];
+        position += 4;
+        return intValue;
+    } else {
+        return 0;
+    }
+}
+
+void ByteArray::writeBytes(const ByteArray& bytes) {
+    setPosition(0);
+    for (unsigned int i = 0; i < bytes.length(); ++i) {
+        writeByte(bytes[i]);
+    }
+}
+
+void ByteArray::writeBytes(const ByteArray& bytes, unsigned int offset, unsigned int length) {
+    setPosition(offset);
+    if (length == 0) length = bytes.length() - offset;
+    if (offset + length <= bytes.length()) {
+        for (unsigned int i = offset; i < offset + length; ++i) {
+            writeByte(bytes[i]);
+        }
+    }
+}

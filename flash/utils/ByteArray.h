@@ -27,4 +27,7 @@ class ByteArray {
         unsigned int getPosition() const;
         unsigned char readByte();
         void length(unsigned int newLength);
+        int readInt();
+        void writeBytes(const ByteArray& bytes);
+        void writeBytes(const ByteArray& bytes, unsigned int offset, unsigned int length);
 };
