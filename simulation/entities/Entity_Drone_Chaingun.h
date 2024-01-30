@@ -24,7 +24,8 @@ class Entity_Drone_Chaingun : public Entity_Drone_Shooter_Base {
         vec2 chaingun_hit_pos;
         vec2 chaingun_hit_n;
     public:
-        Entity_Drone_Chaingun(Grid_Entity& entity, double x, double y, unsigned int facingDir, unsigned int moveType);
+        Entity_Drone_Chaingun(Grid_Entity& entities, double x, double y, unsigned int facingDir, unsigned int moveType);
+        Entity_Drone_Chaingun(Grid_Entity& entities, entitySave& entity);
     protected:
         void Start_Prefiring(Simulator* sim, const vec2& ninjaPos) override;
         void Update_Prefiring(Simulator* sim, const vec2& ninjaPos) override;
@@ -35,4 +36,5 @@ class Entity_Drone_Chaingun : public Entity_Drone_Shooter_Base {
         EntityGraphics* GenerateGraphicComponent() override;
         void GFX_UpdateState(EntityGraphics* graphic);
         void Debug_Draw(SimpleRenderer& rend);
+        void saveState(entitySave& state) override;
 };

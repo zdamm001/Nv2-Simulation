@@ -1,11 +1,22 @@
 #include "Entity_Drone_Chaingun.h"
 
-Entity_Drone_Chaingun::Entity_Drone_Chaingun(Grid_Entity& entity, double x, double y, unsigned int facingDir, unsigned int moveType)
-    : Entity_Drone_Shooter_Base(entity, x, y, 12.0 * (1.0 / 14.0) * 0.75 * (40.0 / sim_globals::sim_rate), facingDir, moveType, 35 * (sim_globals::sim_rate / 40), 60 * (sim_globals::sim_rate / 40)) {
+Entity_Drone_Chaingun::Entity_Drone_Chaingun(Grid_Entity& entities, double x, double y, unsigned int facingDir, unsigned int moveType)
+    : Entity_Drone_Shooter_Base(entities, x, y, 12.0 * (1.0 / 14.0) * 0.75 * (40.0 / sim_globals::sim_rate), facingDir, moveType, 35 * (sim_globals::sim_rate / 40), 60 * (sim_globals::sim_rate / 40)) {
     chaingun_rate = 6.0 * (sim_globals::sim_rate / 40);
     chaingun_count = 0;
     chaingun_timer = 0;
     chaingun_HACKY_hitmode = 0;
+}
+
+Entity_Drone_Chaingun::Entity_Drone_Chaingun(Grid_Entity& entities, entitySave& entity)
+    : Entity_Drone_Shooter_Base(entities, entity, 12.0 * (1.0 / 14.0) * 0.75 * (40.0 / sim_globals::sim_rate), 35 * (sim_globals::sim_rate / 40), 60 * (sim_globals::sim_rate / 40)) {
+    chaingun_rate = 6.0 * (sim_globals::sim_rate / 40);
+    chaingun_count = entity.extra;
+    chaingun_timer = entity.timer2;
+    chaingun_dir = entity.dir;
+    chaingun_sweep = entity.vel;
+    if (GetFiringState() == FIRING_STATE_FIRING) chaingun_HACKY_hitmode = 1;
+    else chaingun_HACKY_hitmode = 0;
 }
 
 void Entity_Drone_Chaingun::Start_Prefiring(Simulator* sim, const vec2& ninjaPos) {
@@ -104,6 +115,7 @@ void Entity_Drone_Chaingun::Start_Postfiring(Simulator* sim) {
 }
 
 EntityGraphics* Entity_Drone_Chaingun::GenerateGraphicComponent() {
+    return nullptr;
     //return new EntityGraphics_Drone_Chaingun(this);
 }
 
@@ -132,4 +144,13 @@ void Entity_Drone_Chaingun::Debug_Draw(SimpleRenderer& rend) {
         //rend.DrawLine(pos.x, pos.y, chaingun_hit_pos.x, chaingun_hit_pos.y);
         //rend.DrawLine(chaingun_hit_pos.x, chaingun_hit_pos.y, chaingun_hit_pos.x + 4 * chaingun_hit_n.x, chaingun_hit_pos.y + 4 * chaingun_hit_n.y);
     }
+}
+
+void Entity_Drone_Chaingun::saveState(entitySave& state) {
+    Entity_Drone_Shooter_Base::saveState(state);
+    state.etype = edat::ETYPE_CHAINGUN;
+    state.extra = chaingun_count;
+    state.timer2 = chaingun_timer;
+    state.dir = chaingun_dir;
+    state.vel = chaingun_sweep;
 }
