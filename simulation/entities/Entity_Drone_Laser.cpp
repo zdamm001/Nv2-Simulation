@@ -1,9 +1,17 @@
 #include "Entity_Drone_Laser.h"
 
 Entity_Drone_Laser::Entity_Drone_Laser(Grid_Entity& entities, double x, double y, unsigned int facingDir, unsigned int moveType)
-    : laser_duration(80),  Entity_Drone_Shooter_Base(entities, x, y, 12 * (1.0 / 14) * 0.5 * (40.0 / sim_globals::sim_rate), facingDir, moveType, 30 * (sim_globals::sim_rate / 40), 40 * (sim_globals::sim_rate / 40)) {
+    : laser_duration(80),  Entity_Drone_Shooter_Base(entities, x, y, 12.0 * (1.0 / 14.0) * 0.5 * (40.0 / sim_globals::sim_rate), facingDir, moveType, 30 * (sim_globals::sim_rate / 40), 40 * (sim_globals::sim_rate / 40)) {
     laser_timer = 0;
     laser_dir = vec2(0, 0);
+}
+
+Entity_Drone_Laser::Entity_Drone_Laser(Grid_Entity& entities, entitySave& entity)
+    : laser_duration(80),  Entity_Drone_Shooter_Base(entities, entity, 12.0 * (1.0 / 14.0) * 0.5 * (40.0 / sim_globals::sim_rate), 30 * (sim_globals::sim_rate / 40), 40 * (sim_globals::sim_rate / 40)) {
+    laser_timer = entity.timer2;
+    laser_dir = entity.dir;
+    laser_hit_pos = entity.vel;
+    laser_hit_n = entity.n;
 }
 
 void Entity_Drone_Laser::Start_Prefiring(Simulator* sim, const vec2& ninjaPos) {
@@ -53,6 +61,7 @@ void Entity_Drone_Laser::Start_Postfiring(Simulator* sim) {
 }
 
 EntityGraphics* Entity_Drone_Laser::GenerateGraphicComponent() {
+    return nullptr;
     //return new EntityGraphics_Drone_Laser(this);
 }
 
@@ -94,4 +103,13 @@ void Entity_Drone_Laser::Debug_Draw(SimpleRenderer& rend) {
         //rend.DrawLine(pos.x, pos.y, laser_hit_pos.x, laser_hit_pos.y);
         //rend.DrawLine(laser_hit_pos.x, laser_hit_pos.y, laser_hit_pos.x + laser_hit_n.x * 4, laser_hit_pos.y + laser_hit_n.y * 4);
     }
+}
+
+void Entity_Drone_Laser::saveState(entitySave& state) {
+    Entity_Drone_Shooter_Base::saveState(state);
+    state.etype = edat::ETYPE_LASER;
+    state.timer2 = laser_timer;
+    state.dir = laser_dir;
+    state.vel = laser_hit_pos;
+    state.n = laser_hit_n;
 }

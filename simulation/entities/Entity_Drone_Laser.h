@@ -19,6 +19,7 @@ class Entity_Drone_Laser : public Entity_Drone_Shooter_Base {
         vec2 laser_hit_n;
     public:
         Entity_Drone_Laser(Grid_Entity& entities, double x, double y, unsigned int facingDir, unsigned int moveType);
+        Entity_Drone_Laser(Grid_Entity& entities, entitySave& entity);
     protected:
         void Start_Prefiring(Simulator* sim, const vec2& ninjaPos) override;
         void Update_Prefiring(Simulator* sim, const vec2& ninjaPos) override;
@@ -28,4 +29,5 @@ class Entity_Drone_Laser : public Entity_Drone_Shooter_Base {
         EntityGraphics* GenerateGraphicComponent() override;
         void GFX_UpdateState(EntityGraphics_Drone_Laser* graphics);
         void Debug_Draw(SimpleRenderer& rend) override;
+        void saveState(entitySave& state) override;
 };
