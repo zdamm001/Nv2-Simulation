@@ -5,6 +5,11 @@ Entity_OnewayPlatform::Entity_OnewayPlatform(Grid_Entity& entities, double x, do
     entities.ENTITY_Add(pos, this);
 }
 
+Entity_OnewayPlatform::Entity_OnewayPlatform(Grid_Entity& entities, entitySave& entity)
+    : pos(entity.pos), n(entity.n), r(12) {
+    entities.ENTITY_Add(pos, this);
+}
+
 bool Entity_OnewayPlatform::CollideVsCircle_Physical(collision_result_physical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius) {
     double penetration = CalculatePenetration(circlePosition, circleVelocity, circleOldPosition, circleRadius, 0);
     if (penetration >= 0) {
@@ -56,6 +61,7 @@ double Entity_OnewayPlatform::CalculatePenetration(const vec2& circlePosition, c
 }
 
 EntityGraphics* Entity_OnewayPlatform::GenerateGraphicComponent() {
+    return nullptr;
     //return new EntityGraphics_OnewayPlatform(pos.x, pos.y, atan2(n.y, n.x));
 }
 
@@ -63,4 +69,21 @@ void Entity_OnewayPlatform::Debug_Draw(SimpleRenderer& rend) {
     //rend.SetStyle(0, 0, 100);
     //rend.DrawLine(pos.x - -n.y * r, pos.y - n.x * r, pos.x + -n.y * r, pos.y + n.x * r);
     //rend.DrawLine(pos.x, pos.y, pos.x + n.x * 4, pos.y + n.y * 4);
+}
+
+// ByteArray Entity_OnewayPlatform::saveState() {
+//     ByteArray state;
+//     state.writeByte(edat::STRUCTTYPE_ONEWAY);
+//     state.writeDouble(pos.x);
+//     state.writeDouble(pos.y);
+//     state.writeDouble(n.x);
+//     state.writeDouble(n.y);
+//     return state;
+// }
+
+void Entity_OnewayPlatform::saveState(entitySave& state) {
+    Entity_Base::saveState(state);
+    state.etype = edat::ETYPE_ONEWAY;
+    state.pos = pos;
+    state.n = n;
 }
