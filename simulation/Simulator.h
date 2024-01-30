@@ -41,6 +41,7 @@ class Simulator {
         SoundManager* HACKY_sfx;
     public:
         Simulator(vector<int> tileIDs, Grid_Segment segGrid, Grid_Edges edgeGrid, Grid_Entity objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList);
+        Simulator(appSave& appState, vector<int> tileIDs, Grid_Segment segGrid, Grid_Edges edgeGrid, Grid_Entity objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList);
         ~Simulator();
         void HACKY_SetAV(GraphicsManager* gfx, SoundManager* sfx);
         ParticleManager* HACKY_GetParticleManager();
@@ -84,4 +85,5 @@ class Simulator {
         void DEBUG_Draw_Grid(SimpleRenderer& rend);
         void DEBUG_Draw_Entities(SimpleRenderer& rend);
         unsigned int NEW_GetFrameNum() const;
+        void saveState(appSave& appState);
 };

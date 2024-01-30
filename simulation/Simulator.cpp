@@ -15,6 +15,11 @@ Simulator::Simulator(vector<int> tileIDs, Grid_Segment segGrid, Grid_Edges edgeG
     mathutils::SetRandomSeed(1);
 }
 
+Simulator::Simulator(appSave& appState, vector<int> tileIDs, Grid_Segment segGrid, Grid_Edges edgeGrid, Grid_Entity objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList)
+    : Simulator(tileIDs, segGrid, edgeGrid, objGrid, objList, playerList) {
+    frame_num = appState.frameNum;
+};
+
 Simulator::~Simulator() {
     for (Entity_Base* obj : objList) {
         delete obj;
@@ -299,4 +304,34 @@ void Simulator::DEBUG_Draw_Entities(SimpleRenderer& rend) {
 
 unsigned int Simulator::NEW_GetFrameNum() const {
     return frame_num;
+}
+
+// void Simulator::loadState(ByteArray state) {
+//     state.readUnsignedInt(frame_num);
+//     playerList[0].loadState(state);
+//     //while BA pos != end get obj
+// }
+
+// void Simulator::saveState() {
+//     ByteArray state;
+//     state.writeUnsignedInt(frame_num);
+//     state.writeBytes(playerList[0].saveState());
+//     for (int i = 0; i < objList.size(); ++i) {
+//         state.writeBytes(objList[i]);
+//     }
+// I THINK NEED NUM GOLD
+// }
+
+void Simulator::saveState(appSave& appState) {
+    appState.frameNum = frame_num;
+    appState.tiles = tileIDs;
+    appState.ninjaState.resize(playerList.size());
+    for (int i = 0; i < playerList.size(); ++i) {
+        playerList[i]->saveState(appState.ninjaState[i]);
+    }
+    for (int i = 0; i < objList.size(); ++i) {
+        objList[i]->saveState(appState.entityState[i]);
+    }
+    appState.segGrid = segGrid.Clone();
+    appState.edgeGrid = edgeGrid;
 }
