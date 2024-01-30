@@ -4,6 +4,11 @@ Entity_ExitDoor::Entity_ExitDoor(double x, double y)
     : pos(x, y), r(12), isOpen(false) {
 }
 
+Entity_ExitDoor::Entity_ExitDoor(Grid_Entity& entities, entitySave& entity)
+    : pos(entity.pos), r(12), isOpen(entity.state) {
+    if (isOpen) entities.ENTITY_Add(pos, this);
+}
+
 bool Entity_ExitDoor::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {
     if (ninja != nullptr) {
         if (colutils::Overlap_Circle_Vs_Circle(pos, r, circlePosition, circleRadius)) {
@@ -23,6 +28,7 @@ bool Entity_ExitDoor::SWITCH_IsOpen() {
 }
 
 EntityGraphics* Entity_ExitDoor::GenerateGraphicComponent() {
+    return nullptr;
     //return new EntityGraphics_ExitDoor(this, pos.x, pos.y);
 }
 
@@ -44,4 +50,11 @@ void Entity_ExitDoor::Debug_Draw(SimpleRenderer& rend) {
         //rend.DrawCross(pos.x, pos.y, r);
         //rend.DrawSquare(pos.x, pos.y, r);
     }
+}
+
+void Entity_ExitDoor::saveState(entitySave& state) {
+    Entity_Base::saveState(state);
+    state.etype = edat::ETYPE_EXIT_DOOR;
+    state.pos = pos;
+    state.is = isOpen;
 }
