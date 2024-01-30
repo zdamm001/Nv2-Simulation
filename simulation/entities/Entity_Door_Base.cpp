@@ -8,6 +8,11 @@ Entity_Door_Base::Entity_Door_Base(Grid_Entity& entities, Grid_Segment& segments
     entities.ENTITY_Add(trigger_pos, this);
 }
 
+Entity_Door_Base::Entity_Door_Base(Grid_Entity& entities, entitySave& entity, Grid_Segment& segments, Grid_Edges& edges, double triggerRadius)
+    : trigger_pos(entity.pos), trigger_r(triggerRadius), seg_grid(segments), seg_index(entity.index), edge_grid(edges), edge_indices({entity.timer, entity.timer2}), isHorizontal(entity.is2), isOpen(entity.is) {
+    seg = segments.DOOR_GetSegment(entity.index, entity.extra);
+}
+
 bool Entity_Door_Base::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {
     if (ninja != nullptr) {
         if (colutils::Overlap_Circle_Vs_Circle(trigger_pos, trigger_r, circlePosition, circleRadius)) {
@@ -75,4 +80,15 @@ void Entity_Door_Base::Debug_Draw_Base(SimpleRenderer& rend, bool drawTrigger) {
         //rend->SetStyle(0, 0, 100);
         seg->DebugDraw_NoStyle(rend);
     }
+}
+
+void Entity_Door_Base::saveState(entitySave& state) {
+    Entity_Base::saveState(state);
+    state.pos = trigger_pos;
+    state.index = seg_index;
+    state.extra = seg_grid.DOOR_GetSegInnerIndex(seg_index, seg);
+    state.timer = edge_indices[0];
+    state.timer2 = edge_indices[1];
+    state.is = isOpen;
+    state.is2 = isHorizontal;
 }
