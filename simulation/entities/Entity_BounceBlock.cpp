@@ -15,6 +15,22 @@ Entity_BounceBlock::Entity_BounceBlock(Grid_Entity& entities, double x, double y
     entities.ENTITY_Add(pos, this);
 }
 
+Entity_BounceBlock::Entity_BounceBlock(Grid_Entity& entities, entitySave& entity)
+  : pos(entity.pos),
+    vel(entity.vel),
+    anchor(entity.pos2),
+    r(0.8 * 12),
+    stiff(0.05 * (40.0 / sim_globals::sim_rate) * (40.0 / sim_globals::sim_rate)),
+    damp(0.99),
+    mass(0.2),
+    isSleeping(true),
+    n(entity.n) {
+    if (sim_globals::sim_rate == 60) {
+        damp = 0.98;
+    }
+    entities.ENTITY_Add(pos, this);
+}
+
 bool Entity_BounceBlock::CollideVsCircle_Physical(collision_result_physical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius) {
     this->n.x = 0;
     this->n.y = 0;
@@ -84,6 +100,7 @@ void Entity_BounceBlock::Move(Simulator* sim) {
 }
 
 EntityGraphics* Entity_BounceBlock::GenerateGraphicComponent() {
+    return nullptr;
     //return new EntityGraphics_BounceBlock(this);
 }
 
@@ -99,4 +116,25 @@ void Entity_BounceBlock::Debug_Draw(SimpleRenderer& rend) {
         //rend.SetStyle(0, 0, 100);
     }
     //rend.DrawSquare(this->pos.x, this->pos.y, this->r);
+}
+
+// ByteArray Entity_BounceBlock::saveState() {
+//     ByteArray state;
+//     state.writeByte(edat::STRUCTTYPE_BOUNCEBLOCK);
+//     state.writeDouble(pos.x);
+//     state.writeDouble(pos.y);
+//     state.writeDouble(vel.x);
+//     state.writeDouble(vel.y);
+//     state.writeDouble(n.x);
+//     state.writeDouble(n.y);
+//     return state;
+// }
+
+void Entity_BounceBlock::saveState(entitySave& state) {
+    Entity_Base::saveState(state);
+    state.etype = edat::ETYPE_BOUNCEBLOCK;
+    state.pos = pos;
+    state.pos2 = anchor;
+    state.vel = vel;
+    state.n = n;
 }
