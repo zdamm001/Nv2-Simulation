@@ -3,6 +3,10 @@
 InputSource_Base::InputSource_Base(ByteArray* frames)
     : frames(frames), current_J(false), current_L(false), current_R(false) {}
 
+InputSource_Base::~InputSource_Base() {
+    delete frames;
+}
+
 ByteArray InputSource_Base::DumpFrames() {
     frames->setPosition(frames->length() - 1);
 
@@ -51,4 +55,9 @@ bool InputSource_Base::IsButtonDown_Left() {
 
 bool InputSource_Base::IsButtonDown_Right() {
     return current_R;
+}
+
+void InputSource_Base::saveState(ByteArray& state) {
+    unsigned int length = frames->getPosition();
+    state.writeBytes(*frames, 0, length);
 }

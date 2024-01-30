@@ -15,6 +15,7 @@ class InputSource_Base {
         bool current_R;
     public:
         InputSource_Base(ByteArray* frames);
+        virtual ~InputSource_Base();
         ByteArray DumpFrames();
         string DumpString();
         virtual bool IsReplayFinished();
@@ -22,4 +23,5 @@ class InputSource_Base {
         bool IsButtonDown_Jump();
         bool IsButtonDown_Left();
         bool IsButtonDown_Right();
+        void saveState(ByteArray& state);
 };
