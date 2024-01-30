@@ -6,6 +6,12 @@ Entity_Thwomp::Entity_Thwomp(Grid_Entity& entities, double x, double y, int fall
     n = vec2();
 }
 
+Entity_Thwomp::Entity_Thwomp(Grid_Entity& entities, entitySave& entity)
+    : pos(entity.pos), anchor(entity.pos2), r(12 * (3.0 / 4.0)), fallspeed(12 * (5.0 / 14.0) * (40.0 / sim_globals::sim_rate)), raisespeed(12 * (1.0 / 7.0) * (40.0 / sim_globals::sim_rate)), CUR_STATE(entity.state), falldir(entity.extra), isHorizontal(entity.is2) {
+    entities.ENTITY_Add(pos, this);
+    n = entity.n;
+}
+
 bool Entity_Thwomp::CollideVsCircle_Physical(collision_result_physical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius) {
     n.x = 0;
     n.y = 0;
@@ -165,7 +171,7 @@ EntityGraphics* Entity_Thwomp::GenerateGraphicComponent() {
             angle = 0.5 * M_PI;
         }
     }
-
+    return nullptr;
     //return new EntityGraphics_Thwomp(this, angle);
 }
 
@@ -193,4 +199,28 @@ void Entity_Thwomp::Debug_Draw(SimpleRenderer& rend) {
             //rend.DrawLine(pos.x, pos.y, pos.x, pos.y + falldir * CUR_STATE * 8);
         }
     }
+}
+
+// ByteArray Entity_Thwomp::saveState() {
+//     ByteArray state;
+//     state.writeByte(edat::STRUCTTYPE_THWOMP);
+//     state.writeDouble(pos.x);
+//     state.writeDouble(pos.y);
+//     state.writeInt(CUR_STATE);
+//     state.writeInt(falldir);
+//     state.writeInt(isHorizontal);
+//     state.writeDouble(n.x);
+//     state.writeDouble(n.y);
+//     return state;
+// }
+
+void Entity_Thwomp::saveState(entitySave& state) {
+    Entity_Base::saveState(state);
+    state.etype = edat::ETYPE_THWOMP;
+    state.pos = pos;
+    state.pos2 = anchor;
+    state.state = CUR_STATE;
+    state.extra = falldir;
+    state.is2 = isHorizontal;
+    state.n = n;
 }
