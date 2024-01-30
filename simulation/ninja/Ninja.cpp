@@ -72,6 +72,52 @@ Ninja::Ninja(int pID, InputSource_Base* input, double x, double y, unsigned int 
     rcount = lcount = jcount = 0;
 }
 
+Ninja::Ninja(ninjaSave& ninjaState, InputSource_Base* input)
+    : pID(ninjaState.pID), 
+      inputsource(input), 
+      gfxColor(ninjaState.gfxColor), 
+      pos(ninjaState.pos), 
+      vel(ninjaState.vel),
+      oldpos(ninjaState.oldpos), 
+      r(10), 
+      impulse_scale(40.0 / sim_globals::sim_rate),
+      groundAccel(0.15 * (40.0 / sim_globals::sim_rate) * (40.0 / sim_globals::sim_rate)),
+      airAccel(0.1 * (40.0 / sim_globals::sim_rate) * (40.0 / sim_globals::sim_rate)),
+      normGrav(0.15 * (40.0 / sim_globals::sim_rate) * (40.0 / sim_globals::sim_rate)),
+      jumpGrav(0.025 * (40.0 / sim_globals::sim_rate) * (40.0 / sim_globals::sim_rate)),
+      normDrag(pow(0.99, 40.0 / sim_globals::sim_rate)),
+      winDrag(pow(0.8, 40.0 / sim_globals::sim_rate)),
+      wallFriction(pow(0.87, 40.0 / sim_globals::sim_rate)),
+      skidFriction(pow(0.92, 40.0 / sim_globals::sim_rate)),
+      standFriction(pow(0.8, 40.0 / sim_globals::sim_rate)),
+      facingDir(1), 
+      jumpAmt(1),
+      jump_y_bias(2), 
+      max_jump_time(30 * (sim_globals::sim_rate / 40)),
+      jumptimer(ninjaState.jumptimer), 
+      wasJdown(ninjaState.wasJdown),
+      WAS_IN_AIR(false), 
+      oldv(0, 0), 
+      IN_AIR(ninjaState.inAir), 
+      NEAR_WALL(ninjaState.nearWall), 
+      wallN(ninjaState.wallN), 
+      floorN(0, -1),
+      fcount(1), 
+      fvec(0, 0),
+      ninja_gfx(nullptr), 
+      crush_threshold(0.05),
+      crush_dist(0), 
+      crush_flag(false), 
+      death_type(sim_globals::DEATHTYPE_TIME) {
+    maxspeedAir = r * 0.5 * (40.0 / sim_globals::sim_rate);
+    maxspeedGround = r * 0.5 * (40.0 / sim_globals::sim_rate);
+    g = ninjaState.g;
+    d = ninjaState.d;
+    curState = ninjaState.curState;
+    terminal_vel = r * 0.9 * (40.0 / sim_globals::sim_rate);
+    rcount = lcount = jcount = 0;
+}
+
 Ninja::~Ninja() {
     delete inputsource;
 }
@@ -823,4 +869,45 @@ unsigned int Ninja::NEW_GetState() const {
 
 bool Ninja::NEW_GetInAir() const {
     return this->IN_AIR;
+}
+
+// ByteArray Ninja::saveState() {
+//     ByteArray state;
+//     //inputsource->
+//     state.writeDouble(pos.x);
+//     state.writeDouble(pos.y);
+//     state.writeDouble(vel.x);
+//     state.writeDouble(vel.y);
+//     state.writeDouble(oldpos.x);
+//     state.writeDouble(oldpos.y);
+//     state.writeDouble(g);
+//     state.writeDouble(d);
+//     state.writeUnsignedInt(curState);
+//     state.writeDouble(jumptimer);
+//     state.writeBoolean(wasJdown);
+//     state.writeBoolean(IN_AIR);
+//     state.writeBoolean(NEAR_WALL);
+//     state.writeDouble(wallN.x);
+//     state.writeDouble(wallN.y);
+//     state.writeInt(pID);
+//     state.writeUnsignedInt(gfxColor);
+//     return state;
+// }
+
+void Ninja::saveState(ninjaSave& state) {
+    inputsource->saveState(state.frames);
+    state.pos = pos;
+    state.vel = vel;
+    state.oldpos = oldpos;
+    state.g = g;
+    state.d = d;
+    state.curState = curState;
+    state.jumptimer = jumptimer;
+    state.wasJdown = wasJdown;
+    state.inAir = IN_AIR;
+    state.nearWall = NEAR_WALL;
+    state.wallN = wallN;
+    state.pID = pID;
+    state.gfxColor = gfxColor;
+    // maybe lrj count later
 }

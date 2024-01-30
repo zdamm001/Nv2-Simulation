@@ -100,6 +100,7 @@ class Ninja {
         unsigned int jcount;
     public:
         Ninja(int pID, InputSource_Base* input, double x, double y, unsigned int color);
+        Ninja(ninjaSave& ninjaState, InputSource_Base* input);
         ~Ninja();
         static void Initialize();
         void DEBUG_SetPosVel(const vec2& pos, const vec2& vel);
@@ -139,4 +140,6 @@ class Ninja {
         void Draw(SimpleRenderer& rend);
         unsigned int NEW_GetState() const;
         bool NEW_GetInAir() const;
+        //ByteArray saveState();
+        void saveState(ninjaSave& state);
 };
