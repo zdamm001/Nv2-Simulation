@@ -6,7 +6,7 @@
 #include "..\\flash\\utils\\ByteArray.h"
 #include "..\\math\\mathutils.h"
 #include "..\\math\\vec2.h"
-class SimpleInput {};
+#include "..\\simpleFramework\\SimpleInput.h"
 #include "collision\\Grid_Edges.h"
 #include "collision\\Grid_Entity.h"
 #include "collision\\Grid_Segment.h"
@@ -43,7 +43,7 @@ using namespace std;
 class sim_loader {
     public:
         sim_loader() = delete;
-        static Simulator* LoadLevel_EditorState(const vector<int>& playerKeys, const vector<unsigned int>& playerColors, SimpleInput& input, ByteArray& replayData, int playerCount, const Editor_State& editorState);
+        static Simulator* LoadLevel_EditorState(const vector<int>& playerKeys, const vector<unsigned int>& playerColors, SimpleInput& input, ByteArray* replayData, int playerCount, const Editor_State& editorState);
     private:
         static void LoadLevel_EditorState_Tiles(const vector<unsigned int>& tileIDs, vector<int>& tiles, Grid_Segment& gridSegment, Grid_Edges& gridEdges, int numCols, int numRows, double cellSize, double cellHalfWidth);
         static void LoadLevel_InitTileIDGridWithBoundaryEdges(vector<int>& tileIDGrid, int numCols, int numRows);
@@ -54,4 +54,8 @@ class sim_loader {
         static unsigned int Helper_Editor_OldDirEnumToNewDirEnum(int oldDirEnum);
         static int Helper_Editor_NewDirEnumToOldDirEnum(unsigned int newDirEnum);
         static unsigned int Helper_Editor_VecToDirEnum(double x, double y);
+    public:
+        static Simulator* LoadFromSave(appSave& appState, const vector<int>& playerKeys, const vector<unsigned int>& playerColors, SimpleInput& input);
+    private:
+        static void LoadFromSave_Entities(vector<entitySave>& entityState, Grid_Segment& gridSegment, Grid_Edges& gridEdges, Grid_Entity& gridEntity, vector<Entity_Base*>& entities);
 };

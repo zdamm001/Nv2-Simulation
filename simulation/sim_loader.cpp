@@ -1,6 +1,6 @@
 #include "sim_loader.h"
 
-Simulator* sim_loader::LoadLevel_EditorState(const vector<int>& playerKeys, const vector<unsigned int>& playerColors, SimpleInput& input, ByteArray& replayData, int playerCount, const Editor_State& editorState) {
+Simulator* sim_loader::LoadLevel_EditorState(const vector<int>& playerKeys, const vector<unsigned int>& playerColors, SimpleInput& input, ByteArray* replayData, int playerCount, const Editor_State& editorState) {
     mathutils::GenerateNewRandomSeed();
 
     vector<int> tileIDGrid(Simulator::GRID_NUM_COLS * Simulator::GRID_NUM_ROWS, tiletypes::FULL);
@@ -33,10 +33,10 @@ Simulator* sim_loader::LoadLevel_EditorState(const vector<int>& playerKeys, cons
     for (size_t i = 0; i < ninjaSpawnLocations.size(); ++i) {
         InputSource_Base* inputSource = nullptr;
         
-        if (replayData.length() == 0) { //fix later
+        if (replayData == nullptr) {
             inputSource = new InputSource_Recorder(input, playerKeys[i * 3 % playerKeys.size()], playerKeys[(i * 3 + 1) % playerKeys.size()], playerKeys[(i * 3 + 2) % playerKeys.size()]);
         } else {
-            inputSource = new InputSource_Playback(&replayData);
+            inputSource = new InputSource_Playback(replayData);
         }
         
         ninjas[i] = new Ninja(i, inputSource, ninjaSpawnLocations[i].x, ninjaSpawnLocations[i].y, playerColors[i]);
@@ -338,4 +338,126 @@ unsigned int sim_loader::Helper_Editor_VecToDirEnum(double x, double y) {
         return edat::DIR_RU;
     }
     return edat::DIR_RD;
+}
+
+Simulator* sim_loader::LoadFromSave(appSave& appState, const vector<int>& playerKeys, const vector<unsigned int>& playerColors, SimpleInput& input) {
+    mathutils::GenerateNewRandomSeed();
+
+    vector<int> tileIDGrid = appState.tiles;
+    Grid_Segment gridSegment = appState.segGrid.Clone();
+    Grid_Edges gridEdges = appState.edgeGrid;
+    Grid_Entity gridEntity(Simulator::GRID_NUM_COLS, Simulator::GRID_NUM_ROWS, Simulator::GRID_CELL_SIZE);
+
+    vector<Entity_Base*> entities;
+
+    LoadFromSave_Entities(appState.entityState, gridSegment, gridEdges, gridEntity, entities);
+
+    vector<Ninja*> ninjas(appState.ninjaState.size());
+
+    for (size_t i = 0; i < appState.ninjaState.size(); ++i) {
+        InputSource_Base* inputSource = nullptr;
+        
+        ByteArray* frames = new ByteArray();
+        appState.ninjaState[i].frames.writeBytes(*frames);
+        
+        if (!appState.isReplay) {
+            inputSource = new InputSource_Recorder(input, frames, playerKeys[i * 3 % playerKeys.size()], playerKeys[(i * 3 + 1) % playerKeys.size()], playerKeys[(i * 3 + 2) % playerKeys.size()]);
+        } else {
+            inputSource = new InputSource_Playback(frames);
+        }
+        
+        ninjas[i] = new Ninja(appState.ninjaState[i], inputSource);
+    }
+
+    return new Simulator(appState, tileIDGrid, gridSegment, gridEdges, gridEntity, entities, ninjas);
+}
+
+void sim_loader::LoadFromSave_Entities(vector<entitySave>& entityState, Grid_Segment& gridSegment, Grid_Edges& gridEdges, Grid_Entity& gridEntity, vector<Entity_Base*>& entities) {
+    Entity_ExitDoor* lastExitDoor = nullptr;
+    for (entitySave& entity : entityState) {
+        switch(entity.etype) {
+            case edat::ETYPE_MINE: {
+                Entity_Mine* mine = new Entity_Mine(gridEntity, entity);
+                Helper_RegisterEntity(entities, mine);
+                }break;
+            case edat::ETYPE_GOLD: {
+                Entity_Gold* gold = new Entity_Gold(gridEntity, entity);
+                Helper_RegisterEntity(entities, gold);
+                }break;
+            case edat::ETYPE_DOOR_REGULAR: {
+                Entity_Door_Regular* regularDoor = new Entity_Door_Regular(gridEntity, entity, gridSegment, gridEdges);
+                Helper_RegisterEntity(entities, regularDoor);
+                }break;
+            case edat::ETYPE_DOOR_LOCKED: {
+                Entity_Door_Locked* lockedDoor = new Entity_Door_Locked(gridEntity, entity, gridSegment, gridEdges);
+                Helper_RegisterEntity(entities, lockedDoor);
+                }break;
+            case edat::ETYPE_SWITCH_LOCKED: {
+                // ERROR
+                }break;
+            case edat::ETYPE_DOOR_TRAP: {
+                Entity_Door_Trap* trapDoor = new Entity_Door_Trap(gridEntity, entity, gridSegment, gridEdges);
+                Helper_RegisterEntity(entities, trapDoor);
+                }break;
+            case edat::ETYPE_SWITCH_TRAP: {
+                // ERROR
+                }break;
+            case edat::ETYPE_ONEWAY: {
+                Entity_OnewayPlatform* onewayPlatform = new Entity_OnewayPlatform(gridEntity, entity);
+                Helper_RegisterEntity(entities, onewayPlatform);
+                }break;
+            case edat::ETYPE_EXIT_DOOR: {
+                Entity_ExitDoor* exitDoor = new Entity_ExitDoor(gridEntity, entity);
+                lastExitDoor = exitDoor;
+                Helper_RegisterEntity(entities, exitDoor);
+                }break;
+            case edat::ETYPE_EXIT_SWITCH: {
+                Entity_ExitSwitch* exitSwitch = new Entity_ExitSwitch(gridEntity, entity, lastExitDoor);
+                Helper_RegisterEntity(entities, exitSwitch);
+                }break;
+            case edat::ETYPE_CHAINGUN: {
+                Entity_Drone_Chaingun* chaingunDrone = new Entity_Drone_Chaingun(gridEntity, entity);
+                Helper_RegisterEntity(entities, chaingunDrone);
+                }break;
+            case edat::ETYPE_LASER: {
+                Entity_Drone_Laser* laserDrone = new Entity_Drone_Laser(gridEntity, entity);
+                Helper_RegisterEntity(entities, laserDrone);
+                }break;
+            case edat::ETYPE_ZAP: {
+                Entity_Drone_Zap* zapDrone = new Entity_Drone_Zap(gridEntity, entity);
+                Helper_RegisterEntity(entities, zapDrone);
+                }break;
+            case edat::ETYPE_CHASER: {
+                Entity_Drone_Chaser* chaserDrone = new Entity_Drone_Chaser(gridEntity, entity);
+                Helper_RegisterEntity(entities, chaserDrone);
+                }break;
+            case edat::ETYPE_FLOORGUARD: {
+                Entity_FloorGuard* floorGuard = new Entity_FloorGuard(gridEntity, entity);
+                Helper_RegisterEntity(entities, floorGuard);
+                }break;
+            case edat::ETYPE_LAUNCHPAD: {
+                Entity_Launchpad* launchpad = new Entity_Launchpad(gridEntity, entity);
+                Helper_RegisterEntity(entities, launchpad);
+                }break;
+            case edat::ETYPE_BOUNCEBLOCK: {
+                Entity_BounceBlock* bounceBlock = new Entity_BounceBlock(gridEntity, entity);
+                Helper_RegisterEntity(entities, bounceBlock);
+                }break;
+            case edat::ETYPE_ROCKET: {
+                Entity_Rocket* rocket = new Entity_Rocket(gridEntity, entity);
+                Helper_RegisterEntity(entities, rocket);
+                }break;
+            case edat::ETYPE_TURRET: {
+                Entity_Turret* turret = new Entity_Turret(gridEntity, entity);
+                Helper_RegisterEntity(entities, turret);
+                }break;
+            case edat::ETYPE_THWOMP: {
+                Entity_Thwomp* thwomp = new Entity_Thwomp(gridEntity, entity);
+                Helper_RegisterEntity(entities, thwomp);
+                }break;
+            default:
+                // ERROR
+                break;
+        }
+    }
 }
