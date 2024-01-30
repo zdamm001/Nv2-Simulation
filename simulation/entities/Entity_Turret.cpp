@@ -23,6 +23,15 @@ Entity_Turret::Entity_Turret(Grid_Entity& entities, double x, double y)
     prediction_scale = sim_globals::sim_rate / 40;
 }
 
+Entity_Turret::Entity_Turret(Grid_Entity& entities, entitySave& entity)
+    : Entity_Turret(entities, entity.pos.x, entity.pos.y) {
+    aim_pos = entity.pos2;
+    aim_region = entity.extra;
+    shot_timer = entity.timer3;
+    CUR_STATE = entity.state;
+    targetIndex = entity.index;
+}
+
 void Entity_Turret::Think(Simulator* sim) {
     TEMP_hit_pos.x = 0;
     TEMP_hit_pos.y = 0;
@@ -151,6 +160,7 @@ void Entity_Turret::UpdateAim(const vec2& ninjaPos, const vec2& ninjaVel) {
 }
 
 EntityGraphics* Entity_Turret::GenerateGraphicComponent() {
+    return nullptr;
     //return new EntityGraphics_Turret(this, pos.x, pos.y);
 }
 
@@ -210,4 +220,29 @@ void Entity_Turret::Debug_Draw(SimpleRenderer& rend) {
         //rend.DrawLine(HACKY_hit_pos.x, HACKY_hit_pos.y, HACKY_hit_pos.x + 4 * HACKY_hit_n.x, HACKY_hit_pos.y + 4 * HACKY_hit_n.y);
         --HACKY_drawtimer;
     }
+}
+
+// ByteArray Entity_Turret::saveState() {
+//     ByteArray state;
+//     state.writeByte(edat::STRUCTTYPE_TURRET);
+//     state.writeDouble(pos.x);
+//     state.writeDouble(pos.y);
+//     state.writeDouble(aim_pos.x);
+//     state.writeDouble(aim_pos.y);
+//     state.writeInt(aim_region);
+//     state.writeDouble(shot_timer);
+//     state.writeInt(CUR_STATE);
+//     state.writeInt(targetIndex);
+//     return state;
+// }
+
+void Entity_Turret::saveState(entitySave& state) {
+    Entity_Base::saveState(state);
+    state.etype = edat::ETYPE_TURRET;
+    state.pos = pos;
+    state.pos2 = aim_pos;
+    state.extra = aim_region;
+    state.timer3 = shot_timer;
+    state.state = CUR_STATE;
+    state.index = targetIndex;
 }

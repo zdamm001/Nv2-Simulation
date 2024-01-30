@@ -39,6 +39,7 @@ class Entity_Turret : public Entity_Base {
         vec2 TEMP_hit_n;
     public:
         Entity_Turret(Grid_Entity& entities, double x, double y);
+        Entity_Turret(Grid_Entity& entities, entitySave& entity);
         void Think(Simulator* sim) override;
     private:
         void Event_StartIdling();
@@ -51,4 +52,6 @@ class Entity_Turret : public Entity_Base {
         EntityGraphics* GenerateGraphicComponent();
         void GFX_UpdateState(EntityGraphics_Turret* graphic);
         void Debug_Draw(SimpleRenderer& rend);
+        // ByteArray saveState() override;
+        void saveState(entitySave& state) override;
 };
