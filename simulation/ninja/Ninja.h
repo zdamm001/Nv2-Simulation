@@ -6,7 +6,7 @@
 
 #include "..\\..\\audiovisual\\entitygraphics\\Entity_GraphicsNinja.h"
 #include "..\\..\\math\vec2.h"
-class SimpleRenderer {};
+#include "..\\..\\simpleFramework\\SimpleRenderer.h"
 #include "..\\collision\\Segment.h"
 #include "..\\collision\\colutils.h"
 #include "..\\entities\\Entity_Base.h"
@@ -16,6 +16,7 @@ class SimpleRenderer {};
 #include "..\\inputsource\\InputSource_Base.h"
 #include "..\\sim_globals.h"
 #include "Ragdoll.h"
+#include "..\\save\\saveState.h"
 
 using namespace std;
 
@@ -93,7 +94,13 @@ class Ninja {
         vec2 public_vel;
         unsigned int gfxColor;
     public:
+        //new for debugging
+        unsigned int rcount;
+        unsigned int lcount;
+        unsigned int jcount;
+    public:
         Ninja(int pID, InputSource_Base* input, double x, double y, unsigned int color);
+        ~Ninja();
         static void Initialize();
         void DEBUG_SetPosVel(const vec2& pos, const vec2& vel);
         void DEBUG_Respawn(const vec2& pos);
@@ -130,4 +137,6 @@ class Ninja {
         EntityGraphics_Ninja* GenerateGraphicComponent();
         void GFX_UpdateState(EntityGraphics_Ninja* graphics);
         void Draw(SimpleRenderer& rend);
+        unsigned int NEW_GetState() const;
+        bool NEW_GetInAir() const;
 };

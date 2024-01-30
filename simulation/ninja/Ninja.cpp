@@ -35,8 +35,6 @@ Ninja::Ninja(int pID, InputSource_Base* input, double x, double y, unsigned int 
       oldpos(0, 0), 
       r(10), 
       impulse_scale(40.0 / sim_globals::sim_rate),
-      maxspeedAir(r * 0.5 * (40.0 / sim_globals::sim_rate)),
-      maxspeedGround(r * 0.5 * (40.0 / sim_globals::sim_rate)),
       groundAccel(0.15 * (40.0 / sim_globals::sim_rate) * (40.0 / sim_globals::sim_rate)),
       airAccel(0.1 * (40.0 / sim_globals::sim_rate) * (40.0 / sim_globals::sim_rate)),
       normGrav(0.15 * (40.0 / sim_globals::sim_rate) * (40.0 / sim_globals::sim_rate)),
@@ -46,14 +44,10 @@ Ninja::Ninja(int pID, InputSource_Base* input, double x, double y, unsigned int 
       wallFriction(pow(0.87, 40.0 / sim_globals::sim_rate)),
       skidFriction(pow(0.92, 40.0 / sim_globals::sim_rate)),
       standFriction(pow(0.8, 40.0 / sim_globals::sim_rate)),
-      g(normGrav), 
-      d(normDrag), 
-      curState(PSTATE_DISABLED), 
       facingDir(1), 
       jumpAmt(1),
       jump_y_bias(2), 
       max_jump_time(30 * (sim_globals::sim_rate / 40)),
-      terminal_vel(r * 0.9 * (40.0 / sim_globals::sim_rate)), 
       jumptimer(0), 
       wasJdown(false),
       WAS_IN_AIR(false), 
@@ -68,7 +62,19 @@ Ninja::Ninja(int pID, InputSource_Base* input, double x, double y, unsigned int 
       crush_threshold(0.05),
       crush_dist(0), 
       crush_flag(false), 
-      death_type(sim_globals::DEATHTYPE_TIME) { }
+      death_type(sim_globals::DEATHTYPE_TIME) {
+    maxspeedAir = r * 0.5 * (40.0 / sim_globals::sim_rate);
+    maxspeedGround = r * 0.5 * (40.0 / sim_globals::sim_rate);
+    g = normGrav;
+    d = normDrag;
+    curState = PSTATE_DISABLED;
+    terminal_vel = r * 0.9 * (40.0 / sim_globals::sim_rate);
+    rcount = lcount = jcount = 0;
+}
+
+Ninja::~Ninja() {
+    delete inputsource;
+}
 
 void Ninja::DEBUG_SetPosVel(const vec2& pos, const vec2& vel) {
     if (this->curState == PSTATE_DEAD) {
@@ -236,17 +242,17 @@ void Ninja::RespondToCollision(double collisionNormalX, double collisionNormalY,
     pos.x += collisionPenetration * collisionNormalX;
     pos.y += collisionPenetration * collisionNormalY;
     
-    if (isHardCollision) {
+    if (isThwompCollision) {
         crush_flag = true;
     }
     
-    if (isHardCollision || isThwompCollision) {
+    if (isThwompCollision || isHardCollision) {
         crush_vec.x += collisionPenetration * collisionNormalX;
         crush_vec.y += collisionPenetration * collisionNormalY;
         crush_dist += abs(collisionPenetration);
     }
     
-    if (isThwompCollision) {
+    if (isHardCollision) {
         double velocityProjection = vel.x * collisionNormalX + vel.y * collisionNormalY;
         if (velocityProjection < 0) {
             vel.x -= velocityProjection * collisionNormalX;
@@ -319,11 +325,17 @@ void Ninja::Think(Simulator* sim, unsigned int frame_num) {
     vector<vec2> currentPosePos;
     vector<vec2> currentPoseVel;
 
-    //inputsource->Tick(frame_num);
-    bool rightButtonDown = false;//inputsource->IsButtonDown_Right();
-    bool leftButtonDown = false;//inputsource->IsButtonDown_Left();
-    bool jumpButtonDown = false;//inputsource->IsButtonDown_Jump();
+    inputsource->Tick(frame_num);
+    bool rightButtonDown = inputsource->IsButtonDown_Right();
+    bool leftButtonDown = inputsource->IsButtonDown_Left();
+    bool jumpButtonDown = inputsource->IsButtonDown_Jump();
     bool isNewJumpPress = jumpButtonDown && !wasJdown;
+    wasJdown = jumpButtonDown;
+
+    //NEW for debugging
+    rcount = rcount * rightButtonDown + rightButtonDown;
+    lcount = lcount * leftButtonDown + leftButtonDown;
+    jcount = jcount * jumpButtonDown + jumpButtonDown;
 
     if (curState == PSTATE_DISABLED) {
         return;
@@ -485,8 +497,8 @@ void Ninja::Think(Simulator* sim, unsigned int frame_num) {
 
         if (this->curState != PSTATE_RUNNING) {
             if (this->curState == PSTATE_SKIDDING) {
-                double skidForceMag = abs(velX * -this->floorN.y + velY * this->floorN.x);
-                double skidForceX = velX * skidForceMag;
+                double skidForceMag = abs(velX * -this->floorN.y + velY * this->floorN.x); //bad var name
+                double skidForceX = velX * skidForceMag; //bad var name
                 
                 if (skidForceX * moveDirection > 0) {
                     this->ACTION_Run(moveDirection);
@@ -498,22 +510,26 @@ void Ninja::Think(Simulator* sim, unsigned int frame_num) {
                     return;
                 }
 
-                double skidForceSign = 1;
+                double skidForceSign = 1; //bad var name
                 if (skidForceX < 0) {
                     skidForceSign = -1;
                 }
 
-                double skidAngle = atan2(this->floorN.x, -this->floorN.y) * (180 / M_PI);
+                double skidAngle = atan2(this->floorN.x, -this->floorN.y) * (180 / M_PI); //bad var name?
 
                 //sim->HACKY_GetParticleManager().Spawn_FloorDust(this->pos, this->r, this->floorN, skidAngle, skidForceSign, skidForceMag);
 
                 this->tempV.Copy(this->vel);
 
                 if (velY < 0 && this->floorN.x != 0) {
-                    double velMag = sqrt(velX * velX + velY * velY);
-                    double velWithoutSkid = velMag - skidForceMag;
-                    velX = velX / velMag * velWithoutSkid;
-                    velY = velY / velMag * velWithoutSkid;
+                    double l35 = abs(velX * this->skidFriction - velX); //bad var name
+                    double l36 = abs(l35 * this->floorN.y) * (this->floorN.y * this->floorN.y); //bad var name
+                    double l37 = sqrt(velX * velX + velY * velY); //bad var name
+                    double l38 = l37 - l36; //bad var name
+                    velX /= l37;
+                    velY /= l37;
+                    velX *= l38;
+                    velY *= l38;
                 } else {
                     velX *= this->skidFriction;
                 }
@@ -528,7 +544,7 @@ void Ninja::Think(Simulator* sim, unsigned int frame_num) {
                 return;
             }
 
-            double groundForceDot = velX * -this->floorN.y + velY * this->floorN.x;
+            double groundForceDot = velX * -this->floorN.y + velY * this->floorN.x; //bad var name
             if (abs(groundForceDot) >= 0.1) {
                 this->ACTION_Skid();
                 return;
@@ -541,9 +557,9 @@ void Ninja::Think(Simulator* sim, unsigned int frame_num) {
             return;
         }
 
-        double floorForceDot = velX * -this->floorN.y + velY * this->floorN.x;
-        double floorForceMag = abs(floorForceDot);
-        double floorForceX = velX * floorForceMag;
+        double floorForceDot = velX * -this->floorN.y + velY * this->floorN.x; //bad var name
+        double floorForceMag = abs(floorForceDot); //bad var name
+        double floorForceX = velX * floorForceMag; //bad var name
 
         if (moveDirection * floorForceX <= 0) {
             this->ACTION_Skid();
@@ -551,19 +567,19 @@ void Ninja::Think(Simulator* sim, unsigned int frame_num) {
         }
 
         if (moveDirection * this->floorN.x < 0) {
-            double wallDirX = -abs(this->floorN.x);
-            double wallDirY = this->floorN.y;
+            double wallDirX = -abs(this->floorN.x); //bad var name
+            double wallDirY = this->floorN.y; //bad var name
 
             if (this->floorN.x < 0) {
                 wallDirY = -this->floorN.y;
             }
 
-            double wallForceMag = abs(this->floorN.y);
-            wallDirY *= 0.5 * wallForceMag;
-            wallDirX *= 0.5 * wallForceMag;
+            double wallForceMag = abs(this->floorN.y); //bad var name
+            wallDirY *= 0.5 * wallForceMag; //bad var name
+            wallDirX *= 0.5 * wallForceMag; //bad var name
 
-            double newVelX = velX + wallDirX * this->groundAccel;
-            double newVelY = velY + wallDirY * this->groundAccel;
+            double newVelX = velX + wallDirY * this->groundAccel;
+            double newVelY = velY + wallDirX * this->groundAccel;
 
             if (abs(newGroundVelX) < this->maxspeedGround) {
                 velX = newVelX;
@@ -799,4 +815,12 @@ void Ninja::Draw(SimpleRenderer& rend) {
         //rend.SetStyle(0, 0, 100);
         //rend.DrawLine(pos.x, pos.y, pos.x + directionIndicator.x, pos.y + directionIndicator.y);
     }
+}
+
+unsigned int Ninja::NEW_GetState() const {
+    return this->curState;
+}
+
+bool Ninja::NEW_GetInAir() const {
+    return this->IN_AIR;
 }
