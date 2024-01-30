@@ -176,4 +176,8 @@ class App_MultiPurpose : public Actor, public App {
         unsigned int NEW_getFrameNum() const;
         Ninja* NEW_getPlayer(unsigned int pID);
         double NEW_getCurrentTicks() const;
+        void NEW_SaveState();
+        void NEW_playLevelFromSave();
+        void NEW_watchReplayFromSave();
+        void NEW_prepareSessionFromSave();
 };

@@ -785,3 +785,94 @@ double App_MultiPurpose::NEW_getCurrentTicks() const {
     return this->_currentTicks;
 }
 
+// void App_MultiPurpose::NEW_LoadState() {
+    // ByteArray savedStateApp; //set pos to 0
+    // ByteArray savedLevelData;
+    // ByteArray savedStateSim;
+    // _levelData = new ByteArray(); //call delete somewhere
+    // _levelData->writeBytes(savedLevelData);
+    // _currentTicks = savedStateApp.readInt();
+    // _ticksElapsed = savedStateApp.readInt();
+    // _currentLevel = to_string(savedStateApp.readInt()); // use .toString() in AS3
+    // _sim->loadState(savedStateSim);
+// }
+// 
+// void App_MultiPurpose::NEW_SaveState() {
+    // ByteArray savedStateApp; //clear these
+    // ByteArray savedLevelData;
+    // ByteArray savedStateSim;
+    // savedLevelData.clear();
+    // savedLevelData.writeBytes(*_levelData);
+    // savedStateApp.writeInt(_currentTicks);
+    // savedStateApp.writeInt(_ticksElapsed);
+    // savedStateApp.writeInt(stoi(_currentLevel)); // use parseInt in AS3
+    // //since saving _levelName seems complicated, will do levelData->readUTF() later instead;
+    // savedStateSim = _sim->saveState(); // check null
+// }
+
+// void App_MultiPurpose::NEW_LoadState() {
+//     _currentTicks = appState.currentTicks;
+//     _ticksElapsed = appState.ticksElapsed;
+//     _currentLevel = appState.currentLevel;
+//     _levelName = appState.levelName;
+//     _sim = sim_loader::LoadFromSavedState(appState);
+// }
+
+void App_MultiPurpose::NEW_SaveState() {
+    appState.ninjaState.clear();
+    appState.entityState.clear();
+    appState.currentTicks = _currentTicks;
+    appState.ticksElapsed = _ticksElapsed;
+    appState.currentLevel = _currentLevel;
+    appState.levelName = _levelName;
+    appState.isCoopMode = options->coopMode;
+    appState.isReplay = _isReplay;
+    _sim->saveState(appState);
+}
+
+void App_MultiPurpose::NEW_playLevelFromSave() {
+    _levelData = nullptr;
+    _isReplay = false;
+    NEW_prepareSessionFromSave();
+    _goldCollected = 0;
+    _uiState = MenuStates::PLAYING_GAME;
+    _gameState = GameStates::PRE_GAME;
+    //_hud = new HUD();
+    initializeInGameUI();
+    //uiStage.addChild(_hud);
+    _currentLevel = appState.currentLevel;
+    //_startingTicks = _defaultStartingTicks;
+    _currentTicks = appState.currentTicks;
+    _ticksElapsed = appState.ticksElapsed;
+    _playingLevelset = false;
+}
+
+void App_MultiPurpose::NEW_watchReplayFromSave() {
+    _replayChosenByPlayer = true;
+    //_startingTicks = _defaultStartingTicks;
+    _currentTicks = appState.currentTicks;
+    _ticksElapsed = appState.ticksElapsed;
+    _isReplay = true;
+    NEW_prepareSessionFromSave();
+    startReplay();
+    _uiState = MenuStates::WATCHING_REPLAY;
+    _gameState = GameStates::GAME;
+}
+
+void App_MultiPurpose::NEW_prepareSessionFromSave() {
+    clearGame();
+    _lastLevel = nullptr;
+    _lastReplay = nullptr;
+
+    _levelName = appState.levelName;
+    initializeInGameUI();
+
+    if (appState.isCoopMode && !appState.isReplay) {
+        _playerKeys = coopKeys;
+    } else {
+        _playerKeys = soloKeys;
+    }
+
+    _sim = sim_loader::LoadFromSave(appState, _playerKeys->getActions({PlayerKeys::JUMP, PlayerKeys::LEFT, PlayerKeys::RIGHT}), {options->p1Colour, options->p2Colour}, input);
+    initializeEngine();
+}
