@@ -10,6 +10,7 @@
 #include "collision\\Grid_Segment.h"
 #include "entities\\Entity_Base.h"
 #include "ninja\\Ninja.h"
+#include "save\\saveState.h"
 
 using namespace std;
 
@@ -40,6 +41,7 @@ class Simulator {
         SoundManager* HACKY_sfx;
     public:
         Simulator(vector<int> tileIDs, Grid_Segment segGrid, Grid_Edges edgeGrid, Grid_Entity objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList);
+        ~Simulator();
         void HACKY_SetAV(GraphicsManager* gfx, SoundManager* sfx);
         ParticleManager* HACKY_GetParticleManager();
         SoundManager* HACKY_GetSoundManager();
@@ -81,4 +83,5 @@ class Simulator {
         void DEBUG_Draw_objGrid(SimpleRenderer& rend);
         void DEBUG_Draw_Grid(SimpleRenderer& rend);
         void DEBUG_Draw_Entities(SimpleRenderer& rend);
+        unsigned int NEW_GetFrameNum() const;
 };

@@ -15,12 +15,23 @@ Simulator::Simulator(vector<int> tileIDs, Grid_Segment segGrid, Grid_Edges edgeG
     mathutils::SetRandomSeed(1);
 }
 
+Simulator::~Simulator() {
+    for (Entity_Base* obj : objList) {
+        delete obj;
+    }
+    for (Ninja* player : playerList) {
+        delete player;
+    }
+    segGrid.Clear();
+}
+
 void Simulator::HACKY_SetAV(GraphicsManager* gfx, SoundManager* sfx) {
     this->HACKY_gfx = gfx;
     this->HACKY_sfx = sfx;
 }
 
 ParticleManager* Simulator::HACKY_GetParticleManager() {
+    return nullptr;
     //return this->HACKY_gfx->GetParticleManager();
 }
 
@@ -284,4 +295,8 @@ void Simulator::DEBUG_Draw_Entities(SimpleRenderer& rend) {
     for (int i = 0; i < playerList.size(); ++i) {
         playerList[i]->Draw(rend);
     }
+}
+
+unsigned int Simulator::NEW_GetFrameNum() const {
+    return frame_num;
 }
