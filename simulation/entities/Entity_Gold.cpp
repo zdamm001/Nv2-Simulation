@@ -5,6 +5,11 @@ Entity_Gold::Entity_Gold(Grid_Entity& entities, double x, double y)
     entities.ENTITY_Add(pos, this);
 }
 
+Entity_Gold::Entity_Gold(Grid_Entity& entities, entitySave& entity)
+    : pos(entity.pos), r(6), isCollected(entity.is) {
+    if (!isCollected) entities.ENTITY_Add(pos, this);
+}
+
 bool Entity_Gold::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {
     if (ninja != nullptr) {
         if (colutils::Overlap_Circle_Vs_Circle(pos, r, circlePosition, circleRadius)) {
@@ -19,6 +24,7 @@ bool Entity_Gold::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collisio
 }
 
 EntityGraphics* Entity_Gold::GenerateGraphicComponent() {
+    return nullptr;
     //return new EntityGraphics_Gold(this, pos.x, pos.y);
 }
 
@@ -38,4 +44,20 @@ void Entity_Gold::Debug_Draw(SimpleRenderer& rend) {
     }
     //rend.DrawSquare(pos.x, pos.y, r / 2);
     //rend.DrawCircle(pos.x, pos.y, r);
+}
+
+// ByteArray Entity_Gold::saveState() {
+//     ByteArray state;
+//     state.writeByte(edat::STRUCTTYPE_GOLD);
+//     state.writeDouble(pos.x);
+//     state.writeDouble(pos.y);
+//     state.writeBoolean(isCollected);
+//     return state;
+// }
+
+void Entity_Gold::saveState(entitySave& state) {
+    Entity_Base::saveState(state);
+    state.etype = edat::ETYPE_GOLD;
+    state.pos = pos;
+    state.is = isCollected;
 }
