@@ -4,9 +4,14 @@ vector<vec2> Entity_Drone_Base::DIR_TO_VEC2(4);
 vector<double> Entity_Drone_Base::DIR_TO_RAD(4);
 vector<vector<unsigned int>> Entity_Drone_Base::MOVELIST(4, vector<unsigned int>(4));
 
-Entity_Drone_Base::Entity_Drone_Base(Grid_Entity& entity, double x, double y, double speed, unsigned int facingDir, unsigned int moveType)
-    : pos(x, y), r(12 * (3 / 4)), speed(speed), step_size(24), next_goal(pos), facing_DIR(facingDir), move_TYPE(moveType), gfxorn(DIR_TO_RAD[facing_DIR]) {
-    entity.ENTITY_Add(pos, this);
+Entity_Drone_Base::Entity_Drone_Base(Grid_Entity& entities, double x, double y, double speed, unsigned int facingDir, unsigned int moveType)
+    : pos(x, y), r(12.0 * (3.0 / 4.0)), speed(speed), step_size(24), next_goal(pos), facing_DIR(facingDir), move_TYPE(moveType), gfxorn(DIR_TO_RAD[facing_DIR]) {
+    entities.ENTITY_Add(pos, this);
+}
+
+Entity_Drone_Base::Entity_Drone_Base(Grid_Entity& entities, entitySave& entity, double speed)
+    : pos(entity.pos), r(12.0 * (3.0 / 4.0)), speed(speed), step_size(24), next_goal(entity.pos2), facing_DIR(entity.facingDir), move_TYPE(entity.moveType), gfxorn(entity.timer3) {
+    entities.ENTITY_Add(pos, this);
 }
 
 void Entity_Drone_Base::Initialize() {
@@ -121,4 +126,13 @@ void Entity_Drone_Base::Debug_Draw(SimpleRenderer& rend) {
     //rend.DrawCircle(pos.x, pos.y, r);
     vec2 dir(cos(gfxorn), sin(gfxorn));
     //rend.DrawLine(pos.x, pos.y, pos.x + dir.x * 8, pos.y + dir.y * 8);
+}
+
+void Entity_Drone_Base::saveState(entitySave& state) {
+    Entity_Base::saveState(state);
+    state.pos = pos;
+    state.timer3 = gfxorn;
+    state.pos2 = next_goal;
+    state.facingDir = facing_DIR;
+    state.moveType = move_TYPE;
 }

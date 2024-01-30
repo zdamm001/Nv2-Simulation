@@ -37,7 +37,8 @@ class Entity_Drone_Base : public Entity_Base {
         unsigned int facing_DIR;
         unsigned int move_TYPE;
     public:
-        Entity_Drone_Base(Grid_Entity& entity, double x, double y, double speed, unsigned int facingDir, unsigned int moveType);
+        Entity_Drone_Base(Grid_Entity& entities, double x, double y, double speed, unsigned int facingDir, unsigned int moveType);
+        Entity_Drone_Base(Grid_Entity& entities, entitySave& entity, double speed);
         static void Initialize();
         void Move(Simulator* sim) override;
     private:
@@ -47,4 +48,5 @@ class Entity_Drone_Base : public Entity_Base {
         bool ChooseNextDirAndGoal_HELPER_TestDir(Grid_Edges& edges, unsigned int direction, vec2& nextGoal);
     public:
         void Debug_Draw(SimpleRenderer& rend) override;
+        void saveState(entitySave& state) override;
 };
