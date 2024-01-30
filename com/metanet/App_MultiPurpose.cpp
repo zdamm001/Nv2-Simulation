@@ -1,7 +1,8 @@
 #include "App_MultiPurpose.h"
 
 App_MultiPurpose::App_MultiPurpose() {
-    //_timeFormatter = new TimeFormatter();
+    _sim = nullptr;
+    _timeFormatter = new TimeFormatter();
 }
 
 void App_MultiPurpose::initialize() {
@@ -116,7 +117,7 @@ ByteArray* App_MultiPurpose::getReplay() {
 
 void App_MultiPurpose::tick() {
     //_thisTick = getTimer();
-    //input.Tick();
+    input.Tick();
     //debugRenderer.Clear();
 
     switch (_uiState) {
@@ -147,7 +148,7 @@ void App_MultiPurpose::checkDebugKeys() {
 }
 
 void App_MultiPurpose::prepareSessionFromBytes(ByteArray* levelData, ByteArray* replayData) {
-    ByteArray replay;
+    ByteArray* replay = nullptr;
     int playerCount = 0;
 
     clearGame();
@@ -155,7 +156,8 @@ void App_MultiPurpose::prepareSessionFromBytes(ByteArray* levelData, ByteArray* 
     _lastReplay = replayData;
 
     if (replayData) {
-        replayData->readBytes(replay, 0, replayData->bytesAvailable());
+        replay = new ByteArray();
+        replayData->readBytes(*replay, 0, replayData->bytesAvailable());
     }
 
     _levelName = levelData->readUTF();
@@ -277,7 +279,7 @@ void App_MultiPurpose::tickGameInProgress() {
         return;
     }
     tickSimulator();
-    if (finished) {
+    if (finished()) {
         triggerGameEnd();
     }
 }
@@ -319,25 +321,25 @@ void App_MultiPurpose::instantlyTransferRemainingGoldToTimebar() {
 }
 
 void App_MultiPurpose::tickPausedGame() {
-    // if (input.IsKeyPressed(globalKeys.quit)) {
-    //     dispatch(InGameEvent(InGameEvent::UNPAUSED));
-    //     exit();
-    // } else if (input.IsAnyKeyPressed()) {
-    //     dispatch(InGameEvent(InGameEvent::UNPAUSED));
-    //     _gameState = GameStates::GAME;
-    // }
-    // _pausedTime += getTimer() - _lastTick;
+    if (input.IsKeyPressed(globalKeys->quit)) {
+        //dispatch(InGameEvent(InGameEvent::UNPAUSED));
+        exit();
+    } else if (input.IsAnyKeyPressed()) {
+        //dispatch(InGameEvent(InGameEvent::UNPAUSED));
+        _gameState = GameStates::GAME;
+    }
+    //_pausedTime += getTimer() - _lastTick;
 }
 
 void App_MultiPurpose::tickReplayInProgress() {
     if (_replayChosenByPlayer) {
         updateInGameDisplay();
     }
-    //if (input.IsKeyPressed(globalKeys->back) && _replayChosenByPlayer) {
-    //    exitReplay();
-    //} else {
-    //    continueReplay();
-    //}
+    if (input.IsKeyPressed(globalKeys->back) && _replayChosenByPlayer) {
+        exitReplay();
+    } else {
+        continueReplay();
+    }
 }
 
 void App_MultiPurpose::tickReplayPostGame() {
@@ -474,7 +476,8 @@ void App_MultiPurpose::continueReplay() {
 
 
 void App_MultiPurpose::clearGame() {
-    _sim = nullptr; //call delete
+    delete _sim;
+    _sim = nullptr;
     //if(_gfx != nullptr) {
     //    _gfx.Clear();
     //    _gfx = nullptr;
@@ -649,7 +652,7 @@ void App_MultiPurpose::updateTimebar() {
     //double timebarPosition = max(0.0, min(1.0, static_cast<double>(_currentTicks) / timebarAnimLimit));
     //int frame = 1 + static_cast<int>(timebarPosition * _hud.timebar.framesLoaded);
     //_hud.timebar.gotoAndStop(frame);
-    string formattedTime = _timeFormatter.formatTime(_currentTicks, sim_globals::sim_rate);
+    string formattedTime = _timeFormatter->formatTime(_currentTicks, sim_globals::sim_rate);
     //stats.formattedTime = formattedTime.substr(0, formattedTime.length() - 3) + "." + formattedTime.substr(formattedTime.length() - 3);
     //_hud.timetext.timetext0.text = formattedTime[0];
     //_hud.timetext.timetext1.text = formattedTime[1];
@@ -674,33 +677,33 @@ void App_MultiPurpose::checkForSuicides() {
 
 void App_MultiPurpose::checkForPlayerSuicide(int pID) {
     if (!_sim->APP_IsPlayerDead(pID)) {
-        // if (input.IsKeyPressed(_playerKeys->getActionKeyForPlayer(PlayerKeys::SUICIDE, pID))) {
-        //     _sim->APP_Event_Suicide(pID);
-        // }
+        if (input.IsKeyPressed(_playerKeys->getActionKeyForPlayer(PlayerKeys::SUICIDE, pID))) {
+            _sim->APP_Event_Suicide(pID);
+        }
     }
 }
 
 bool App_MultiPurpose::playerReadyToProceed() {
-    // if (input.IsKeyPressed(_playerKeys->getActionKeyForPlayer(PlayerKeys::JUMP, 0))) {
-    //    return true;
-    // }
-    // if (input.IsKeyPressed(Keyboard::SPACE)) {
-    //    return true;
-    // }
+    if (input.IsKeyPressed(_playerKeys->getActionKeyForPlayer(PlayerKeys::JUMP, 0))) {
+       return true;
+    }
+    if (input.IsKeyPressed(Keyboard::SPACE)) {
+       return true;
+    }
     return false;
 }
 
 bool App_MultiPurpose::playerWantsToExit() {
-    //return input.IsKeyPressed(globalKeys->back);
+    return input.IsKeyPressed(globalKeys->back);
 }
 
 bool App_MultiPurpose::playerWantsToPause() {
-    // if (input.IsKeyPressed(globalKeys->back)) {
-        // return true;
-    // }
-    // if (input.IsKeyPressed(globalKeys->pause)) {
-        // return true;
-    // }
+    if (input.IsKeyPressed(globalKeys->back)) {
+        return true;
+    }
+    if (input.IsKeyPressed(globalKeys->pause)) {
+        return true;
+    }
     return false;
 }
 
@@ -723,3 +726,62 @@ int App_MultiPurpose::gameState() {
 int App_MultiPurpose::uiState() {
     return _uiState;
 }
+
+#include <fstream>
+#include <sstream>
+#include <iomanip>
+
+string App_MultiPurpose::NEW_getDebugString() {
+    if (_sim) {
+        vec2 pos = _sim->playerList[0]->GetPos();
+        vec2 vel = _sim->playerList[0]->GetVel();
+        string stateString = Ninja::PSTATE_TO_STRING[_sim->playerList[0]->NEW_GetState()];
+        string ninjaInfo = "\nposx: " + NEW_formatNumber(pos.x);
+        ninjaInfo += "\nposy: " + NEW_formatNumber(pos.y);
+        ninjaInfo += "\nvelx: " + NEW_formatNumber(vel.x);
+        ninjaInfo += "\nvely: " + NEW_formatNumber(vel.y);
+        ninjaInfo += "\nstate: " + stateString + + " " + to_string(_sim->playerList[0]->rcount) + "R " + to_string(_sim->playerList[0]->lcount) + "L " + to_string(_sim->playerList[0]->jcount) + "J";
+        return ninjaInfo;
+    }
+    return "";
+}
+
+string App_MultiPurpose::NEW_getDebugOneLine() {
+    if (_sim) {
+        vec2 pos = _sim->playerList[0]->GetPos();
+        vec2 vel = _sim->playerList[0]->GetVel();
+        string state = Ninja::PSTATE_TO_STRING[_sim->playerList[0]->NEW_GetState()];
+        string debug = to_string(_sim->NEW_GetFrameNum()) + ": ";
+        debug += "px: " + to_string(pos.x) + " py: " + to_string(pos.y);
+        debug += " vx: " + to_string(vel.x) + " vy: " + to_string(vel.y);
+        debug += " state: " + state + " " + to_string(_sim->playerList[0]->rcount) + "R " + to_string(_sim->playerList[0]->lcount) + "L " + to_string(_sim->playerList[0]->jcount) + "J";
+        return debug;
+    }
+    return "";
+}
+
+string App_MultiPurpose::NEW_formatNumber(double value) const {
+    ostringstream oss;
+    if (value && abs(value) < 1e-6) {
+        oss << scientific << setprecision(10) << value;
+    } else {
+        oss << fixed << setprecision(6) << value;
+    }
+    return oss.str();
+}
+
+unsigned int App_MultiPurpose::NEW_getFrameNum() const {
+    if (_sim) {
+        return _sim->NEW_GetFrameNum();
+    }
+    return 0;
+}
+
+Ninja* App_MultiPurpose::NEW_getPlayer(unsigned int playerIndex) {
+    return this->_sim->playerList[playerIndex];
+}
+
+double App_MultiPurpose::NEW_getCurrentTicks() const {
+    return this->_currentTicks;
+}
+

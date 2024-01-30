@@ -31,6 +31,7 @@
 #include "..\\..\\simulation\\Simulator.h"
 #include "..\\..\\simulation\\sim_globals.h"
 #include "..\\..\\simulation\\sim_loader.h"
+#include "..\\..\\simulation\\save\\saveState.h"
 
 using namespace std;
 
@@ -55,7 +56,7 @@ class App_MultiPurpose : public Actor, public App {
         // Sprite* uiStage;
         AccountDetails* account;
     private:
-        TimeFormatter _timeFormatter;
+        TimeFormatter* _timeFormatter;
         Simulator* _sim;
         // GraphicsManager* _gfx;
         // SoundManager* _sfx;
@@ -92,6 +93,7 @@ class App_MultiPurpose : public Actor, public App {
         double _gameOverCooldown;
         ByteArray* _lastLevel;
         ByteArray* _lastReplay;
+        appSave appState;
     public:
         App_MultiPurpose();
         void initialize();
@@ -168,4 +170,10 @@ class App_MultiPurpose : public Actor, public App {
         bool beingPlayed();
         int gameState();
         int uiState();
+        string NEW_getDebugString();
+        string NEW_getDebugOneLine();
+        string NEW_formatNumber(double value) const;
+        unsigned int NEW_getFrameNum() const;
+        Ninja* NEW_getPlayer(unsigned int pID);
+        double NEW_getCurrentTicks() const;
 };
