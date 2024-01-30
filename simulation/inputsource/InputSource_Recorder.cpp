@@ -5,10 +5,15 @@ InputSource_Recorder::InputSource_Recorder(SimpleInput& input, unsigned int keyJ
     frames->length(4096);
 }
 
+InputSource_Recorder::InputSource_Recorder(SimpleInput& input, ByteArray* frames, unsigned int keyJ, unsigned int keyL, unsigned int keyR)
+    : input(input), keycode_J(keyJ), keycode_L(keyL), keycode_R(keyR), InputSource_Base(frames) {
+    if (frames->length() < 4096) frames->length(4096);
+}
+
 void InputSource_Recorder::Tick(unsigned int frameNum) {
-    //current_J = input.IsKeyDown(keycode_J);
-    //current_L = input.IsKeyDown(keycode_L);
-    //current_R = input.IsKeyDown(keycode_R);
+    current_J = input.IsKeyDown(keycode_J);
+    current_L = input.IsKeyDown(keycode_L);
+    current_R = input.IsKeyDown(keycode_R);
 
     if (frameNum >= frames->length()) {
         frames->length(frameNum * 2);

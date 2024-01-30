@@ -1,8 +1,7 @@
 #pragma once
 
 #include "InputSource_Base.h"
-//#include "..\\simpleFramework\\SimpleInput.h"
-class SimpleInput;
+#include "..\\..\\simpleFramework\\SimpleInput.h"
 
 class InputSource_Recorder : public InputSource_Base {
     private:
@@ -12,5 +11,6 @@ class InputSource_Recorder : public InputSource_Base {
         unsigned int keycode_R;
     public:
         InputSource_Recorder(SimpleInput& input, unsigned int keyJ, unsigned int keyL, unsigned int keyR);
+        InputSource_Recorder(SimpleInput& input, ByteArray* frames, unsigned int keyJ, unsigned int keyL, unsigned int keyR);
         void Tick(unsigned int frameNum) override;
 };
