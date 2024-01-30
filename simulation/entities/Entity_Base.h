@@ -7,6 +7,7 @@ class EntityGraphics;
 class collision_result_physical;
 class collision_result_logical;
 class SimpleRenderer;
+#include "..\\save\\saveState.h"
 
 class Entity_Base {
     private:
@@ -25,4 +26,6 @@ class Entity_Base {
         virtual void Move(Simulator* sim);
         virtual EntityGraphics* GenerateGraphicComponent();
         virtual void Debug_Draw(SimpleRenderer& rend);
+        //virtual ByteArray saveState();
+        virtual void saveState(entitySave& state);
 };

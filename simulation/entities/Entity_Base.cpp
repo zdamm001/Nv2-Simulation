@@ -41,3 +41,12 @@ EntityGraphics* Entity_Base::GenerateGraphicComponent() {
 void Entity_Base::Debug_Draw(SimpleRenderer& rend) {
 
 }
+
+// ByteArray Entity_Base::saveState() {
+//     return ByteArray();
+// }
+
+void Entity_Base::saveState(entitySave& state) {
+    state.UID = UID;
+    state.gridIndex = grid_index;
+}
