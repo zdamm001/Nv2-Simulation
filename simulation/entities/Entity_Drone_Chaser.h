@@ -19,6 +19,7 @@ class Entity_Drone_Chaser : public Entity_Drone_Zap {
         bool gfx_startedChasing;
     public:
         Entity_Drone_Chaser(Grid_Entity& entities, double x, double y, unsigned int facingDir, unsigned int moveType);
+        Entity_Drone_Chaser(Grid_Entity& entities, entitySave& entity);
         void Think(Simulator* sim) override;
     private:
         void StartChasing(unsigned int newChaseDir);
@@ -29,4 +30,5 @@ class Entity_Drone_Chaser : public Entity_Drone_Zap {
         EntityGraphics* GenerateGraphicComponent();
         void GFX_UpdateState(EntityGraphics_Drone_Chaser* graphic);
         void Debug_Draw(SimpleRenderer& rend) override;
+        void saveState(entitySave& state) override;
 };

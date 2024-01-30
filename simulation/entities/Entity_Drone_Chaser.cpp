@@ -8,6 +8,16 @@ Entity_Drone_Chaser::Entity_Drone_Chaser(Grid_Entity& entities, double x, double
       gfx_startedChasing(false),
       old_chase_DIR(-1) {}
 
+Entity_Drone_Chaser::Entity_Drone_Chaser(Grid_Entity& entities, entitySave& entity)
+    : Entity_Drone_Zap(entities, entity),
+      isChasing(entity.is),
+      speed_regular(speed),
+      speed_chasing(speed_regular * 2),
+      gfx_startedChasing(false),
+      old_chase_DIR(-1) {
+    if (isChasing) speed = speed_chasing;
+}
+
 void Entity_Drone_Chaser::Think(Simulator* sim) {
 
 }
@@ -91,6 +101,7 @@ bool Entity_Drone_Chaser::ChooseNextDirAndGoal(Grid_Edges& edges, const vector<N
 }
 
 EntityGraphics* Entity_Drone_Chaser::GenerateGraphicComponent() {
+    return nullptr;
     //return new EntityGraphics_Drone_Chaser(this);
 }
 
@@ -116,4 +127,10 @@ void Entity_Drone_Chaser::Debug_Draw(SimpleRenderer& rend) {
         //rend.SetStyle(0, 0, 100);
     }
     //rend.DrawLine(antennaX, antennaY, antennaX, antennaY - 8);
+}
+
+void Entity_Drone_Chaser::saveState(entitySave& state) {
+    Entity_Drone_Zap::saveState(state);
+    state.etype = edat::ETYPE_CHASER;
+    state.is = isChasing;
 }
