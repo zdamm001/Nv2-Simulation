@@ -5,9 +5,14 @@ Entity_ExitSwitch::Entity_ExitSwitch(Grid_Entity& entities, double x, double y, 
     entities.ENTITY_Add(pos, this);
 }
 
+Entity_ExitSwitch::Entity_ExitSwitch(Grid_Entity& entities, entitySave& entity, Entity_ExitDoor* door)
+    : pos(entity.pos), r(12 * 0.5), door(door) {
+    entities.ENTITY_Add(pos, this);
+}
+
 bool Entity_ExitSwitch::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {
     if (ninja != nullptr) {
-        if (colutils::Overlap_Circle_Vs_Circle(pos, r, circleVelocity, circleRadius)) {
+        if (colutils::Overlap_Circle_Vs_Circle(pos, r, circlePosition, circleRadius)) {
             door->SWITCH_OpenTheExit(sim->objGrid);
             sim->objGrid.ENTITY_Remove(this);
         }
@@ -16,6 +21,7 @@ bool Entity_ExitSwitch::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, co
 }
 
 EntityGraphics* Entity_ExitSwitch::GenerateGraphicComponent() {
+    return nullptr;
     //return new EntityGraphics_ExitSwitch(this, pos.x, pos.y);
 }
 
@@ -35,4 +41,20 @@ void Entity_ExitSwitch::Debug_Draw(SimpleRenderer& rend) {
     }
     //rend.DrawSquare(pos.x, pos.y, r);
     //rend.DrawCross(pos.x, pos.y, r);
+}
+
+// ByteArray Entity_ExitSwitch::saveState() {
+//     ByteArray state;
+//     state.writeByte(edat::STRUCTTYPE_);
+//     state.writeDouble(pos.x);
+//     state.writeDouble(pos.y);
+//     state.writeBoolean();
+//     return state;
+// }
+
+void Entity_ExitSwitch::saveState(entitySave& state) {
+    Entity_Base::saveState(state);
+    state.etype = edat::ETYPE_EXIT_SWITCH;
+    state.pos = pos;
+    state.extra = door->GetUID();
 }
