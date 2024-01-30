@@ -40,6 +40,7 @@ class Entity_Rocket : public Entity_Base {
         vec2 hit_n;
     public:
         Entity_Rocket(Grid_Entity& entities, double x, double y);
+        Entity_Rocket(Grid_Entity& entities, entitySave& entity);
         bool CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) override;
         void Think(Simulator* sim) override;
     private:
@@ -48,4 +49,6 @@ class Entity_Rocket : public Entity_Base {
         EntityGraphics* GenerateGraphicComponent() override;
         void GFX_UpdateState(EntityGraphics_Rocket* graphic);
         void Debug_Draw(SimpleRenderer& rend) override;
+        // ByteArray saveState() override;
+        void saveState(entitySave& state) override;
 };

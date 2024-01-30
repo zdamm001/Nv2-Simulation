@@ -18,6 +18,24 @@ Entity_Rocket::Entity_Rocket(Grid_Entity& entities, double x, double y) {
     gfx_PREV_STATE = CUR_STATE;
 }
 
+Entity_Rocket::Entity_Rocket(Grid_Entity& entities, entitySave& entity) {
+    accel_start = 0.1 * (40.0 / sim_globals::sim_rate) * (40.0 / sim_globals::sim_rate);
+    maxspeed = 12.0 * (2.0 / 7.0) * (40.0 / sim_globals::sim_rate);
+    accel_rate = pow(1.1, 40.0 / sim_globals::sim_rate);
+    turn_rate = 0.1 * (40.0 / sim_globals::sim_rate);
+    prefire_delay = 10 * (sim_globals::sim_rate / 40.0);
+    prediction_scale = sim_globals::sim_rate / 40.0;
+    pos = entity.pos;
+    rocket_pos = entity.pos2;
+    rocket_dir = entity.dir;
+    rocket_speed = entity.vel.x;
+    rocket_accel = entity.vel.y;
+    shot_timer = entity.timer3;
+    CUR_STATE = entity.state;
+    targetIndex = entity.index;
+    gfx_PREV_STATE = entity.extra;
+}
+
 bool Entity_Rocket::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {
     if (CUR_STATE != STATE_HOMING) {
         return false;
@@ -168,6 +186,7 @@ void Entity_Rocket::Event_Explode(Simulator* sim) {
 }
 
 EntityGraphics* Entity_Rocket::GenerateGraphicComponent() {
+    return nullptr;
     //return new EntityGraphics_Rocket(this, pos.x, pos.y);
 }
 
@@ -204,4 +223,36 @@ void Entity_Rocket::Debug_Draw(SimpleRenderer& rend) {
             //rend.DrawLine(rocket_pos.x, rocket_pos.y, rocket_pos.x - 4 * rocket_dir.x, rocket_pos.y - 4 * rocket_dir.y);
         }
     }
+}
+
+// ByteArray Entity_Rocket::saveState() {
+//     ByteArray state;
+//     state.writeByte(edat::STRUCTTYPE_ROCKET);
+//     state.writeDouble(pos.x);
+//     state.writeDouble(pos.y);
+//     state.writeDouble(rocket_pos.x);
+//     state.writeDouble(rocket_pos.y);
+//     state.writeDouble(rocket_dir.x);
+//     state.writeDouble(rocket_dir.y);
+//     state.writeDouble(rocket_speed);
+//     state.writeDouble(rocket_accel);
+//     state.writeDouble(shot_timer);
+//     state.writeInt(CUR_STATE);
+//     state.writeInt(targetIndex);
+//     state.writeInt(gfx_PREV_STATE);
+//     return state;
+// }
+
+void Entity_Rocket::saveState(entitySave& state) {
+    Entity_Base::saveState(state);
+    state.etype = edat::ETYPE_ROCKET;
+    state.pos = pos;
+    state.pos2 = rocket_pos;
+    state.dir = rocket_dir;
+    state.vel.x = rocket_speed;
+    state.vel.y = rocket_accel;
+    state.timer3 = shot_timer;
+    state.state = CUR_STATE;
+    state.index = targetIndex;
+    state.extra = gfx_PREV_STATE;
 }
