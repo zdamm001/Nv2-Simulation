@@ -1,7 +1,10 @@
 #include "Entity_Drone_Zap.h"
 
 Entity_Drone_Zap::Entity_Drone_Zap(Grid_Entity& entities, double x, double y, unsigned int facingDir, unsigned int moveType)
-    : Entity_Drone_Base(entities, x, y, 12 * (1 / 14) * 2 * (40 / sim_globals::sim_rate), facingDir, moveType) {}
+    : Entity_Drone_Base(entities, x, y, 12.0 * (1.0 / 14.0) * 2 * (40 / sim_globals::sim_rate), facingDir, moveType) {}
+
+Entity_Drone_Zap::Entity_Drone_Zap(Grid_Entity& entities, entitySave& entity)
+    : Entity_Drone_Base(entities, entity, 12.0 * (1.0 / 14.0) * 2 * (40 / sim_globals::sim_rate)) {}
 
 bool Entity_Drone_Zap::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {
     if (colutils::Overlap_Circle_Vs_Circle(pos, r, circlePosition, circleRadius)) {
@@ -22,6 +25,7 @@ bool Entity_Drone_Zap::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, col
 }
 
 EntityGraphics* Entity_Drone_Zap::GenerateGraphicComponent() {
+    return nullptr;
     //return new EntityGraphics_Drone_Zap(this);
 }
 
@@ -37,4 +41,9 @@ void Entity_Drone_Zap::Debug_Draw(SimpleRenderer& rend) {
     Entity_Drone_Base::Debug_Draw(rend);
     //rend->SetStyle(4, 0x8888FF, 50);
     //rend->DrawCircle(pos.x, pos.y, r / 2);
+}
+
+void Entity_Drone_Zap::saveState(entitySave& state) {
+    Entity_Drone_Base::saveState(state);
+    state.etype = edat::ETYPE_ZAP;
 }
