@@ -10,6 +10,14 @@ Entity_Drone_Shooter_Base::Entity_Drone_Shooter_Base(Grid_Entity& entities, doub
       postfire_delay(postfireDelay),
       targetIndex(-1) {}
 
+Entity_Drone_Shooter_Base::Entity_Drone_Shooter_Base(Grid_Entity& entities, entitySave& entity, double speed, int prefireDelay, int postfireDelay)
+    : Entity_Drone_Base(entities, entity, speed),
+      CUR_FIRING_STATE(entity.state),
+      firing_timer(entity.timer),
+      prefire_delay(prefireDelay),
+      postfire_delay(postfireDelay),
+      targetIndex(entity.index) {}
+
 void Entity_Drone_Shooter_Base::Move(Simulator* sim) {
     if (CUR_FIRING_STATE == FIRING_STATE_IDLE) {
         Entity_Drone_Base::Move(sim);
@@ -85,7 +93,6 @@ void Entity_Drone_Shooter_Base::Internal_StartIdling() {
     targetIndex = -1;
 }
 
-
 void Entity_Drone_Shooter_Base::Start_Prefiring(Simulator* sim, const vec2& ninjaPos) { }
 
 void Entity_Drone_Shooter_Base::Update_Prefiring(Simulator* sim, const vec2& ninjaPos) { }
@@ -95,7 +102,6 @@ void Entity_Drone_Shooter_Base::Start_Firing(Simulator* sim, const vec2& ninjaPo
 bool Entity_Drone_Shooter_Base::Update_Firing(Simulator* sim) {return true;}
 
 void Entity_Drone_Shooter_Base::Start_Postfiring(Simulator* sim) { }
-
 
 void Entity_Drone_Shooter_Base::Debug_Draw(SimpleRenderer& rend) {
     Entity_Drone_Base::Debug_Draw(rend);
@@ -107,4 +113,11 @@ void Entity_Drone_Shooter_Base::Debug_Draw(SimpleRenderer& rend) {
         double postfiringProgress = 1 - double(firing_timer) / postfire_delay;
         //rend.DrawSquare(pos.x, pos.y, r * postfiringProgress);
     }
+}
+
+void Entity_Drone_Shooter_Base::saveState(entitySave& state) {
+    Entity_Drone_Base::saveState(state);
+    state.timer = firing_timer;
+    state.state = CUR_FIRING_STATE;
+    state.index = targetIndex;
 }

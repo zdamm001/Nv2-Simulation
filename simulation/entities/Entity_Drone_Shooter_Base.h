@@ -22,6 +22,7 @@ class Entity_Drone_Shooter_Base : public Entity_Drone_Base {
         int targetIndex;
     public:
         Entity_Drone_Shooter_Base(Grid_Entity& entities, double x, double y, double speed, unsigned int facingDirection, unsigned int moveType, int prefireDelay, int postfireDelay);
+        Entity_Drone_Shooter_Base(Grid_Entity& entities, entitySave& entity, double speed, int prefireDelay, int postfireDelay);
         void Move(Simulator* sim) override final;
     protected:
         virtual int GetFiringState() final;
@@ -40,4 +41,5 @@ class Entity_Drone_Shooter_Base : public Entity_Drone_Base {
         virtual void Start_Postfiring(Simulator* sim);
     public:
         void Debug_Draw(SimpleRenderer& rend) override;
+        void saveState(entitySave& state) override;
 };
