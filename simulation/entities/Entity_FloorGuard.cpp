@@ -2,9 +2,18 @@
 
 Entity_FloorGuard::Entity_FloorGuard(Grid_Entity& entities, double x, double y)
     : pos(x, y),
-      speed(12 * (3 / 7) * (40 / sim_globals::sim_rate)),
+      speed(12.0 * (3.0 / 7.0) * (40 / sim_globals::sim_rate)),
       r(12 * 0.5),
       CUR_STATE(0),
+      margin(0) {
+    entities.ENTITY_Add(pos, this);
+}
+
+Entity_FloorGuard::Entity_FloorGuard(Grid_Entity& entities, entitySave& entity)
+    : pos(entity.pos),
+      speed(12.0 * (3.0 / 7.0) * (40 / sim_globals::sim_rate)),
+      r(12 * 0.5),
+      CUR_STATE(entity.state),
       margin(0) {
     entities.ENTITY_Add(pos, this);
 }
@@ -82,6 +91,7 @@ void Entity_FloorGuard::Move(Simulator* sim) {
 }
 
 EntityGraphics* Entity_FloorGuard::GenerateGraphicComponent() {
+    return nullptr;
     //return new EntityGraphics_FloorGuard(this);
 }
 
@@ -105,4 +115,20 @@ void Entity_FloorGuard::Debug_Draw(SimpleRenderer& rend) {
     if (CUR_STATE != 0) {
         //rend.DrawLine(pos.x, pos.y, pos.x + CUR_STATE * 8, pos.y);
     }
+}
+
+// ByteArray Entity_FloorGuard::saveState() {
+//     ByteArray state;
+//     state.writeByte(edat::STRUCTTYPE_FLOORGUARD);
+//     state.writeDouble(pos.x);
+//     state.writeDouble(pos.y);
+//     state.writeInt(CUR_STATE);
+//     return state;
+// }
+
+void Entity_FloorGuard::saveState(entitySave& state) {
+    Entity_Base::saveState(state);
+    state.etype = edat::ETYPE_FLOORGUARD;
+    state.pos = pos;
+    state.state = CUR_STATE;
 }
