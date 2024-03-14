@@ -13,4 +13,5 @@ class InputSource_Recorder : public InputSource_Base {
         InputSource_Recorder(SimpleInput& input, unsigned int keyJ, unsigned int keyL, unsigned int keyR);
         InputSource_Recorder(SimpleInput& input, ByteArray* frames, unsigned int keyJ, unsigned int keyL, unsigned int keyR);
         void Tick(unsigned int frameNum) override;
+        void saveState(ByteArray& state) override;
 };

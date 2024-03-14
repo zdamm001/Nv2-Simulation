@@ -8,4 +8,5 @@ class InputSource_Playback : public InputSource_Base {
         InputSource_Playback(ByteArray* frames);
         bool IsReplayFinished() override;
         void Tick(unsigned int frameNum) override;
+        void saveState(ByteArray& state) override;
 };

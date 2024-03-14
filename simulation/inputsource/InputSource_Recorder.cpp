@@ -33,3 +33,8 @@ void InputSource_Recorder::Tick(unsigned int frameNum) {
     frames->setPosition(frameNum);
     frames->writeByte(keys);
 }
+
+void InputSource_Recorder::saveState(ByteArray& state) {
+    unsigned int length = frames->getPosition();
+    state.writeBytes(*frames, 0, length);
+}

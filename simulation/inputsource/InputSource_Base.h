@@ -23,5 +23,5 @@ class InputSource_Base {
         bool IsButtonDown_Jump();
         bool IsButtonDown_Left();
         bool IsButtonDown_Right();
-        void saveState(ByteArray& state);
+        virtual void saveState(ByteArray& state);
 };

@@ -21,3 +21,8 @@ void InputSource_Playback::Tick(unsigned int frameNum) {
         current_R = (inputByte & bit_R) > 0;
     }
 }
+
+void InputSource_Playback::saveState(ByteArray& state) {
+    unsigned int length = frames->length();
+    state.writeBytes(*frames, 0, length);
+}

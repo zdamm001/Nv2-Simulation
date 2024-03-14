@@ -42,7 +42,7 @@ bool InputSource_Base::IsReplayFinished() {
 }
 
 void InputSource_Base::Tick(unsigned int frameNum) {
-
+    return;
 }
 
 bool InputSource_Base::IsButtonDown_Jump() {
@@ -58,6 +58,5 @@ bool InputSource_Base::IsButtonDown_Right() {
 }
 
 void InputSource_Base::saveState(ByteArray& state) {
-    unsigned int length = frames->getPosition();
-    state.writeBytes(*frames, 0, length);
+    return;
 }
