@@ -15,4 +15,5 @@ class Segment {
         virtual void DebugDraw(SimpleRenderer& rend) = 0;
         virtual void DebugDraw_NoStyle(SimpleRenderer& rend) = 0;
         virtual void DebugDraw_Simple(SimpleRenderer& rend) = 0;
+        virtual Segment* Clone() const = 0;
 };

@@ -213,3 +213,7 @@ void Segment_Circular::DebugDraw_NoStyle(SimpleRenderer& rend) {
     d.Scale(radius);
     //rend.DrawLine(pC.x + d.x, pC.y + d.y, pC.x + d.x + 4 * n.x, pC.y + d.y + 4 * n.y);
 }
+
+Segment* Segment_Circular::Clone() const {
+    return new Segment_Circular(pC.x, pC.y, p0.x, p0.y, p1.x, p1.y);
+}

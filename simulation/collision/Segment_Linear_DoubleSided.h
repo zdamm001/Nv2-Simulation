@@ -9,4 +9,5 @@ class Segment_Linear_DoubleSided : public Segment_Linear {
         Segment_Linear_DoubleSided(double x0, double y0, double x1, double y1);
         bool GetClosestPoint_IsBackfacing(const vec2& query_pos, vec2& out_closestpoint) override;
         void DebugDraw_NoStyle(SimpleRenderer& rend) override;
+        Segment* Clone() const override;
 };

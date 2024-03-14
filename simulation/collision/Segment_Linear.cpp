@@ -121,3 +121,7 @@ void Segment_Linear::DebugDraw_NoStyle(SimpleRenderer& rend) {
     n.Normalize();
     //rend.DrawLine(p0.x + 0.5 * v.x, p0.y + 0.5 * v.y, p0.x + 0.5 * v.x + 4 * n.x, p0.y + 0.5 * v.y + 4 * n.y);
 }
+
+Segment* Segment_Linear::Clone() const {
+    return new Segment_Linear(p0.x, p0.y, p1.x, p1.y);
+}

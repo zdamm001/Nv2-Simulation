@@ -20,3 +20,7 @@ void Segment_Linear_DoubleSided::DebugDraw_NoStyle(SimpleRenderer& rend) {
     //rend.DrawLine(p0.x + 0.5 * v.x, p0.y + 0.5 * v.y, p0.x + 0.5 * v.x + 4 * n.x, p0.y + 0.5 * v.y + 4 * n.y);
     //rend.DrawLine(p0.x + 0.5 * v.x, p0.y + 0.5 * v.y, p0.x + 0.5 * v.x - 4 * n.x, p0.y + 0.5 * v.y - 4 * n.y);
 }
+
+Segment* Segment_Linear_DoubleSided::Clone() const {
+    return new Segment_Linear_DoubleSided(p0.x, p0.y, p1.x, p1.y);
+}

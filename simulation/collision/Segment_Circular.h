@@ -23,4 +23,5 @@ class Segment_Circular : public Segment {
         void DebugDraw(SimpleRenderer& rend) override;
         void DebugDraw_Simple(SimpleRenderer& rend) override;
         void DebugDraw_NoStyle(SimpleRenderer& rend) override;
+        Segment* Clone() const override;
 };

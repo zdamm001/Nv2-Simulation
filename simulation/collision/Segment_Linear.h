@@ -22,4 +22,5 @@ class Segment_Linear : public Segment {
         void DebugDraw(SimpleRenderer& rend) override;
         void DebugDraw_Simple(SimpleRenderer& rend) override;
         virtual void DebugDraw_NoStyle(SimpleRenderer& rend) override;
+        Segment* Clone() const override;
 };
