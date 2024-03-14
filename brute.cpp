@@ -14,6 +14,9 @@ string burningChrome = "00000000000000000000000000000000000000000000000000000000
 // added 4 0's above
 string holdItReplay = "eNpjZQUCFryAgDQOwIQBsKtjwC7FigQYmSEA2TAGFvIAKzMMMLISDZiYsQIm8gGJetGig4ECmxkAyB0GPA==";
 string burningChromeReplay = "eNpjYSEAWJHZmICFSoABAJrKAjU=";
+string burningChromeReplay2 = "eNpjYSEAWFmRmOiAhfqAAQCvrgJZ";
+string burningChromeReplay3 = "eNpjYcEFGKA0KysrC4KJClioDxgArdQCVQ==";
+string burningChromeReplay4 = "eNpjYcEFGKA0KxAgMVEACy0AAwCzAQJe";
 
 void Initialize(App_MultiPurpose& app);
 void Inject(App_MultiPurpose& app);
@@ -30,19 +33,18 @@ int main() {
     replayBytes.uncompress();
     fout.open("resultBrute.txt");
     if (!fout.is_open()) {cerr << "Error opening resultBrute.txt"; return 1;}
-    bruteForce(levelBytes, replayBytes, 83+10, 18-10, bruteTypes::allCombosWithoutJump, finishTypes::completeUnlessInAir, vector<char>({clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::J}));
+    bruteForce(levelBytes, replayBytes, 83-4, 18+4, bruteTypes::allCombosWithoutJump, finishTypes::completeUnlessInAir, vector<char>({clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::J}));
     fout.close();
     return 0;
 }
 
-// bad brute force method is to simulate first frames over and over
 void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFrame, unsigned int numBruteFrames, unsigned int bruteType, unsigned int finishType, vector<char> endFrames) {
     App_MultiPurpose app;
     Initialize(app);
     Inject(app);
     app.options->resetScoreOnDeath = true;
     app.options->scoreGoldImmediately = true;
-    ByteArray replayCopy = replay;
+    ByteArray replayCopy = replay;//if frames < start + brute add them FIX
     if (bruteType == bruteTypes::allCombosWithoutJump) {
         vector<int> inputTypes = {4, 0, 2};
         vector<char> inputTypesChar = {'R', 'N', 'L'};
@@ -61,24 +63,29 @@ void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFram
                 replayCopy.writeByte(endFrames[i]);
             }
         }
+        app.watchPlayerSelectedReplay(&level, &replayCopy);
+        for (int j = 0; j < startBruteFrame - 1; ++j) {
+            app.tick();
+        }
+        app.NEW_SaveState();
         fout << "brute_clocks end_frame posx posy velx vely ticks\n";
         for (long long int i = 0; i < totalCombinations; ++i) {
             long long int num = i;
-            replayCopy.setPosition(startBruteFrame - 1);
+            ByteArray& replaySave = app.NEW_getSaveFrames(0);
+            replaySave.setPosition(startBruteFrame - 1);
             string bruteClocks = "";
             int numTypes[3] = {0,0,0};
             for (int j = 0; j < numBruteFrames; ++j) {
                 ++numTypes[num % inputTypes.size()];
                 //fout << inputTypesChar[num % inputTypes.size()];
                 bruteClocks += inputTypesChar[num % inputTypes.size()];
-                replayCopy.writeByte(inputTypes[num % inputTypes.size()]);
+                replaySave.writeByte(inputTypes[num % inputTypes.size()]);
                 num /= inputTypes.size();
             }
-            if (numTypes[2] > 2 || numTypes[1] > 5 || numTypes[2] + numTypes[1] > 5) continue;
+            if (numTypes[2] > 2 || numTypes[1] > 3 || numTypes[2] + numTypes[1] > 4) continue;
             //if (numTypes[1] > 8) continue;
-            // app.loadSavedState
-            app.watchPlayerSelectedReplay(&level, &replayCopy);
-            for (int j = 0; j < startBruteFrame + numBruteFrames - 1; ++j) {
+            app.NEW_watchReplayFromSave();
+            for (int j = 0; j < numBruteFrames; ++j) {
                 app.tick();
             }
             Ninja* player = app.NEW_getPlayer(0);
