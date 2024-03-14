@@ -14,6 +14,7 @@ class Grid_Segment : public Grid_Base {
         vec2 TEMP_temp_n;
     public:
         Grid_Segment(int num_cols, int num_rows, double cell_size);
+        Grid_Segment(int num_cols, int num_rows, double cell_size, vector<vector<Segment*>> cells);
         void DEBUG_Draw(SimpleRenderer& rend);
         double GetRaycastDistance(double pos_x, double pos_y, double dir_x, double dir_y, vec2& out_pos, vec2& out_normal);
         bool RaycastVsPlayer(const vec2& query_pos, const vec2& player_pos, double player_r, vec2& hit_pos, vec2& hit_n);
@@ -27,4 +28,7 @@ class Grid_Segment : public Grid_Base {
         void DOOR_RemoveSegment(int cell_index, Segment* seg);
         int DOOR_GetCellIndexFromGridspacePosition(int u, int v);
         void GatherCellContentsFromWorldspaceRegion(double min_x, double min_y, double max_x, double max_y, vector<Segment*>& out_segList);
+        int DOOR_GetSegInnerIndex(int cell_index, Segment* seg);
+        Segment* DOOR_GetSegment(int cell_index, int seg_index);
+        Grid_Segment Clone() const;
 };

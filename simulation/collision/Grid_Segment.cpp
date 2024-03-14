@@ -8,6 +8,14 @@ Grid_Segment::Grid_Segment(int num_cols, int num_rows, double cell_size)
     TEMP_temp_n = vec2();
 }
 
+Grid_Segment::Grid_Segment(int num_cols, int num_rows, double cell_size, vector<vector<Segment*>> cells)
+    : Grid_Base(num_cols, num_rows, cell_size), cells(cells) {
+    TEMP_ray_pos = vec2();
+    TEMP_ray_vec = vec2();
+    TEMP_temp_p = vec2();
+    TEMP_temp_n = vec2();
+}
+
 void Grid_Segment::DEBUG_Draw(SimpleRenderer& rend) {
     for (int i = 0; i < cells.size(); i++) {
         for (int j = 0; j < cells[i].size(); j++) {
@@ -146,7 +154,11 @@ vector<Segment*> Grid_Segment::DEBUG_GetCellContentsFromGridspacePosition(int u,
 
 void Grid_Segment::Clear() {
     for (int i = 0; i < numcells; i++) {
-        cells[i].clear();
+        vector<Segment*>& cell = cells[i];
+        for (Segment* seg : cell) {
+            delete seg;
+        }
+        cell.clear();
     }
 }
 
@@ -203,4 +215,46 @@ void Grid_Segment::GatherCellContentsFromWorldspaceRegion(double min_x, double m
             out_segList.insert(out_segList.end(), cell.begin(), cell.end());
         }
     }
+}
+
+int Grid_Segment::DOOR_GetSegInnerIndex(int cell_index, Segment* seg) {
+    if (cell_index < 0 || cell_index >= numcells) {
+        return -1;
+    }
+
+    vector<Segment*>& cell = cells[cell_index];
+    vector<Segment*>::iterator it = find(cell.begin(), cell.end(), seg);
+
+    if (it == cell.end()) {
+        return -1;
+    }
+
+    int index = distance(cell.begin(), it);
+    return index;
+}
+
+Segment* Grid_Segment::DOOR_GetSegment(int cell_index, int seg_index) {
+    if (cell_index < 0 || cell_index >= numcells) {
+        return nullptr;
+    }
+
+    vector<Segment*>& cell = cells[cell_index];
+
+    if (seg_index < 0 || seg_index >= cell.size()) {
+        return nullptr;
+    }
+
+    return cell[seg_index];
+}
+
+Grid_Segment Grid_Segment::Clone() const {
+    vector<vector<Segment*>> clonedCells(numcells);
+    
+    for (int i = 0; i < numcells; i++) {
+        const vector<Segment*>& originalCell = cells[i];
+        for (Segment* originalSegment : originalCell) {
+            clonedCells[i].push_back(originalSegment->Clone());
+        }
+    }
+    return Grid_Segment(numcols, numrows, cellsize, clonedCells);
 }
