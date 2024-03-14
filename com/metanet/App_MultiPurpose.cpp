@@ -876,3 +876,7 @@ void App_MultiPurpose::NEW_prepareSessionFromSave() {
     _sim = sim_loader::LoadFromSave(appState, _playerKeys->getActions({PlayerKeys::JUMP, PlayerKeys::LEFT, PlayerKeys::RIGHT}), {options->p1Colour, options->p2Colour}, input);
     initializeEngine();
 }
+
+ByteArray& App_MultiPurpose::NEW_getSaveFrames(unsigned int playerIndex) {
+    return appState.ninjaState[playerIndex].frames;
+}

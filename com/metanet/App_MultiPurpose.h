@@ -180,4 +180,5 @@ class App_MultiPurpose : public Actor, public App {
         void NEW_playLevelFromSave();
         void NEW_watchReplayFromSave();
         void NEW_prepareSessionFromSave();
+        ByteArray& NEW_getSaveFrames(unsigned int playerIndex);
 };
