@@ -358,7 +358,8 @@ Simulator* sim_loader::LoadFromSave(appSave& appState, const vector<int>& player
         InputSource_Base* inputSource = nullptr;
         
         ByteArray* frames = new ByteArray();
-        appState.ninjaState[i].frames.writeBytes(*frames);
+        frames->writeBytes(appState.ninjaState[i].frames);
+        frames->setPosition(appState.frameNum);
         
         if (!appState.isReplay) {
             inputSource = new InputSource_Recorder(input, frames, playerKeys[i * 3 % playerKeys.size()], playerKeys[(i * 3 + 1) % playerKeys.size()], playerKeys[(i * 3 + 2) % playerKeys.size()]);

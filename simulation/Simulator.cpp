@@ -329,6 +329,7 @@ void Simulator::saveState(appSave& appState) {
     for (int i = 0; i < playerList.size(); ++i) {
         playerList[i]->saveState(appState.ninjaState[i]);
     }
+    appState.entityState.resize(objList.size());
     for (int i = 0; i < objList.size(); ++i) {
         objList[i]->saveState(appState.entityState[i]);
     }
