@@ -16,7 +16,7 @@ class InputSource_Base {
     public:
         InputSource_Base(ByteArray* frames);
         virtual ~InputSource_Base();
-        ByteArray DumpFrames();
+        ByteArray* DumpFrames();
         string DumpString();
         virtual bool IsReplayFinished();
         virtual void Tick(unsigned int frameNum);

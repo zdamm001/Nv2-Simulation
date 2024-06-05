@@ -7,7 +7,7 @@ InputSource_Base::~InputSource_Base() {
     delete frames;
 }
 
-ByteArray InputSource_Base::DumpFrames() {
+ByteArray* InputSource_Base::DumpFrames() {
     frames->setPosition(frames->length() - 1);
 
     while (frames->getPosition() >= 0) {
@@ -18,11 +18,11 @@ ByteArray InputSource_Base::DumpFrames() {
     }
 
     unsigned int position = frames->getPosition();
-    ByteArray result;
-    result.setPosition(0);
+    ByteArray* result = new ByteArray;
+    result->setPosition(0);
     frames->setPosition(0);
     for (int i = 0; i <= position; ++i) {
-        result.writeByte(frames->readByte());
+        result->writeByte(frames->readByte());
     }
 
     return result;
