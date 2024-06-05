@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "..\\..\\audiovisual\\entitygraphics\\Entity_GraphicsNinja.h"
 #include "..\\..\\math\vec2.h"
 #include "..\\..\\simpleFramework\\SimpleRenderer.h"
 #include "..\\collision\\Segment.h"
@@ -17,6 +16,8 @@
 #include "..\\sim_globals.h"
 #include "Ragdoll.h"
 #include "..\\save\\saveState.h"
+
+class EntityGraphics_Ninja;
 
 using namespace std;
 

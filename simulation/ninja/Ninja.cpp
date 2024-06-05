@@ -1,4 +1,5 @@
 #include "Ninja.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Ninja.h"
 
 const unsigned int Ninja::PSTATE_STANDING = 0;
 const unsigned int Ninja::PSTATE_RUNNING = 1;
@@ -120,6 +121,7 @@ Ninja::Ninja(ninjaSave& ninjaState, InputSource_Base* input)
 
 Ninja::~Ninja() {
     delete inputsource;
+    delete ninja_gfx;
 }
 
 void Ninja::DEBUG_SetPosVel(const vec2& pos, const vec2& vel) {
@@ -743,55 +745,55 @@ bool Ninja::SIM_Win() {
 }
 
 EntityGraphics_Ninja* Ninja::GenerateGraphicComponent() {
-    //ninja_gfx = new EntityGraphics_Ninja(this, gfxColor);
+    ninja_gfx = new EntityGraphics_Ninja(this, gfxColor);
     return ninja_gfx;
 }
 
 void Ninja::GFX_UpdateState(EntityGraphics_Ninja* graphics) {
     if (curState == PSTATE_DISABLED) {
-        //graphics->anim = EntityGraphics_Ninja::ANIM_OFF;
+        graphics->anim = EntityGraphics_Ninja::ANIM_OFF;
     } else if (curState == PSTATE_DEAD) {
-        //graphics->anim = EntityGraphics_Ninja::ANIM_DEAD;
+        graphics->anim = EntityGraphics_Ninja::ANIM_DEAD;
         raggy.GFX_UpdateState(graphics);
     } else {
-        //graphics->pos.x = pos.x;
-        //graphics->pos.y = pos.y;
+        graphics->pos.x = pos.x;
+        graphics->pos.y = pos.y;
 
         if (curState == PSTATE_WALLSLIDING) {
-            //graphics->anim = EntityGraphics_Ninja::ANIM_WALLSLIDING;
-            //graphics->orn = 0;
-            //graphics->facing = -wallN.x;
-            //graphics->vel = vel.y;
+            graphics->anim = EntityGraphics_Ninja::ANIM_WALLSLIDING;
+            graphics->orn = 0;
+            graphics->facing = -wallN.x;
+            graphics->vel = vel.y;
         } else {
             if (IN_AIR) {
-                //graphics->anim = EntityGraphics_Ninja::ANIM_INAIR;
-                //graphics->vel = vel.y;
+                graphics->anim = EntityGraphics_Ninja::ANIM_INAIR;
+                graphics->vel = vel.y;
 
                 if (curState == PSTATE_JUMPING) {
-                    //graphics->orn = 0;
+                    graphics->orn = 0;
                 } else {
-                    //graphics->orn -= 0.1 * graphics->orn;
+                    graphics->orn -= 0.1 * graphics->orn;
                 }
             } else {
-                //graphics->orn = atan2(floorN.y, floorN.x) + 0.5 * M_PI;
+                graphics->orn = atan2(floorN.y, floorN.x) + 0.5 * M_PI;
 
                 if (curState == PSTATE_RUNNING) {
-                    //graphics->anim = EntityGraphics_Ninja::ANIM_RUNNING;
-                    //graphics->vel = abs(vel.x * -floorN.y + vel.y * floorN.x);
+                    graphics->anim = EntityGraphics_Ninja::ANIM_RUNNING;
+                    graphics->vel = abs(vel.x * -floorN.y + vel.y * floorN.x);
                 } else if (curState == PSTATE_SKIDDING) {
-                    //graphics->anim = EntityGraphics_Ninja::ANIM_SKIDDING;
-                    //graphics->vel = vel.x * -floorN.y + vel.y * floorN.x;
+                    graphics->anim = EntityGraphics_Ninja::ANIM_SKIDDING;
+                    graphics->vel = vel.x * -floorN.y + vel.y * floorN.x;
                 } else if (curState == PSTATE_STANDING) {
-                    //graphics->anim = EntityGraphics_Ninja::ANIM_STANDING;
+                    graphics->anim = EntityGraphics_Ninja::ANIM_STANDING;
                 } else if (curState == PSTATE_CELEBRATING) {
-                    //graphics->anim = EntityGraphics_Ninja::ANIM_CELEBRATING;
+                    graphics->anim = EntityGraphics_Ninja::ANIM_CELEBRATING;
                 }
             }
 
             if (vel.x < -0.01) {
-                //graphics->facing = -1;
+                graphics->facing = -1;
             } else if (vel.x > 0.01) {
-                //graphics->facing = 1;
+                graphics->facing = 1;
             }
         }
     }
