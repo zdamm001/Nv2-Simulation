@@ -81,8 +81,8 @@ void Entity_FloorGuard::Move(Simulator* sim) {
     if (currX != newX) {
         int guardY = sim->edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.y);
         
-        if (!sim->edgeGrid->IsEmpty(newX, guardY, CUR_STATE, 0) || !sim->edgeGrid->IsSolid_IgnoreDoors(currX, guardY, 0, 1)) {
-            newPos = sim->edgeGrid->GetWorldspaceCoordinateFromGridEdge_1D(newX, CUR_STATE) - CUR_STATE * (radius + 0.01);
+        if (!sim->edgeGrid->IsEmpty(currX, guardY, CUR_STATE, 0) || !sim->edgeGrid->IsSolid_IgnoreDoors(newX, guardY, 0, 1)) {
+            newPos = sim->edgeGrid->GetWorldspaceCoordinateFromGridEdge_1D(currX, CUR_STATE) - CUR_STATE * (radius + 0.01);
             CUR_STATE = 0;
         }
     }
