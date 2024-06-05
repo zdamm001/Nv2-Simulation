@@ -17,7 +17,7 @@ using namespace std;
 class SimpleRenderer;
 class GraphicsManager;
 class SoundManager;
-class ParticleManager;
+class ParticleManager {};
 
 class Simulator {
     public:
@@ -46,9 +46,9 @@ class Simulator {
         void HACKY_SetAV(GraphicsManager* gfx, SoundManager* sfx);
         ParticleManager* HACKY_GetParticleManager();
         SoundManager* HACKY_GetSoundManager();
-        vector<Entity_Base*> GFX_GetEntityList();
-        vector<Ninja*> GFX_GetPlayerList();
-        vector<int> GFX_GetTileIDs();
+        vector<Entity_Base*>& GFX_GetEntityList();
+        vector<Ninja*>& GFX_GetPlayerList();
+        vector<int>& GFX_GetTileIDs();
         void Tick(SimpleRenderer* renderer);
     private:
         void InternalEvent_KillPlayer(Ninja* ninja, int enemyType, double deathPosX, double deathPosY, double deathForceX, double deathForceY);
@@ -72,7 +72,7 @@ class Simulator {
         int APP_GetNumGoldCollectedDuringTick(int pID);
         bool APP_IsPlaybackFinished();
         void APP_GetReplayData(vector<string>& outReplayData);
-        vector<ByteArray> APP_GetReplayBytes();
+        vector<ByteArray*> APP_GetReplayBytes();
         void DEBUG_SetPlayerPosVel(const vec2& pos, const vec2& vel);
         void DEATHMATCH_RespawnPlayer(int pID);
         void DEATHMATCH_GibPlayer(int pID, double deathPosX, double deathPosY, double deathForceX, double deathForceY);

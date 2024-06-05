@@ -44,15 +44,15 @@ SoundManager* Simulator::HACKY_GetSoundManager() {
     return this->HACKY_sfx;
 }
 
-vector<Entity_Base*> Simulator::GFX_GetEntityList() {
+vector<Entity_Base*>& Simulator::GFX_GetEntityList() {
     return this->objList;
 }
 
-vector<Ninja*> Simulator::GFX_GetPlayerList() {
+vector<Ninja*>& Simulator::GFX_GetPlayerList() {
     return this->playerList;
 }
 
-vector<int> Simulator::GFX_GetTileIDs() {
+vector<int>& Simulator::GFX_GetTileIDs() {
     return this->tileIDs;
 }
 
@@ -196,10 +196,10 @@ void Simulator::APP_GetReplayData(vector<string>& outReplayData) {
     }
 }
 
-vector<ByteArray> Simulator::APP_GetReplayBytes() {
-    vector<ByteArray> replayBytes;
+vector<ByteArray*> Simulator::APP_GetReplayBytes() {
+    vector<ByteArray*> replayBytes;
     for (int i = 0; i < playerList.size(); ++i) {
-        ByteArray replayData = playerList[i]->inputsource->DumpFrames();
+        ByteArray* replayData = playerList[i]->inputsource->DumpFrames();
         replayBytes.push_back(replayData);
     }
     return replayBytes;
