@@ -15,6 +15,7 @@ class Grid_Edges : public Grid_Base {
         vector<int> edges_doorY;
     public:
         Grid_Edges(int num_cols, int num_rows, double cell_size);
+        Grid_Edges(int num_cols, int num_rows, double cell_size, vector<int> edgesTileX, vector<int> edgesTileY, vector<int> edgesDoorX, vector<int> edgesDoorY);
         void Clear();
         void Debug_Draw(SimpleRenderer& rend);
         int DOOR_GetCellIndexFromGridspacePosition(int u, int v);
@@ -40,4 +41,6 @@ class Grid_Edges : public Grid_Base {
         void LoadEdgeState_Y(int index, int edgestate);
         void SetDoorState_X(int index, int edgestate);
         void SetDoorState_Y(int index, int edgestate);
+    public:
+        Grid_Edges* Clone() const;
 };

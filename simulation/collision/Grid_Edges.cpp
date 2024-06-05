@@ -6,6 +6,13 @@ Grid_Edges::Grid_Edges(int num_cols, int num_rows, double cell_size)
       edges_tileY(numcells, edgetypes::EMPTY),
       edges_doorX(numcells, 0),
       edges_doorY(numcells, 0) {}
+   
+Grid_Edges::Grid_Edges(int num_cols, int num_rows, double cell_size, vector<int> edgesTileX, vector<int> edgesTileY, vector<int> edgesDoorX, vector<int> edgesDoorY)
+    : Grid_Base(num_cols, num_rows, cell_size),
+      edges_tileX(edgesTileX),
+      edges_tileY(edgesTileY),
+      edges_doorX(edgesDoorX),
+      edges_doorY(edgesDoorY) {}
 
 void Grid_Edges::Clear() {
     for (int i = 0; i < numcells; i++) {
@@ -273,4 +280,8 @@ void Grid_Edges::SetDoorState_X(int index, int edgestate) {
 
 void Grid_Edges::SetDoorState_Y(int index, int edgestate) {
     edges_doorY[index] = edgestate;
+}
+
+Grid_Edges* Grid_Edges::Clone() const {
+    return new Grid_Edges(numcols, numrows, cellsize, edges_tileX, edges_tileY, edges_doorX, edges_doorY);
 }
