@@ -10,7 +10,6 @@
 #include "..\\sim_globals.h"
 #include "entity_helpers.h"
 
-class EntityGraphics;
 class EntityGraphics_Rocket;
 
 class Entity_Rocket : public Entity_Base {

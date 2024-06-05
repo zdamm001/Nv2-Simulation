@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Entity_Drone_Zap.h"
-//#include "..\\audiovisual\\entitygraphics\\EntityGraphics_Drone_Chaser.h"
 #include "..\\..\\math\\vec2.h"
 //#include "simpleFramework\\SimpleRenderer.h"
 #include "..\\Simulator.h"
 #include "..\\collision\\Grid_Edges.h"
 #include "..\\collision\\Grid_Entity.h"
 #include "..\\ninja\\Ninja.h"
+
 class EntityGraphics_Drone_Chaser;
 
 class Entity_Drone_Chaser : public Entity_Drone_Zap {

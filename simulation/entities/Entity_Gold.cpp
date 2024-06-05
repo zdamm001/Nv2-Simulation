@@ -1,4 +1,5 @@
 #include "Entity_Gold.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Gold.h"
 
 Entity_Gold::Entity_Gold(Grid_Entity& entities, double x, double y)
     : pos(x, y), r(12 * 0.5), isCollected(false) {
@@ -24,15 +25,14 @@ bool Entity_Gold::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collisio
 }
 
 EntityGraphics* Entity_Gold::GenerateGraphicComponent() {
-    return nullptr;
-    //return new EntityGraphics_Gold(this, pos.x, pos.y);
+    return new EntityGraphics_Gold(this, pos.x, pos.y);
 }
 
 void Entity_Gold::GFX_UpdateState(EntityGraphics_Gold* graphic) {
     if (isCollected) {
-        //graphic->anim = EntityGraphics_Gold::ANIM_COLLECTED;
+        graphic->anim = EntityGraphics_Gold::ANIM_COLLECTED;
     } else {
-        //graphic->anim = EntityGraphics_Gold::ANIM_NOT_COLLECTED;
+        graphic->anim = EntityGraphics_Gold::ANIM_NOT_COLLECTED;
     }
 }
 

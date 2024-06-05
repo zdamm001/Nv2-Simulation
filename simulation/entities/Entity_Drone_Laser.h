@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Entity_Drone_Shooter_Base.h"
-//#include "..\\audiovisual\\entitygraphics\\EntityGraphics_Drone_Laser.h"
 #include "..\\..\\math\\vec2.h"
 //#include "..\\simpleFramework\\SimpleRenderer.h"
 #include "..\\Simulator.h"
 #include "..\\collision\\Grid_Entity.h"
 #include "..\\collision\\colutils.h"
 #include "..\\sim_globals.h"
+
 class EntityGraphics_Drone_Laser;
 
 class Entity_Drone_Laser : public Entity_Drone_Shooter_Base {
@@ -26,6 +26,7 @@ class Entity_Drone_Laser : public Entity_Drone_Shooter_Base {
         void Start_Firing(Simulator* sim, const vec2& ninjaPos, const vec2& ninjaVel) override;
         bool Update_Firing(Simulator* sim) override;
         void Start_Postfiring(Simulator* sim) override;
+    public:
         EntityGraphics* GenerateGraphicComponent() override;
         void GFX_UpdateState(EntityGraphics_Drone_Laser* graphics);
         void Debug_Draw(SimpleRenderer& rend) override;

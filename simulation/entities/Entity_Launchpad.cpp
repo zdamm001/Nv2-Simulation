@@ -1,4 +1,5 @@
 #include "Entity_Launchpad.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Launchpad.h"
 
 Entity_Launchpad::Entity_Launchpad(Grid_Entity& entities, double x, double y, double nx, double ny)
     : pos(x, y), n(nx, ny), r(12 * 0.5), strength(12 * (3 / 7)), gfx_triggerEvent(false) {
@@ -38,16 +39,15 @@ bool Entity_Launchpad::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, col
 }
 
 EntityGraphics* Entity_Launchpad::GenerateGraphicComponent() {
-    return nullptr;
-    //return new EntityGraphics_Launchpad(this, pos.x, pos.y, atan2(n.y, n.x));
+    return new EntityGraphics_Launchpad(this, pos.x, pos.y, atan2(n.y, n.x));
 }
 
 void Entity_Launchpad::GFX_UpdateState(EntityGraphics_Launchpad* graphic) {
     if (gfx_triggerEvent) {
-        //graphic->anim = EntityGraphics_Launchpad::ANIM_LAUNCH;
+        graphic->anim = EntityGraphics_Launchpad::ANIM_LAUNCH;
         gfx_triggerEvent = false;
     } else {
-        //graphic->anim = EntityGraphics_Launchpad::ANIM_IDLE;
+        graphic->anim = EntityGraphics_Launchpad::ANIM_IDLE;
     }
 }
 

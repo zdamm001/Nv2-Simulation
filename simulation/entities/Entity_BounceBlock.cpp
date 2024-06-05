@@ -1,4 +1,5 @@
 #include "Entity_BounceBlock.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_BounceBlock.h"
 
 Entity_BounceBlock::Entity_BounceBlock(Grid_Entity& entities, double x, double y)
   : pos(x, y),
@@ -100,13 +101,12 @@ void Entity_BounceBlock::Move(Simulator* sim) {
 }
 
 EntityGraphics* Entity_BounceBlock::GenerateGraphicComponent() {
-    return nullptr;
-    //return new EntityGraphics_BounceBlock(this);
+    return new EntityGraphics_BounceBlock(this);
 }
 
 void Entity_BounceBlock::GFX_UpdateState(EntityGraphics_BounceBlock* graphic) {
-    //graphic->pos.x = this->pos.x;
-    //graphic->pos.y = this->pos.y;
+    graphic->pos.x = this->pos.x;
+    graphic->pos.y = this->pos.y;
 }
 
 void Entity_BounceBlock::Debug_Draw(SimpleRenderer& rend) {

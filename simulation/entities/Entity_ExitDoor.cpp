@@ -1,4 +1,5 @@
 #include "Entity_ExitDoor.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_ExitDoor.h"
 
 Entity_ExitDoor::Entity_ExitDoor(double x, double y)
     : pos(x, y), r(12), isOpen(false) {
@@ -28,15 +29,14 @@ bool Entity_ExitDoor::SWITCH_IsOpen() {
 }
 
 EntityGraphics* Entity_ExitDoor::GenerateGraphicComponent() {
-    return nullptr;
-    //return new EntityGraphics_ExitDoor(this, pos.x, pos.y);
+    return new EntityGraphics_ExitDoor(this, pos.x, pos.y);
 }
 
 void Entity_ExitDoor::GFX_UpdateState(EntityGraphics_ExitDoor* graphic) {
     if (isOpen) {
-        //graphic->anim = EntityGraphics_ExitDoor::ANIM_OPEN;
+        graphic->anim = EntityGraphics_ExitDoor::ANIM_OPEN;
     } else {
-        //graphic->anim = EntityGraphics_ExitDoor::ANIM_CLOSED;
+        graphic->anim = EntityGraphics_ExitDoor::ANIM_CLOSED;
     }
 }
 

@@ -1,4 +1,5 @@
 #include "Entity_FloorGuard.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_FloorGuard.h"
 
 Entity_FloorGuard::Entity_FloorGuard(Grid_Entity& entities, double x, double y)
     : pos(x, y),
@@ -91,21 +92,20 @@ void Entity_FloorGuard::Move(Simulator* sim) {
 }
 
 EntityGraphics* Entity_FloorGuard::GenerateGraphicComponent() {
-    return nullptr;
-    //return new EntityGraphics_FloorGuard(this);
+    return new EntityGraphics_FloorGuard(this);
 }
 
 void Entity_FloorGuard::GFX_UpdateState(EntityGraphics_FloorGuard* graphic) {
-    //graphic->pos.x = pos.x;
-    //graphic->pos.y = pos.y;
+    graphic->pos.x = pos.x;
+    graphic->pos.y = pos.y;
     if (CUR_STATE == 0) {
-        //graphic->anim = EntityGraphics_FloorGuard::ANIM_IDLE;
+        graphic->anim = EntityGraphics_FloorGuard::ANIM_IDLE;
     }
     else if (CUR_STATE == -1) {
-        //graphic->anim = EntityGraphics_FloorGuard::ANIM_CHASE_L;
+        graphic->anim = EntityGraphics_FloorGuard::ANIM_CHASE_L;
     }
     else {
-        //graphic->anim = EntityGraphics_FloorGuard::ANIM_CHASE_R;
+        graphic->anim = EntityGraphics_FloorGuard::ANIM_CHASE_R;
     }
 }
 

@@ -1,4 +1,5 @@
 #include "Entity_Thwomp.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Thwomp.h"
 
 Entity_Thwomp::Entity_Thwomp(Grid_Entity& entities, double x, double y, int fallDir, bool isHorizontal)
     : pos(x, y), anchor(x, y), r(12 * (3.0 / 4.0)), fallspeed(12 * (5.0 / 14.0) * (40.0 / sim_globals::sim_rate)), raisespeed(12 * (1.0 / 7.0) * (40.0 / sim_globals::sim_rate)), CUR_STATE(0), falldir(falldir), isHorizontal(isHorizontal) {
@@ -171,13 +172,12 @@ EntityGraphics* Entity_Thwomp::GenerateGraphicComponent() {
             angle = 0.5 * M_PI;
         }
     }
-    return nullptr;
-    //return new EntityGraphics_Thwomp(this, angle);
+    return new EntityGraphics_Thwomp(this, angle);
 }
 
 void Entity_Thwomp::GFX_UpdateState(EntityGraphics_Thwomp* graphic) {
-    //graphic->pos.x = pos.x;
-    //graphic->pos.y = pos.y;
+    graphic->pos.x = pos.x;
+    graphic->pos.y = pos.y;
 }
 
 void Entity_Thwomp::Debug_Draw(SimpleRenderer& rend) {

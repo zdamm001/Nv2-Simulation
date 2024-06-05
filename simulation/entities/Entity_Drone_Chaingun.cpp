@@ -1,4 +1,5 @@
 #include "Entity_Drone_Chaingun.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Drone_Chaingun.h"
 
 Entity_Drone_Chaingun::Entity_Drone_Chaingun(Grid_Entity& entities, double x, double y, unsigned int facingDir, unsigned int moveType)
     : Entity_Drone_Shooter_Base(entities, x, y, 12.0 * (1.0 / 14.0) * 0.75 * (40.0 / sim_globals::sim_rate), facingDir, moveType, 35 * (sim_globals::sim_rate / 40), 60 * (sim_globals::sim_rate / 40)) {
@@ -115,23 +116,22 @@ void Entity_Drone_Chaingun::Start_Postfiring(Simulator* sim) {
 }
 
 EntityGraphics* Entity_Drone_Chaingun::GenerateGraphicComponent() {
-    return nullptr;
-    //return new EntityGraphics_Drone_Chaingun(this);
+    return new EntityGraphics_Drone_Chaingun(this);
 }
 
-void Entity_Drone_Chaingun::GFX_UpdateState(EntityGraphics* graphic) {
-    //graphic->pos.x = pos.x;
-    //graphic->pos.y = pos.y;
-    //graphic->orn = gfxorn;
+void Entity_Drone_Chaingun::GFX_UpdateState(EntityGraphics_Drone_Chaingun* graphic) {
+    graphic->pos.x = pos.x;
+    graphic->pos.y = pos.y;
+    graphic->orn = gfxorn;
     int firingState = GetFiringState();
     if (firingState == FIRING_STATE_IDLE) {
-        //graphic->anim = EntityGraphics_Drone_Chaingun::ANIM_MOVE;
+        graphic->anim = EntityGraphics_Drone_Chaingun::ANIM_MOVE;
     } else if (firingState == FIRING_STATE_PREFIRING) {
-        //graphic->anim = EntityGraphics_Drone_Chaingun::ANIM_PREFIRE;
+        graphic->anim = EntityGraphics_Drone_Chaingun::ANIM_PREFIRE;
     } else if (firingState == FIRING_STATE_POSTFIRING) {
-        //graphic->anim = EntityGraphics_Drone_Chaingun::ANIM_POSTFIRE;
+        graphic->anim = EntityGraphics_Drone_Chaingun::ANIM_POSTFIRE;
     } else if (firingState == FIRING_STATE_FIRING) {
-        //graphic->anim = EntityGraphics_Drone_Chaingun::ANIM_FIRING;
+        graphic->anim = EntityGraphics_Drone_Chaingun::ANIM_FIRING;
     }
 }
 

@@ -1,4 +1,5 @@
 #include "Entity_Door_Locked.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Door_Locked.h"
 
 Entity_Door_Locked::Entity_Door_Locked(Grid_Entity& entities, Grid_Segment& segments, int segmentIndex, Segment* segment, Grid_Edges& edges, vector<int>& edgeIndices, bool isHorizontal, double x, double y)
     : Entity_Door_Base(entities, segments, segmentIndex, segment, edges, edgeIndices, isHorizontal, x, y, 12.0 * (5.0 / 12.0), false) {
@@ -16,16 +17,15 @@ void Entity_Door_Locked::OnCollision(Simulator* sim) {
 
 EntityGraphics* Entity_Door_Locked::GenerateGraphicComponent() {
     vec2 doorPos = GetDoorPos();
-    return nullptr;
-    //return new EntityGraphics_Door_Locked(this, doorPos.x, doorPos.y, GetDoorOrn(), trigger_pos.x, trigger_pos.y);
+    return new EntityGraphics_Door_Locked(this, doorPos.x, doorPos.y, GetDoorOrn(), trigger_pos.x, trigger_pos.y);
 }
 
-void Entity_Door_Locked::GFX_UpdateState(EntityGraphics* graphic) {
+void Entity_Door_Locked::GFX_UpdateState(EntityGraphics_Door_Locked* graphic) {
     if (IsDoorOpen()) {
-        //graphic->anim = EntityGraphics_Door_Locked::ANIM_OPEN;
+        graphic->anim = EntityGraphics_Door_Locked::ANIM_OPEN;
     }
     else {
-        //graphic->anim = EntityGraphics_Door_Locked::ANIM_CLOSE;
+        graphic->anim = EntityGraphics_Door_Locked::ANIM_CLOSE;
     }
 }
 

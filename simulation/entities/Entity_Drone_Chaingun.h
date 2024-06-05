@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Entity_Drone_Shooter_Base.h"
-//#include "..\\audiovisual\\entitygraphics\\EntityGraphics_Drone_Chaingun.h"
 #include "..\\..\\math\\mathutils.h"
 #include "..\\..\\math\\vec2.h"
 //#include "..\\simpleFramework\\SimpleRenderer.h"
@@ -34,7 +33,7 @@ class Entity_Drone_Chaingun : public Entity_Drone_Shooter_Base {
         void Start_Postfiring(Simulator* sim) override;
     public:
         EntityGraphics* GenerateGraphicComponent() override;
-        void GFX_UpdateState(EntityGraphics* graphic);
+        void GFX_UpdateState(EntityGraphics_Drone_Chaingun* graphic);
         void Debug_Draw(SimpleRenderer& rend);
         void saveState(entitySave& state) override;
 };

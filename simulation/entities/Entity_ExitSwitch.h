@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Entity_Base.h"
-//#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_ExitSwitch.h"
 #include "..\\..\\math\\vec2.h"
 //#include "simpleFramework\\SimpleRenderer.h"
 #include "..\\Simulator.h"
@@ -9,6 +8,7 @@
 #include "..\\collision\\colutils.h"
 #include "..\\ninja\\Ninja.h"
 #include "Entity_ExitDoor.h"
+
 class EntityGraphics_ExitSwitch;
 
 class Entity_ExitSwitch : public Entity_Base {

@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Entity_Base.h"
-//#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_OnewayPlatform.h"
 #include "..\\..\\math\\vec2.h"
 #include "..\\Simulator.h"
 #include "..\\collision\\colutils.h"
 #include "..\\ninja\\Ninja.h"
+
 class EntityGraphics_OnewayPlatform;
 
 class Entity_OnewayPlatform : public Entity_Base {

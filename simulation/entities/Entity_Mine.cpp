@@ -1,4 +1,5 @@
 #include "Entity_Mine.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Mine.h"
 
 Entity_Mine::Entity_Mine(Grid_Entity& entities, double x, double y)
     : pos(x, y), r(12.0 * (1.0 / 3.0)), isExploded(false) {
@@ -6,7 +7,7 @@ Entity_Mine::Entity_Mine(Grid_Entity& entities, double x, double y)
 }
 
 Entity_Mine::Entity_Mine(Grid_Entity& entities, entitySave& entity)
-    : pos(entity.pos), r(6), isExploded(entity.is) {
+    : pos(entity.pos), r(4), isExploded(entity.is) {
     if (!isExploded) entities.ENTITY_Add(pos, this);
 }
 
@@ -31,15 +32,14 @@ bool Entity_Mine::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collisio
 }
 
 EntityGraphics* Entity_Mine::GenerateGraphicComponent() {
-    return nullptr;
-    //return new EntityGraphics_Mine(this, pos.x, pos.y);
+    return new EntityGraphics_Mine(this, pos.x, pos.y);
 }
 
 void Entity_Mine::GFX_UpdateState(EntityGraphics_Mine* graphic) {
     if (isExploded) {
-        //graphic->anim = EntityGraphics_Mine::ANIM_EXPLODED;
+        graphic->anim = EntityGraphics_Mine::ANIM_EXPLODED;
     } else {
-        //graphic->anim = EntityGraphics_Mine::ANIM_UNEXPLODED;
+        graphic->anim = EntityGraphics_Mine::ANIM_UNEXPLODED;
     }
 }
 

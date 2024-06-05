@@ -1,7 +1,5 @@
 #pragma once
 
-class EntityGraphics;
-class EntityGraphics_BounceBlock;
 #include "..\\..\\math\\vec2.h"
 class SimpleRenderer;
 #include "..\\Simulator.h"
@@ -9,6 +7,8 @@ class SimpleRenderer;
 #include "..\\collision\\colutils.h"
 #include "..\\ninja\\Ninja.h"
 #include "..\\sim_globals.h"
+
+class EntityGraphics_BounceBlock;
 
 class Entity_BounceBlock : public Entity_Base {
     private:

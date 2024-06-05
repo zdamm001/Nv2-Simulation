@@ -1,4 +1,5 @@
 #include "Entity_ExitSwitch.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_ExitSwitch.h"
 
 Entity_ExitSwitch::Entity_ExitSwitch(Grid_Entity& entities, double x, double y, Entity_ExitDoor* door)
     : pos(x, y), r(12 * 0.5), door(door) {
@@ -21,15 +22,14 @@ bool Entity_ExitSwitch::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, co
 }
 
 EntityGraphics* Entity_ExitSwitch::GenerateGraphicComponent() {
-    return nullptr;
-    //return new EntityGraphics_ExitSwitch(this, pos.x, pos.y);
+    return new EntityGraphics_ExitSwitch(this, pos.x, pos.y);
 }
 
 void Entity_ExitSwitch::GFX_UpdateState(EntityGraphics_ExitSwitch* graphic) {
     if (door->SWITCH_IsOpen()) {
-        //graphic->anim = EntityGraphics_ExitSwitch::ANIM_OPEN;
+        graphic->anim = EntityGraphics_ExitSwitch::ANIM_OPEN;
     } else {
-        //graphic->anim = EntityGraphics_ExitSwitch::ANIM_CLOSED;
+        graphic->anim = EntityGraphics_ExitSwitch::ANIM_CLOSED;
     }
 }
 

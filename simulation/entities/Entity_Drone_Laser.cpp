@@ -1,4 +1,5 @@
 #include "Entity_Drone_Laser.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Drone_Laser.h"
 
 Entity_Drone_Laser::Entity_Drone_Laser(Grid_Entity& entities, double x, double y, unsigned int facingDir, unsigned int moveType)
     : laser_duration(80),  Entity_Drone_Shooter_Base(entities, x, y, 12.0 * (1.0 / 14.0) * 0.5 * (40.0 / sim_globals::sim_rate), facingDir, moveType, 30 * (sim_globals::sim_rate / 40), 40 * (sim_globals::sim_rate / 40)) {
@@ -61,29 +62,26 @@ void Entity_Drone_Laser::Start_Postfiring(Simulator* sim) {
 }
 
 EntityGraphics* Entity_Drone_Laser::GenerateGraphicComponent() {
-    return nullptr;
-    //return new EntityGraphics_Drone_Laser(this);
+    return new EntityGraphics_Drone_Laser(this);
 }
 
 void Entity_Drone_Laser::GFX_UpdateState(EntityGraphics_Drone_Laser* graphics) {
-    
     if (graphics) {
-        //graphics->pos.x = pos.x;
-        //graphics->pos.y = pos.y;
-        //graphics->orn = gfxorn;
+        graphics->pos.x = pos.x;
+        graphics->pos.y = pos.y;
+        graphics->orn = gfxorn;
         int firingState = GetFiringState();
-        
         if (firingState == FIRING_STATE_IDLE) {
-            //graphics->anim = EntityGraphics_Drone_Laser::ANIM_MOVE;
+            graphics->anim = EntityGraphics_Drone_Laser::ANIM_MOVE;
         } else if (firingState == FIRING_STATE_PREFIRING) {
-            //graphics->anim = EntityGraphics_Drone_Laser::ANIM_PREFIRE;
-            //graphics->blast_pos.x = laser_hit_pos.x;
-            //graphics->blast_pos.y = laser_hit_pos.y;
+            graphics->anim = EntityGraphics_Drone_Laser::ANIM_PREFIRE;
+            graphics->blast_pos.x = laser_hit_pos.x;
+            graphics->blast_pos.y = laser_hit_pos.y;
         } else if (firingState == FIRING_STATE_POSTFIRING) {
-            //graphics->anim = EntityGraphics_Drone_Laser::ANIM_POSTFIRE;
+            graphics->anim = EntityGraphics_Drone_Laser::ANIM_POSTFIRE;
         } else if (firingState == FIRING_STATE_FIRING) {
-            //graphics->anim = EntityGraphics_Drone_Laser::ANIM_FIRING;
-            //graphics->blast_scale = 30 + 200 * (laser_timer / laser_duration);
+            graphics->anim = EntityGraphics_Drone_Laser::ANIM_FIRING;
+            graphics->blast_scale = 30 + 200 * (laser_timer / laser_duration);
         }
     }
 }

@@ -1,4 +1,5 @@
 #include "Entity_Drone_Chaser.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Drone_Chaser.h"
 
 Entity_Drone_Chaser::Entity_Drone_Chaser(Grid_Entity& entities, double x, double y, unsigned int facingDir, unsigned int moveType)
     : Entity_Drone_Zap(entities, x, y, facingDir, moveType),
@@ -101,19 +102,18 @@ bool Entity_Drone_Chaser::ChooseNextDirAndGoal(Grid_Edges& edges, const vector<N
 }
 
 EntityGraphics* Entity_Drone_Chaser::GenerateGraphicComponent() {
-    return nullptr;
-    //return new EntityGraphics_Drone_Chaser(this);
+    return new EntityGraphics_Drone_Chaser(this);
 }
 
 void Entity_Drone_Chaser::GFX_UpdateState(EntityGraphics_Drone_Chaser* graphic) {
-    //graphic->pos.x = pos.x;
-    //graphic->pos.y = pos.y;
-    //graphic->orn = gfxorn;
+    graphic->pos.x = pos.x;
+    graphic->pos.y = pos.y;
+    graphic->orn = gfxorn;
     if (this->gfx_startedChasing) {
         this->gfx_startedChasing = false;
-        //graphic->anim = EntityGraphics_Drone_Chaser::ANIM_CHASE;
+        graphic->anim = EntityGraphics_Drone_Chaser::ANIM_CHASE;
     } else {
-        //graphic->anim = EntityGraphics_Drone_Chaser::ANIM_IDLE;
+        graphic->anim = EntityGraphics_Drone_Chaser::ANIM_IDLE;
     }
 }
 

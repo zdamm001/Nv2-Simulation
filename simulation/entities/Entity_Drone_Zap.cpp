@@ -1,4 +1,5 @@
 #include "Entity_Drone_Zap.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Drone_Zap.h"
 
 Entity_Drone_Zap::Entity_Drone_Zap(Grid_Entity& entities, double x, double y, unsigned int facingDir, unsigned int moveType)
     : Entity_Drone_Base(entities, x, y, 12.0 * (1.0 / 14.0) * 2 * (40 / sim_globals::sim_rate), facingDir, moveType) {}
@@ -25,15 +26,14 @@ bool Entity_Drone_Zap::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, col
 }
 
 EntityGraphics* Entity_Drone_Zap::GenerateGraphicComponent() {
-    return nullptr;
-    //return new EntityGraphics_Drone_Zap(this);
+    return new EntityGraphics_Drone_Zap(this);
 }
 
 void Entity_Drone_Zap::GFX_UpdateState(EntityGraphics_Drone_Zap* graphic) {
     if (graphic) {
-        //graphic->pos.x = pos.x;
-        //graphic->pos.y = pos.y;
-        //graphic->orn = gfxorn;
+        graphic->pos.x = pos.x;
+        graphic->pos.y = pos.y;
+        graphic->orn = gfxorn;
     }
 }
 

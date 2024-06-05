@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Entity_Base.h"
-//#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Launchpad.h"
 #include "..\\..\\math\\vec2.h"
 //#include "simpleFramework\\SimpleRenderer.h"
 #include "..\\Simulator.h"
@@ -9,6 +8,7 @@
 #include "..\\collision\\colutils.h"
 #include "..\\ninja\\Ninja.h"
 #include "..\\sim_globals.h"
+
 class EntityGraphics_Launchpad;
 
 class Entity_Launchpad : public Entity_Base {

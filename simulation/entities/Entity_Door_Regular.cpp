@@ -1,4 +1,5 @@
 #include "Entity_Door_Regular.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Door_Regular.h"
 
 Entity_Door_Regular::Entity_Door_Regular(Grid_Entity& entities, Grid_Segment& segments, int segmentIndex, Segment* segment, Grid_Edges& edges, vector<int>& edgeIndices, bool isHorizontal, double x, double y)
     : close_timer(0), Entity_Door_Base(entities, segments, segmentIndex, segment, edges, edgeIndices, isHorizontal, x, y, 12.0 * (5.0 / 6.0), false) {
@@ -27,15 +28,14 @@ void Entity_Door_Regular::Think(Simulator* sim) {
 
 EntityGraphics* Entity_Door_Regular::GenerateGraphicComponent() {
     vec2 doorPos = GetDoorPos();
-    return nullptr;
-    //return new EntityGraphics_Door_Regular(this, doorPos.x, doorPos.y, GetDoorOrn());
+    return new EntityGraphics_Door_Regular(this, doorPos.x, doorPos.y, GetDoorOrn());
 }
 
 void Entity_Door_Regular::GFX_UpdateState(EntityGraphics_Door_Regular* graphic) {
     if (IsDoorOpen()) {
-        //graphic->anim = EntityGraphics_Door_Regular::ANIM_OPEN;
+        graphic->anim = EntityGraphics_Door_Regular::ANIM_OPEN;
     } else {
-        //graphic->anim = EntityGraphics_Door_Regular::ANIM_CLOSE;
+        graphic->anim = EntityGraphics_Door_Regular::ANIM_CLOSE;
     }
 }
 

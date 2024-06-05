@@ -5,7 +5,7 @@ vector<double> Entity_Drone_Base::DIR_TO_RAD(4);
 vector<vector<unsigned int>> Entity_Drone_Base::MOVELIST(4, vector<unsigned int>(4));
 
 Entity_Drone_Base::Entity_Drone_Base(Grid_Entity& entities, double x, double y, double speed, unsigned int facingDir, unsigned int moveType)
-    : pos(x, y), r(12.0 * (3.0 / 4.0)), speed(speed), step_size(24), next_goal(pos), facing_DIR(facingDir), move_TYPE(moveType), gfxorn(DIR_TO_RAD[facing_DIR]) {
+    : pos(x, y), r(12.0 * (3.0 / 4.0)), speed(speed), step_size(24), next_goal(pos), facing_DIR(facingDir), move_TYPE(moveType), gfxorn(DIR_TO_RAD[facingDir]) {
     entities.ENTITY_Add(pos, this);
 }
 

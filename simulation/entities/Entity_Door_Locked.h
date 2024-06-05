@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Entity_Door_Base.h"
-//#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Door_Locked.h"
 #include "..\\..\\math\\vec2.h"
 //#include "..\\simpleFramework\\SimpleRenderer.h"
 #include "..\\Simulator.h"
@@ -9,6 +8,7 @@
 #include "..\\collision\\Grid_Entity.h"
 #include "..\\collision\\Grid_Segment.h"
 #include "..\\collision\\Segment.h"
+
 class EntityGraphics_Door_Locked;
 
 class Entity_Door_Locked : public Entity_Door_Base {
@@ -19,7 +19,7 @@ class Entity_Door_Locked : public Entity_Door_Base {
         void OnCollision(Simulator* sim) override;
     public:
         EntityGraphics* GenerateGraphicComponent() override;
-        void GFX_UpdateState(EntityGraphics* graphic);
+        void GFX_UpdateState(EntityGraphics_Door_Locked* graphic);
         void Debug_Draw(SimpleRenderer& rend) override;
         void saveState(entitySave& state) override;
 };

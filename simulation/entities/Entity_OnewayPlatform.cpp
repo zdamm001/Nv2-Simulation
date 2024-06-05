@@ -1,4 +1,5 @@
 #include "Entity_OnewayPlatform.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_OnewayPlatform.h"
 
 Entity_OnewayPlatform::Entity_OnewayPlatform(Grid_Entity& entities, double x, double y, double nx, double ny)
     : pos(x, y), n(nx, ny), r(12) {
@@ -61,8 +62,7 @@ double Entity_OnewayPlatform::CalculatePenetration(const vec2& circlePosition, c
 }
 
 EntityGraphics* Entity_OnewayPlatform::GenerateGraphicComponent() {
-    return nullptr;
-    //return new EntityGraphics_OnewayPlatform(pos.x, pos.y, atan2(n.y, n.x));
+    return new EntityGraphics_OnewayPlatform(pos.x, pos.y, atan2(n.y, n.x));
 }
 
 void Entity_OnewayPlatform::Debug_Draw(SimpleRenderer& rend) {

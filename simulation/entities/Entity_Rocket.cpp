@@ -1,4 +1,5 @@
-#include "Entity_Rocket.h" // Include appropriate headers for your project
+#include "Entity_Rocket.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Rocket.h"
 
 Entity_Rocket::Entity_Rocket(Grid_Entity& entities, double x, double y) {
     accel_start = 0.1 * (40.0 / sim_globals::sim_rate) * (40.0 / sim_globals::sim_rate);
@@ -186,27 +187,26 @@ void Entity_Rocket::Event_Explode(Simulator* sim) {
 }
 
 EntityGraphics* Entity_Rocket::GenerateGraphicComponent() {
-    return nullptr;
-    //return new EntityGraphics_Rocket(this, pos.x, pos.y);
+    return new EntityGraphics_Rocket(this, pos.x, pos.y);
 }
 
 void Entity_Rocket::GFX_UpdateState(EntityGraphics_Rocket* graphic) {
     if (gfx_PREV_STATE == STATE_PREFIRE && CUR_STATE == STATE_HOMING) {
-        //graphic->anim_base = EntityGraphics_Rocket::ANIM_FIRE;
+        graphic->anim_base = EntityGraphics_Rocket::ANIM_FIRE;
     }
     else if (gfx_PREV_STATE == STATE_HOMING && CUR_STATE != STATE_HOMING) {
-        //graphic->is_rocket_active = false;
-        //graphic->anim_base = EntityGraphics_Rocket::ANIM_EXPLODE;
+        graphic->is_rocket_active = false;
+        graphic->anim_base = EntityGraphics_Rocket::ANIM_EXPLODE;
     }
     else if (CUR_STATE == STATE_PREFIRE || CUR_STATE == STATE_IDLE) {
-        //graphic->is_rocket_active = false;
-        //graphic->anim_base = EntityGraphics_Rocket::ANIM_IDLE;
+        graphic->is_rocket_active = false;
+        graphic->anim_base = EntityGraphics_Rocket::ANIM_IDLE;
     }
     if (CUR_STATE == STATE_HOMING) {
-        //graphic->is_rocket_active = true;
-        //graphic->pos_rocket.x = rocket_pos.x;
-        //graphic->pos_rocket.y = rocket_pos.y;
-        //graphic->orn_rocket = atan2(rocket_dir.y, rocket_dir.x);
+        graphic->is_rocket_active = true;
+        graphic->pos_rocket.x = rocket_pos.x;
+        graphic->pos_rocket.y = rocket_pos.y;
+        graphic->orn_rocket = atan2(rocket_dir.y, rocket_dir.x);
     }
 }
 

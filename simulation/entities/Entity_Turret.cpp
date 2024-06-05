@@ -1,4 +1,5 @@
 #include "Entity_Turret.h"
+#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Turret.h"
 
 Entity_Turret::Entity_Turret(Grid_Entity& entities, double x, double y)
     : pos(x, y), aim_pos(x, y), aim_region(0), shot_timer(0), CUR_STATE(STATE_IDLE), targetIndex(-1), gfx_triggerEvent(false), HACKY_drawtimer(0), threshold2(3), aimspeed(4), timerstep(4) {
@@ -160,32 +161,31 @@ void Entity_Turret::UpdateAim(const vec2& ninjaPos, const vec2& ninjaVel) {
 }
 
 EntityGraphics* Entity_Turret::GenerateGraphicComponent() {
-    return nullptr;
-    //return new EntityGraphics_Turret(this, pos.x, pos.y);
+    return new EntityGraphics_Turret(this, pos.x, pos.y);
 }
 
 void Entity_Turret::GFX_UpdateState(EntityGraphics_Turret* graphic) {
-    //graphic->pos_crosshair.x = aim_pos.x;
-    //graphic->pos_crosshair.y = aim_pos.y;
+    graphic->pos_crosshair.x = aim_pos.x;
+    graphic->pos_crosshair.y = aim_pos.y;
     if (gfx_triggerEvent) {
-        //graphic->anim_base = EntityGraphics_Turret::ANIM_FIRING;
+        graphic->anim_base = EntityGraphics_Turret::ANIM_FIRING;
         gfx_triggerEvent = false;
     } else if (CUR_STATE == STATE_IDLE) {
-        //graphic->anim_base = EntityGraphics_Turret::ANIM_IDLE;
-        //graphic->anim_crosshair = EntityGraphics_Turret::CROSSHAIR_OFF;
+        graphic->anim_base = EntityGraphics_Turret::ANIM_IDLE;
+        graphic->anim_crosshair = EntityGraphics_Turret::CROSSHAIR_OFF;
     } else if (CUR_STATE == STATE_PREFIRE) {
-        //graphic->anim_base = EntityGraphics_Turret::ANIM_PREFIRE;
-        //graphic->anim_crosshair = EntityGraphics_Turret::CROSSHAIR_PREFIRE;
+        graphic->anim_base = EntityGraphics_Turret::ANIM_PREFIRE;
+        graphic->anim_crosshair = EntityGraphics_Turret::CROSSHAIR_PREFIRE;
     } else if (CUR_STATE == STATE_POSTFIRE) {
-        //graphic->anim_base = EntityGraphics_Turret::ANIM_POSTFIRE;
-        //graphic->anim_crosshair = EntityGraphics_Turret::CROSSHAIR_POSTFIRE;
+        graphic->anim_base = EntityGraphics_Turret::ANIM_POSTFIRE;
+        graphic->anim_crosshair = EntityGraphics_Turret::CROSSHAIR_POSTFIRE;
     } else if (CUR_STATE == STATE_TARGETING) {
         if (aim_region == 0) {
-            //graphic->anim_crosshair = EntityGraphics_Turret::CROSSHAIR_FAR;
+            graphic->anim_crosshair = EntityGraphics_Turret::CROSSHAIR_FAR;
         } else if (aim_region == 1) {
-            //graphic->anim_crosshair = EntityGraphics_Turret::CROSSHAIR_MID;
+            graphic->anim_crosshair = EntityGraphics_Turret::CROSSHAIR_MID;
         } else if (aim_region == 2) {
-            //graphic->anim_crosshair = EntityGraphics_Turret::CROSSHAIR_NEAR;
+            graphic->anim_crosshair = EntityGraphics_Turret::CROSSHAIR_NEAR;
         }
     }
 }

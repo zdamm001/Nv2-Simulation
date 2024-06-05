@@ -9,7 +9,6 @@
 #include "..\\sim_globals.h"
 #include "entity_helpers.h"
 
-class EntityGraphics;
 class EntityGraphics_Turret;
 
 class Entity_Turret : public Entity_Base {
@@ -49,6 +48,7 @@ class Entity_Turret : public Entity_Base {
         void Event_StopFiring();
         bool IsCurrentTargetVisible(Simulator* sim, vec2& hitPos, vec2& hitNormal);
         void UpdateAim(const vec2& ninjaPos, const vec2& ninjaVel);
+    public:
         EntityGraphics* GenerateGraphicComponent();
         void GFX_UpdateState(EntityGraphics_Turret* graphic);
         void Debug_Draw(SimpleRenderer& rend);

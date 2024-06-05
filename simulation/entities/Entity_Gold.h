@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Entity_Base.h"
-//#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Gold.h"
 #include "..\\..\\math\\vec2.h"
 //#include "simpleFramework\\SimpleRenderer.h"
 #include "..\\Simulator.h"
 #include "..\\collision\\Grid_Entity.h"
 #include "..\\collision\\colutils.h"
 #include "..\\ninja\\Ninja.h"
+
 class EntityGraphics_Gold;
 
 class Entity_Gold : public Entity_Base {

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Entity_Door_Base.h"
-//#include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Door_Regular.h"
 #include "..\\..\\math\\vec2.h"
 //#include "..\\simpleFramework\\SimpleRenderer.h"
 #include "..\\Simulator.h"
@@ -9,6 +8,7 @@
 #include "..\\collision\\Grid_Entity.h"
 #include "..\\collision\\Grid_Segment.h"
 #include "..\\collision\\Segment.h"
+
 class EntityGraphics_Door_Regular;
 
 class Entity_Door_Regular : public Entity_Door_Base {
