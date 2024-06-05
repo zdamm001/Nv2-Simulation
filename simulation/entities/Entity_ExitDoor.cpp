@@ -5,9 +5,9 @@ Entity_ExitDoor::Entity_ExitDoor(double x, double y)
     : pos(x, y), r(12), isOpen(false) {
 }
 
-Entity_ExitDoor::Entity_ExitDoor(Grid_Entity& entities, entitySave& entity)
+Entity_ExitDoor::Entity_ExitDoor(Grid_Entity* entities, entitySave& entity)
     : pos(entity.pos), r(12), isOpen(entity.state) {
-    if (isOpen) entities.ENTITY_Add(pos, this);
+    if (isOpen) entities->ENTITY_Add(pos, this);
 }
 
 bool Entity_ExitDoor::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {
@@ -19,9 +19,9 @@ bool Entity_ExitDoor::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, coll
     return false;
 }
 
-void Entity_ExitDoor::SWITCH_OpenTheExit(Grid_Entity& entities) {
+void Entity_ExitDoor::SWITCH_OpenTheExit(Grid_Entity* entities) {
     isOpen = true;
-    entities.ENTITY_Add(pos, this);
+    entities->ENTITY_Add(pos, this);
 }
 
 bool Entity_ExitDoor::SWITCH_IsOpen() {

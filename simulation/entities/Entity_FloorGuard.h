@@ -20,8 +20,8 @@ class Entity_FloorGuard : public Entity_Base {
         int CUR_STATE;
         double margin;
     public:
-        Entity_FloorGuard(Grid_Entity& entities, double x, double y);
-        Entity_FloorGuard(Grid_Entity& entities, entitySave& entity);
+        Entity_FloorGuard(Grid_Entity* entities, double x, double y);
+        Entity_FloorGuard(Grid_Entity* entities, entitySave& entity);
         bool CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) override;
         void Think(Simulator* sim) override;
         void Move(Simulator* sim) override;

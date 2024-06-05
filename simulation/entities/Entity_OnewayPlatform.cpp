@@ -1,14 +1,14 @@
 #include "Entity_OnewayPlatform.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_OnewayPlatform.h"
 
-Entity_OnewayPlatform::Entity_OnewayPlatform(Grid_Entity& entities, double x, double y, double nx, double ny)
+Entity_OnewayPlatform::Entity_OnewayPlatform(Grid_Entity* entities, double x, double y, double nx, double ny)
     : pos(x, y), n(nx, ny), r(12) {
-    entities.ENTITY_Add(pos, this);
+    entities->ENTITY_Add(pos, this);
 }
 
-Entity_OnewayPlatform::Entity_OnewayPlatform(Grid_Entity& entities, entitySave& entity)
+Entity_OnewayPlatform::Entity_OnewayPlatform(Grid_Entity* entities, entitySave& entity)
     : pos(entity.pos), n(entity.n), r(12) {
-    entities.ENTITY_Add(pos, this);
+    entities->ENTITY_Add(pos, this);
 }
 
 bool Entity_OnewayPlatform::CollideVsCircle_Physical(collision_result_physical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius) {

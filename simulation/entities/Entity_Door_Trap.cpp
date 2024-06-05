@@ -1,17 +1,17 @@
 #include "Entity_Door_Trap.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Door_Trap.h"
 
-Entity_Door_Trap::Entity_Door_Trap(Grid_Entity& entities, Grid_Segment& segments, int segmentIndex, Segment* segment, Grid_Edges& edges, vector<int>& edgeIndices, bool isHorizontal, double x, double y)
+Entity_Door_Trap::Entity_Door_Trap(Grid_Entity* entities, Grid_Segment* segments, int segmentIndex, Segment* segment, Grid_Edges* edges, vector<int>& edgeIndices, bool isHorizontal, double x, double y)
     : Entity_Door_Base(entities, segments, segmentIndex, segment, edges, edgeIndices, isHorizontal, x, y, 12.0 * (5.0 / 12.0), true) {
 }
 
-Entity_Door_Trap::Entity_Door_Trap(Grid_Entity& entities, entitySave& entity, Grid_Segment& segments, Grid_Edges& edges)
+Entity_Door_Trap::Entity_Door_Trap(Grid_Entity* entities, entitySave& entity, Grid_Segment* segments, Grid_Edges* edges)
     : Entity_Door_Base(entities, entity, segments, edges, 12.0 * (5.0 / 12.0)) {
-    if (entity.is == true) entities.ENTITY_Add(trigger_pos, this);
+    if (entity.is == true) entities->ENTITY_Add(trigger_pos, this);
 }
 
 void Entity_Door_Trap::OnCollision(Simulator* sim) {
-    sim->objGrid.ENTITY_Remove(this);
+    sim->objGrid->ENTITY_Remove(this);
     ChangeDoorState(false);
 }
 

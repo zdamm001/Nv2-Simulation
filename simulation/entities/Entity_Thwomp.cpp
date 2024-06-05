@@ -1,15 +1,15 @@
 #include "Entity_Thwomp.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Thwomp.h"
 
-Entity_Thwomp::Entity_Thwomp(Grid_Entity& entities, double x, double y, int fallDir, bool isHorizontal)
+Entity_Thwomp::Entity_Thwomp(Grid_Entity* entities, double x, double y, int fallDir, bool isHorizontal)
     : pos(x, y), anchor(x, y), r(12 * (3.0 / 4.0)), fallspeed(12 * (5.0 / 14.0) * (40.0 / sim_globals::sim_rate)), raisespeed(12 * (1.0 / 7.0) * (40.0 / sim_globals::sim_rate)), CUR_STATE(0), falldir(falldir), isHorizontal(isHorizontal) {
-    entities.ENTITY_Add(pos, this);
+    entities->ENTITY_Add(pos, this);
     n = vec2();
 }
 
-Entity_Thwomp::Entity_Thwomp(Grid_Entity& entities, entitySave& entity)
+Entity_Thwomp::Entity_Thwomp(Grid_Entity* entities, entitySave& entity)
     : pos(entity.pos), anchor(entity.pos2), r(12 * (3.0 / 4.0)), fallspeed(12 * (5.0 / 14.0) * (40.0 / sim_globals::sim_rate)), raisespeed(12 * (1.0 / 7.0) * (40.0 / sim_globals::sim_rate)), CUR_STATE(entity.state), falldir(entity.extra), isHorizontal(entity.is2) {
-    entities.ENTITY_Add(pos, this);
+    entities->ENTITY_Add(pos, this);
     n = entity.n;
 }
 
@@ -56,7 +56,7 @@ bool Entity_Thwomp::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collis
 
 void Entity_Thwomp::Think(Simulator* sim) {
     if (CUR_STATE == 0) {
-        Grid_Edges& edgeGrid = sim->edgeGrid;
+        Grid_Edges* edgeGrid = sim->edgeGrid;
         for (int i = 0; i < sim->playerList.size(); i++) {
             Ninja* ninja = sim->playerList[i];
             if (!ninja->IsDead()) {
@@ -67,11 +67,11 @@ void Entity_Thwomp::Think(Simulator* sim) {
                 double detectionRange = 2 * (r + ninjaRadius);
                 if (isHorizontal) {
                     if (fabs(deltaY) < detectionRange) {
-                        int thwompX = edgeGrid.GetGridCoordinateFromWorldspace_1D(pos.x - falldir * r);
-                        int thwompYMin = edgeGrid.GetGridCoordinateFromWorldspace_1D(pos.y - r);
-                        int thwompYMax = edgeGrid.GetGridCoordinateFromWorldspace_1D(pos.y + r);
-                        int thwompEndX = edgeGrid.SweepHorizontal(thwompYMin, thwompYMax, thwompX, falldir);
-                        int ninjaX = edgeGrid.GetGridCoordinateFromWorldspace_1D(ninjaPos.x);
+                        int thwompX = edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.x - falldir * r);
+                        int thwompYMin = edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.y - r);
+                        int thwompYMax = edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.y + r);
+                        int thwompEndX = edgeGrid->SweepHorizontal(thwompYMin, thwompYMax, thwompX, falldir);
+                        int ninjaX = edgeGrid->GetGridCoordinateFromWorldspace_1D(ninjaPos.x);
                         if (!(ninjaX < min(thwompX, thwompEndX) || ninjaX > max(thwompX, thwompEndX))) {
                             CUR_STATE = 1;
                             break;
@@ -79,11 +79,11 @@ void Entity_Thwomp::Think(Simulator* sim) {
                     }
                 } else {
                     if (fabs(deltaX) < detectionRange) {
-                        int thwompY = edgeGrid.GetGridCoordinateFromWorldspace_1D(pos.y - falldir * r);
-                        int thwompXMin = edgeGrid.GetGridCoordinateFromWorldspace_1D(pos.x - r);
-                        int thwompXMax = edgeGrid.GetGridCoordinateFromWorldspace_1D(pos.x + r);
-                        int thwompEndY = edgeGrid.SweepVertical(thwompXMin, thwompXMax, thwompY, falldir);
-                        int ninjaY = edgeGrid.GetGridCoordinateFromWorldspace_1D(ninjaPos.y);
+                        int thwompY = edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.y - falldir * r);
+                        int thwompXMin = edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.x - r);
+                        int thwompXMax = edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.x + r);
+                        int thwompEndY = edgeGrid->SweepVertical(thwompXMin, thwompXMax, thwompY, falldir);
+                        int ninjaY = edgeGrid->GetGridCoordinateFromWorldspace_1D(ninjaPos.y);
                         if (!(ninjaY < min(thwompY, thwompEndY) || ninjaY > max(thwompY, thwompEndY))) {
                             CUR_STATE = 1;
                             break;
@@ -100,7 +100,7 @@ void Entity_Thwomp::Move(Simulator* sim) {
         return;
     }
 
-    Grid_Edges& edgeGrid = sim->edgeGrid;
+    Grid_Edges* edgeGrid = sim->edgeGrid;
     int dir = falldir * CUR_STATE;
     double radius = dir * r;
     double speed = (CUR_STATE == -1) ? raisespeed : fallspeed;
@@ -110,13 +110,13 @@ void Entity_Thwomp::Move(Simulator* sim) {
         if (CUR_STATE == -1 && (pos.x - anchor.x) * (newX - anchor.x) <= 0) {
             newX = anchor.x;
         }
-        int oldGridX = edgeGrid.GetGridCoordinateFromWorldspace_1D(pos.x + radius);
-        int newGridX = edgeGrid.GetGridCoordinateFromWorldspace_1D(newX + radius);
+        int oldGridX = edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.x + radius);
+        int newGridX = edgeGrid->GetGridCoordinateFromWorldspace_1D(newX + radius);
 
         if (oldGridX != newGridX) {
-            int minY = edgeGrid.GetGridCoordinateFromWorldspace_1D(pos.y - r);
-            int maxY = edgeGrid.GetGridCoordinateFromWorldspace_1D(pos.y + r);
-            if (!edgeGrid.IsEmpty_Column(oldGridX, minY, maxY, dir)) {
+            int minY = edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.y - r);
+            int maxY = edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.y + r);
+            if (!edgeGrid->IsEmpty_Column(oldGridX, minY, maxY, dir)) {
                 if (CUR_STATE != -1) {
                     CUR_STATE = -1;
                 }
@@ -125,7 +125,7 @@ void Entity_Thwomp::Move(Simulator* sim) {
         }
         
         pos.x = newX;
-        sim->objGrid.ENTITY_Move(pos, this);
+        sim->objGrid->ENTITY_Move(pos, this);
 
         if (CUR_STATE == -1 && pos.x == anchor.x) {
             CUR_STATE = 0;
@@ -135,13 +135,13 @@ void Entity_Thwomp::Move(Simulator* sim) {
         if (CUR_STATE == -1 && (pos.y - anchor.y) * (newY - anchor.y) <= 0) {
             newY = anchor.y;
         }
-        int oldGridY = edgeGrid.GetGridCoordinateFromWorldspace_1D(pos.y + radius);
-        int newGridY = edgeGrid.GetGridCoordinateFromWorldspace_1D(newY + radius);
+        int oldGridY = edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.y + radius);
+        int newGridY = edgeGrid->GetGridCoordinateFromWorldspace_1D(newY + radius);
 
         if (oldGridY != newGridY) {
-            int minX = edgeGrid.GetGridCoordinateFromWorldspace_1D(pos.x - r);
-            int maxX = edgeGrid.GetGridCoordinateFromWorldspace_1D(pos.x + r);
-            if (!edgeGrid.IsEmpty_Row(oldGridY, minX, maxX, dir)) {
+            int minX = edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.x - r);
+            int maxX = edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.x + r);
+            if (!edgeGrid->IsEmpty_Row(oldGridY, minX, maxX, dir)) {
                 if (CUR_STATE != -1) {
                     CUR_STATE = -1;
                 }
@@ -150,7 +150,7 @@ void Entity_Thwomp::Move(Simulator* sim) {
         }
         
         pos.y = newY;
-        sim->objGrid.ENTITY_Move(pos, this);
+        sim->objGrid->ENTITY_Move(pos, this);
 
         if (CUR_STATE == -1 && pos.y == anchor.y) {
             CUR_STATE = 0;

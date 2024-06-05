@@ -1,14 +1,14 @@
 #include "Entity_Launchpad.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Launchpad.h"
 
-Entity_Launchpad::Entity_Launchpad(Grid_Entity& entities, double x, double y, double nx, double ny)
+Entity_Launchpad::Entity_Launchpad(Grid_Entity* entities, double x, double y, double nx, double ny)
     : pos(x, y), n(nx, ny), r(12 * 0.5), strength(12 * (3 / 7)), gfx_triggerEvent(false) {
-    entities.ENTITY_Add(pos, this);
+    entities->ENTITY_Add(pos, this);
 }
 
-Entity_Launchpad::Entity_Launchpad(Grid_Entity& entities, entitySave& entity)
+Entity_Launchpad::Entity_Launchpad(Grid_Entity* entities, entitySave& entity)
     : pos(entity.pos), n(entity.n), r(12 * 0.5), strength(12 * (3 / 7)), gfx_triggerEvent(false) {
-    entities.ENTITY_Add(pos, this);
+    entities->ENTITY_Add(pos, this);
 }
 
 bool Entity_Launchpad::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {

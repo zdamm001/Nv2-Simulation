@@ -30,5 +30,5 @@ class Grid_Segment : public Grid_Base {
         void GatherCellContentsFromWorldspaceRegion(double min_x, double min_y, double max_x, double max_y, vector<Segment*>& out_segList);
         int DOOR_GetSegInnerIndex(int cell_index, Segment* seg);
         Segment* DOOR_GetSegment(int cell_index, int seg_index);
-        Grid_Segment Clone() const;
+        Grid_Segment* Clone() const;
 };

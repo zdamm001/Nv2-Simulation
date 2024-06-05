@@ -23,8 +23,8 @@ class Entity_Drone_Chaingun : public Entity_Drone_Shooter_Base {
         vec2 chaingun_hit_pos;
         vec2 chaingun_hit_n;
     public:
-        Entity_Drone_Chaingun(Grid_Entity& entities, double x, double y, unsigned int facingDir, unsigned int moveType);
-        Entity_Drone_Chaingun(Grid_Entity& entities, entitySave& entity);
+        Entity_Drone_Chaingun(Grid_Entity* entities, double x, double y, unsigned int facingDir, unsigned int moveType);
+        Entity_Drone_Chaingun(Grid_Entity* entities, entitySave& entity);
     protected:
         void Start_Prefiring(Simulator* sim, const vec2& ninjaPos) override;
         void Update_Prefiring(Simulator* sim, const vec2& ninjaPos) override;

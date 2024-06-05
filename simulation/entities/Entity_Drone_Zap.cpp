@@ -1,10 +1,10 @@
 #include "Entity_Drone_Zap.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Drone_Zap.h"
 
-Entity_Drone_Zap::Entity_Drone_Zap(Grid_Entity& entities, double x, double y, unsigned int facingDir, unsigned int moveType)
+Entity_Drone_Zap::Entity_Drone_Zap(Grid_Entity* entities, double x, double y, unsigned int facingDir, unsigned int moveType)
     : Entity_Drone_Base(entities, x, y, 12.0 * (1.0 / 14.0) * 2 * (40 / sim_globals::sim_rate), facingDir, moveType) {}
 
-Entity_Drone_Zap::Entity_Drone_Zap(Grid_Entity& entities, entitySave& entity)
+Entity_Drone_Zap::Entity_Drone_Zap(Grid_Entity* entities, entitySave& entity)
     : Entity_Drone_Base(entities, entity, 12.0 * (1.0 / 14.0) * 2 * (40 / sim_globals::sim_rate)) {}
 
 bool Entity_Drone_Zap::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {

@@ -3,13 +3,13 @@
 const vec2 entity_helpers::zero_vec = vec2(0, 0);
 vector<int> entity_helpers::potentialList(0);
 
-int entity_helpers::TryToAquireTarget(const vec2& pos, const vector<Ninja*>& playerList, Grid_Segment& segGrid) {
+int entity_helpers::TryToAquireTarget(const vec2& pos, const vector<Ninja*>& playerList, Grid_Segment* segGrid) {
     potentialList.clear();
     
     vec2 temp_zero_vec(0, 0);
     for (int i = 0; i < playerList.size(); ++i) {
         if (!playerList[i]->IsDead()) {
-            if (segGrid.RaycastVsPlayer(pos, playerList[i]->GetPos(), playerList[i]->GetRadius(), temp_zero_vec, temp_zero_vec)) {
+            if (segGrid->RaycastVsPlayer(pos, playerList[i]->GetPos(), playerList[i]->GetRadius(), temp_zero_vec, temp_zero_vec)) {
                 potentialList.push_back(i);
             }
         }

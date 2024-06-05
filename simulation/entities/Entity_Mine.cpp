@@ -1,21 +1,21 @@
 #include "Entity_Mine.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Mine.h"
 
-Entity_Mine::Entity_Mine(Grid_Entity& entities, double x, double y)
+Entity_Mine::Entity_Mine(Grid_Entity* entities, double x, double y)
     : pos(x, y), r(12.0 * (1.0 / 3.0)), isExploded(false) {
-    entities.ENTITY_Add(pos, this);
+    entities->ENTITY_Add(pos, this);
 }
 
-Entity_Mine::Entity_Mine(Grid_Entity& entities, entitySave& entity)
+Entity_Mine::Entity_Mine(Grid_Entity* entities, entitySave& entity)
     : pos(entity.pos), r(4), isExploded(entity.is) {
-    if (!isExploded) entities.ENTITY_Add(pos, this);
+    if (!isExploded) entities->ENTITY_Add(pos, this);
 }
 
 bool Entity_Mine::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {
     if (colutils::Overlap_Circle_Vs_Circle(pos, r, circlePosition, circleRadius)) {
         //sim->HACKY_GetParticleManager()->Spawn_Explosion(pos);
         isExploded = true;
-        sim->objGrid.ENTITY_Remove(this);
+        sim->objGrid->ENTITY_Remove(this);
         double deltaX = circlePosition.x - pos.x;
         double deltaY = circlePosition.y - pos.y;
         double distance = sqrt(deltaX * deltaX + deltaY * deltaY);

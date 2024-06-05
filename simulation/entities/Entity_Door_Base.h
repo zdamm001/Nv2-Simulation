@@ -17,18 +17,18 @@ class Entity_Door_Base : public Entity_Base {
         vec2 trigger_pos;
     private:
         double trigger_r;
-        Grid_Segment& seg_grid;
+        Grid_Segment* seg_grid;
     protected:
         Segment* seg;
     private:
         int seg_index;
-        Grid_Edges& edge_grid;
+        Grid_Edges* edge_grid;
         vector<int> edge_indices;
         bool isHorizontal;
         bool isOpen;
     public:
-        Entity_Door_Base(Grid_Entity& entities, Grid_Segment& segments, int segmentIndex, Segment* segment, Grid_Edges& edges, vector<int>& edgeIndices, bool isHorizontal, double triggerPosX, double triggerPosY, double triggerRadius, bool isOpen);
-        Entity_Door_Base(Grid_Entity& entities, entitySave& entity, Grid_Segment& segments, Grid_Edges& edges, double triggerRadius);
+        Entity_Door_Base(Grid_Entity* entities, Grid_Segment* segments, int segmentIndex, Segment* segment, Grid_Edges* edges, vector<int>& edgeIndices, bool isHorizontal, double triggerPosX, double triggerPosY, double triggerRadius, bool isOpen);
+        Entity_Door_Base(Grid_Entity* entities, entitySave& entity, Grid_Segment* segments, Grid_Edges* edges, double triggerRadius);
         bool CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) override;
     protected:
         virtual void OnCollision(Simulator* sim);

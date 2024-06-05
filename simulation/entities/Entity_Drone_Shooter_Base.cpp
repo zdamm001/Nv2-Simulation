@@ -2,7 +2,7 @@
 
 vec2 Entity_Drone_Shooter_Base::zero_vec = vec2();
 
-Entity_Drone_Shooter_Base::Entity_Drone_Shooter_Base(Grid_Entity& entities, double x, double y, double speed, unsigned int facingDirection, unsigned int moveType, int prefireDelay, int postfireDelay)
+Entity_Drone_Shooter_Base::Entity_Drone_Shooter_Base(Grid_Entity* entities, double x, double y, double speed, unsigned int facingDirection, unsigned int moveType, int prefireDelay, int postfireDelay)
     : Entity_Drone_Base(entities, x, y, speed, facingDirection, moveType),
       CUR_FIRING_STATE(FIRING_STATE_IDLE),
       firing_timer(0),
@@ -10,7 +10,7 @@ Entity_Drone_Shooter_Base::Entity_Drone_Shooter_Base(Grid_Entity& entities, doub
       postfire_delay(postfireDelay),
       targetIndex(-1) {}
 
-Entity_Drone_Shooter_Base::Entity_Drone_Shooter_Base(Grid_Entity& entities, entitySave& entity, double speed, int prefireDelay, int postfireDelay)
+Entity_Drone_Shooter_Base::Entity_Drone_Shooter_Base(Grid_Entity* entities, entitySave& entity, double speed, int prefireDelay, int postfireDelay)
     : Entity_Drone_Base(entities, entity, speed),
       CUR_FIRING_STATE(entity.state),
       firing_timer(entity.timer),
@@ -58,7 +58,7 @@ void Entity_Drone_Shooter_Base::Think(Simulator* sim) {
             if (postfire_delay <= firing_timer) {
                 for (int i = 0; i < sim->playerList.size(); ++i) {
                     if (!sim->playerList[i]->IsDead()) {
-                        if (sim->segGrid.RaycastVsPlayer(pos, sim->playerList[i]->GetPos(), sim->playerList[i]->GetRadius(), zero_vec, zero_vec)) {
+                        if (sim->segGrid->RaycastVsPlayer(pos, sim->playerList[i]->GetPos(), sim->playerList[i]->GetRadius(), zero_vec, zero_vec)) {
                             Internal_StartPrefiring(sim, i, sim->playerList[i]->GetPos());
                             return;
                         }

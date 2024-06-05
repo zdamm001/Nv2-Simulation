@@ -18,14 +18,14 @@ class Entity_Drone_Chaser : public Entity_Drone_Zap {
         int old_chase_DIR;
         bool gfx_startedChasing;
     public:
-        Entity_Drone_Chaser(Grid_Entity& entities, double x, double y, unsigned int facingDir, unsigned int moveType);
-        Entity_Drone_Chaser(Grid_Entity& entities, entitySave& entity);
+        Entity_Drone_Chaser(Grid_Entity* entities, double x, double y, unsigned int facingDir, unsigned int moveType);
+        Entity_Drone_Chaser(Grid_Entity* entities, entitySave& entity);
         void Think(Simulator* sim) override;
     private:
         void StartChasing(unsigned int newChaseDir);
         void StopChasing(unsigned int newFacingDir);
     protected:
-        bool ChooseNextDirAndGoal(Grid_Edges& edges, const vector<Ninja*>& playerList) override;
+        bool ChooseNextDirAndGoal(Grid_Edges* edges, const vector<Ninja*>& playerList) override;
     public:
         EntityGraphics* GenerateGraphicComponent();
         void GFX_UpdateState(EntityGraphics_Drone_Chaser* graphic);

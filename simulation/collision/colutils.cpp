@@ -3,13 +3,13 @@
 vec2 colutils::closestPoint = vec2();
 vector<Segment*> colutils::segmentList = vector<Segment*>();
 
-int colutils::GetSingleClosestPoint_Signed(Grid_Segment& gridSegment, vec2& point, double radius, vec2& closestPointResult) {
+int colutils::GetSingleClosestPoint_Signed(Grid_Segment* gridSegment, vec2& point, double radius, vec2& closestPointResult) {
     bool isPointBackfacing = false;
     double distanceSquared = 0.0;
     double closestDistanceSquared = 99999999.0;
     int closestDistanceSign = 0;
 
-    gridSegment.GatherCellContentsFromWorldspaceRegion(point.x - radius, point.y - radius, point.x + radius, point.y + radius, segmentList);
+    gridSegment->GatherCellContentsFromWorldspaceRegion(point.x - radius, point.y - radius, point.x + radius, point.y + radius, segmentList);
 
     for (int i = 0; i < segmentList.size(); ++i) {
         isPointBackfacing = segmentList[i]->GetClosestPoint_IsBackfacing(point, closestPoint);

@@ -1,7 +1,7 @@
 #include "Entity_BounceBlock.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_BounceBlock.h"
 
-Entity_BounceBlock::Entity_BounceBlock(Grid_Entity& entities, double x, double y)
+Entity_BounceBlock::Entity_BounceBlock(Grid_Entity* entities, double x, double y)
   : pos(x, y),
     vel(0, 0),
     anchor(x, y),
@@ -13,10 +13,10 @@ Entity_BounceBlock::Entity_BounceBlock(Grid_Entity& entities, double x, double y
     if (sim_globals::sim_rate == 60) {
         damp = 0.98;
     }
-    entities.ENTITY_Add(pos, this);
+    entities->ENTITY_Add(pos, this);
 }
 
-Entity_BounceBlock::Entity_BounceBlock(Grid_Entity& entities, entitySave& entity)
+Entity_BounceBlock::Entity_BounceBlock(Grid_Entity* entities, entitySave& entity)
   : pos(entity.pos),
     vel(entity.vel),
     anchor(entity.pos2),
@@ -29,7 +29,7 @@ Entity_BounceBlock::Entity_BounceBlock(Grid_Entity& entities, entitySave& entity
     if (sim_globals::sim_rate == 60) {
         damp = 0.98;
     }
-    entities.ENTITY_Add(pos, this);
+    entities->ENTITY_Add(pos, this);
 }
 
 bool Entity_BounceBlock::CollideVsCircle_Physical(collision_result_physical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius) {
@@ -97,7 +97,7 @@ void Entity_BounceBlock::Move(Simulator* sim) {
     this->pos.y += dy;
     this->vel.x += dx;
     this->vel.y += dy;
-    sim->objGrid.ENTITY_Move(this->pos, this);
+    sim->objGrid->ENTITY_Move(this->pos, this);
 }
 
 EntityGraphics* Entity_BounceBlock::GenerateGraphicComponent() {

@@ -4,9 +4,9 @@ Simulator* sim_loader::LoadLevel_EditorState(const vector<int>& playerKeys, cons
     mathutils::GenerateNewRandomSeed();
 
     vector<int> tileIDGrid(Simulator::GRID_NUM_COLS * Simulator::GRID_NUM_ROWS, tiletypes::FULL);
-    Grid_Segment gridSegment(Simulator::GRID_NUM_COLS, Simulator::GRID_NUM_ROWS, Simulator::GRID_CELL_SIZE);
-    Grid_Edges gridEdges(Simulator::GRID_NUM_COLS * 2, Simulator::GRID_NUM_ROWS * 2, Simulator::GRID_CELL_SIZE * 0.5);
-    Grid_Entity gridEntity(Simulator::GRID_NUM_COLS, Simulator::GRID_NUM_ROWS, Simulator::GRID_CELL_SIZE);
+    Grid_Segment* gridSegment = new Grid_Segment(Simulator::GRID_NUM_COLS, Simulator::GRID_NUM_ROWS, Simulator::GRID_CELL_SIZE);
+    Grid_Edges* gridEdges = new Grid_Edges(Simulator::GRID_NUM_COLS * 2, Simulator::GRID_NUM_ROWS * 2, Simulator::GRID_CELL_SIZE * 0.5);
+    Grid_Entity* gridEntity = new Grid_Entity(Simulator::GRID_NUM_COLS, Simulator::GRID_NUM_ROWS, Simulator::GRID_CELL_SIZE);
 
     vector<Entity_Base*> entities;
     vector<vec2> ninjaSpawnLocations;
@@ -45,9 +45,9 @@ Simulator* sim_loader::LoadLevel_EditorState(const vector<int>& playerKeys, cons
     return new Simulator(tileIDGrid, gridSegment, gridEdges, gridEntity, entities, ninjas);
 }
 
-void sim_loader::LoadLevel_EditorState_Tiles(const vector<unsigned int>& tileIDs, vector<int>& tileIDGrid, Grid_Segment& gridSegment, Grid_Edges& gridEdges, int numCols, int numRows, double cellSize, double cellHalfWidth) {
-    gridSegment.Clear();
-    gridEdges.Clear();
+void sim_loader::LoadLevel_EditorState_Tiles(const vector<unsigned int>& tileIDs, vector<int>& tileIDGrid, Grid_Segment* gridSegment, Grid_Edges* gridEdges, int numCols, int numRows, double cellSize, double cellHalfWidth) {
+    gridSegment->Clear();
+    gridEdges->Clear();
     LoadLevel_InitTileIDGridWithBoundaryEdges(tileIDGrid, numCols, numRows);
 
     for (int i = 0; i < tileIDs.size(); ++i) {
@@ -113,26 +113,26 @@ void sim_loader::LoadLevel_InitTileIDGridWithBoundaryEdges(vector<int>& tileIDGr
     tileIDGrid[numCols * numRows - 1] = tiletypes::EDGE_CORNER_DR;
 }
 
-void sim_loader::LoadLevel_BuildTileSegs(Grid_Segment& gridSegment, double cellSize, double cellHalfWidth, int colIndex, int rowIndex, int tileType, const vector<int>& neighborTiles) {
+void sim_loader::LoadLevel_BuildTileSegs(Grid_Segment* gridSegment, double cellSize, double cellHalfWidth, int colIndex, int rowIndex, int tileType, const vector<int>& neighborTiles) {
     vector<Segment*> segments = tiledefs::GenerateTileSegments_Filtered(tileType, neighborTiles, colIndex * cellSize + cellHalfWidth, rowIndex * cellSize + cellHalfWidth, cellHalfWidth);
     
     for (size_t i = 0; i < segments.size(); ++i) {
-        gridSegment.AddSegToCell(colIndex, rowIndex, segments[i]);
+        gridSegment->AddSegToCell(colIndex, rowIndex, segments[i]);
     }
 }
 
-void sim_loader::LoadLevel_BuildTileEdges(Grid_Edges& gridEdges, int colIndex, int rowIndex, int tileType) {
-    gridEdges.GAME_LoadTileEdges(colIndex, rowIndex, tileType);
+void sim_loader::LoadLevel_BuildTileEdges(Grid_Edges* gridEdges, int colIndex, int rowIndex, int tileType) {
+    gridEdges->GAME_LoadTileEdges(colIndex, rowIndex, tileType);
 }
 
-void sim_loader::LoadLevel_EditorState_Entities(const vector<vector<unsigned int>>& entityData, Grid_Segment& gridSegment, Grid_Edges& gridEdges, Grid_Entity& gridEntity, vector<Entity_Base*>& entities, vector<vec2>& ninjaSpawnLocations, double cellSize, double cellHalfWidth) {
+void sim_loader::LoadLevel_EditorState_Entities(const vector<vector<unsigned int>>& entityData, Grid_Segment* gridSegment, Grid_Edges* gridEdges, Grid_Entity* gridEntity, vector<Entity_Base*>& entities, vector<vec2>& ninjaSpawnLocations, double cellSize, double cellHalfWidth) {
     unsigned int entityType;
     double entityX;
     double entityY;
     unsigned int entityDir;
     unsigned int entityMove;
 
-    gridEntity.Clear();
+    gridEntity->Clear();
     entities.clear();
     ninjaSpawnLocations.clear();
 
@@ -167,19 +167,19 @@ void sim_loader::LoadLevel_EditorState_Entities(const vector<vector<unsigned int
             vec2 directionVector = edat::MAP_DIR_TO_VEC(entityDir);
             int gridX = static_cast<int>(floor((entityX - directionVector.x * 12) / 24));
             int gridY = static_cast<int>(floor((entityY - directionVector.y * 12) / 24));
-            int cellIndex = gridSegment.DOOR_GetCellIndexFromGridspacePosition(gridX, gridY);
+            int cellIndex = gridSegment->DOOR_GetCellIndexFromGridspacePosition(gridX, gridY);
             bool isVertical = (entityDir == 0);
             vector<int> edgeCells(2, 0);
 
             if (!isVertical) {
-                edgeCells[0] = gridEdges.DOOR_GetCellIndexFromGridspacePosition(gridX * 2, gridY * 2 + 1);
-                edgeCells[1] = gridEdges.DOOR_GetCellIndexFromGridspacePosition(gridX * 2 + 1, gridY * 2 + 1);
+                edgeCells[0] = gridEdges->DOOR_GetCellIndexFromGridspacePosition(gridX * 2, gridY * 2 + 1);
+                edgeCells[1] = gridEdges->DOOR_GetCellIndexFromGridspacePosition(gridX * 2 + 1, gridY * 2 + 1);
             } else {
-                edgeCells[0] = gridEdges.DOOR_GetCellIndexFromGridspacePosition(gridX * 2 + 1, gridY * 2);
-                edgeCells[1] = gridEdges.DOOR_GetCellIndexFromGridspacePosition(gridX * 2 + 1, gridY * 2 + 1);
+                edgeCells[0] = gridEdges->DOOR_GetCellIndexFromGridspacePosition(gridX * 2 + 1, gridY * 2);
+                edgeCells[1] = gridEdges->DOOR_GetCellIndexFromGridspacePosition(gridX * 2 + 1, gridY * 2 + 1);
             }
 
-            vec2 cellCenterPosition = gridSegment.DEBUG_GetWorldspaceCellCenterPositionFromIndex(cellIndex);
+            vec2 cellCenterPosition = gridSegment->DEBUG_GetWorldspaceCellCenterPositionFromIndex(cellIndex);
             vec2 entityPosition(entityX, entityY);
             vec2 perpendicularVector = directionVector.Perp();
             perpendicularVector.Scale(12);
@@ -344,9 +344,9 @@ Simulator* sim_loader::LoadFromSave(appSave& appState, const vector<int>& player
     mathutils::GenerateNewRandomSeed();
 
     vector<int> tileIDGrid = appState.tiles;
-    Grid_Segment gridSegment = appState.segGrid.Clone();
-    Grid_Edges gridEdges = appState.edgeGrid;
-    Grid_Entity gridEntity(Simulator::GRID_NUM_COLS, Simulator::GRID_NUM_ROWS, Simulator::GRID_CELL_SIZE);
+    Grid_Segment* gridSegment = appState.segGrid->Clone();
+    Grid_Edges* gridEdges = appState.edgeGrid;
+    Grid_Entity* gridEntity = new Grid_Entity(Simulator::GRID_NUM_COLS, Simulator::GRID_NUM_ROWS, Simulator::GRID_CELL_SIZE);
 
     vector<Entity_Base*> entities;
 
@@ -373,7 +373,7 @@ Simulator* sim_loader::LoadFromSave(appSave& appState, const vector<int>& player
     return new Simulator(appState, tileIDGrid, gridSegment, gridEdges, gridEntity, entities, ninjas);
 }
 
-void sim_loader::LoadFromSave_Entities(vector<entitySave>& entityState, Grid_Segment& gridSegment, Grid_Edges& gridEdges, Grid_Entity& gridEntity, vector<Entity_Base*>& entities) {
+void sim_loader::LoadFromSave_Entities(vector<entitySave>& entityState, Grid_Segment* gridSegment, Grid_Edges* gridEdges, Grid_Entity* gridEntity, vector<Entity_Base*>& entities) {
     Entity_ExitDoor* lastExitDoor = nullptr;
     for (entitySave& entity : entityState) {
         switch(entity.etype) {

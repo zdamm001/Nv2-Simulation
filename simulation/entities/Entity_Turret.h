@@ -37,8 +37,8 @@ class Entity_Turret : public Entity_Base {
         vec2 TEMP_hit_pos;
         vec2 TEMP_hit_n;
     public:
-        Entity_Turret(Grid_Entity& entities, double x, double y);
-        Entity_Turret(Grid_Entity& entities, entitySave& entity);
+        Entity_Turret(Grid_Entity* entities, double x, double y);
+        Entity_Turret(Grid_Entity* entities, entitySave& entity);
         void Think(Simulator* sim) override;
     private:
         void Event_StartIdling();

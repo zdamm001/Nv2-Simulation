@@ -1,16 +1,16 @@
 #include "Entity_Door_Base.h"
 
-Entity_Door_Base::Entity_Door_Base(Grid_Entity& entities, Grid_Segment& segments, int segmentIndex, Segment* segment, Grid_Edges& edges, vector<int>& edgeIndices, bool isHorizontal, double triggerPosX, double triggerPosY, double triggerRadius, bool isOpen)
+Entity_Door_Base::Entity_Door_Base(Grid_Entity* entities, Grid_Segment* segments, int segmentIndex, Segment* segment, Grid_Edges* edges, vector<int>& edgeIndices, bool isHorizontal, double triggerPosX, double triggerPosY, double triggerRadius, bool isOpen)
     : trigger_pos(triggerPosX, triggerPosY), trigger_r(triggerRadius), seg_grid(segments), seg(segment), seg_index(segmentIndex), edge_grid(edges), edge_indices(edgeIndices), isHorizontal(isHorizontal), isOpen(isOpen) {
     if (!isOpen) {
         AddDoorToWorld();
     }
-    entities.ENTITY_Add(trigger_pos, this);
+    entities->ENTITY_Add(trigger_pos, this);
 }
 
-Entity_Door_Base::Entity_Door_Base(Grid_Entity& entities, entitySave& entity, Grid_Segment& segments, Grid_Edges& edges, double triggerRadius)
+Entity_Door_Base::Entity_Door_Base(Grid_Entity* entities, entitySave& entity, Grid_Segment* segments, Grid_Edges* edges, double triggerRadius)
     : trigger_pos(entity.pos), trigger_r(triggerRadius), seg_grid(segments), seg_index(entity.index), edge_grid(edges), edge_indices({entity.timer, entity.timer2}), isHorizontal(entity.is2), isOpen(entity.is) {
-    seg = segments.DOOR_GetSegment(entity.index, entity.extra);
+    seg = segments->DOOR_GetSegment(entity.index, entity.extra);
 }
 
 bool Entity_Door_Base::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {
@@ -41,16 +41,16 @@ void Entity_Door_Base::ChangeDoorState(bool state) {
 }
 
 void Entity_Door_Base::RemoveDoorFromWorld() {
-    seg_grid.DOOR_RemoveSegment(seg_index, seg);
+    seg_grid->DOOR_RemoveSegment(seg_index, seg);
     for (int i = 0; i < edge_indices.size(); i++) {
-        edge_grid.DOOR_DecrementEdge(edge_indices[i], isHorizontal);
+        edge_grid->DOOR_DecrementEdge(edge_indices[i], isHorizontal);
     }
 }
 
 void Entity_Door_Base::AddDoorToWorld() {
-    seg_grid.DOOR_AddSegment(seg_index, seg);
+    seg_grid->DOOR_AddSegment(seg_index, seg);
     for (int i = 0; i < edge_indices.size(); i++) {
-        edge_grid.DOOR_IncrementEdge(edge_indices[i], isHorizontal);
+        edge_grid->DOOR_IncrementEdge(edge_indices[i], isHorizontal);
     }
 }
 
@@ -86,7 +86,7 @@ void Entity_Door_Base::saveState(entitySave& state) {
     Entity_Base::saveState(state);
     state.pos = trigger_pos;
     state.index = seg_index;
-    state.extra = seg_grid.DOOR_GetSegInnerIndex(seg_index, seg);
+    state.extra = seg_grid->DOOR_GetSegInnerIndex(seg_index, seg);
     state.timer = edge_indices[0];
     state.timer2 = edge_indices[1];
     state.is = isOpen;

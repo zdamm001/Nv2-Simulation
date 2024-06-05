@@ -1,7 +1,7 @@
 #include "Entity_Drone_Chaser.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Drone_Chaser.h"
 
-Entity_Drone_Chaser::Entity_Drone_Chaser(Grid_Entity& entities, double x, double y, unsigned int facingDir, unsigned int moveType)
+Entity_Drone_Chaser::Entity_Drone_Chaser(Grid_Entity* entities, double x, double y, unsigned int facingDir, unsigned int moveType)
     : Entity_Drone_Zap(entities, x, y, facingDir, moveType),
       isChasing(false),
       speed_regular(speed),
@@ -9,7 +9,7 @@ Entity_Drone_Chaser::Entity_Drone_Chaser(Grid_Entity& entities, double x, double
       gfx_startedChasing(false),
       old_chase_DIR(-1) {}
 
-Entity_Drone_Chaser::Entity_Drone_Chaser(Grid_Entity& entities, entitySave& entity)
+Entity_Drone_Chaser::Entity_Drone_Chaser(Grid_Entity* entities, entitySave& entity)
     : Entity_Drone_Zap(entities, entity),
       isChasing(entity.is),
       speed_regular(speed),
@@ -37,7 +37,7 @@ void Entity_Drone_Chaser::StopChasing(unsigned int newFacingDir) {
     isChasing = false;
 }
 
-bool Entity_Drone_Chaser::ChooseNextDirAndGoal(Grid_Edges& edges, const vector<Ninja*>& playerList) {
+bool Entity_Drone_Chaser::ChooseNextDirAndGoal(Grid_Edges* edges, const vector<Ninja*>& playerList) {
     if (isChasing) {
         if (ChooseNextDirAndGoal_HELPER_TestDir(edges, facing_DIR, next_goal)) {
             return true;
@@ -71,19 +71,19 @@ bool Entity_Drone_Chaser::ChooseNextDirAndGoal(Grid_Edges& edges, const vector<N
                             sweepDir = -1;
                         }
                         if (isHorizontal) {
-                            int droneX = edges.GetGridCoordinateFromWorldspace_1D(pos.x);
-                            int droneY = edges.GetGridCoordinateFromWorldspace_1D(pos.y);
-                            int chaseEndX = edges.SweepHorizontal(droneY, droneY, droneX, sweepDir);
-                            int ninjaX = edges.GetGridCoordinateFromWorldspace_1D(ninjaPos.x);
+                            int droneX = edges->GetGridCoordinateFromWorldspace_1D(pos.x);
+                            int droneY = edges->GetGridCoordinateFromWorldspace_1D(pos.y);
+                            int chaseEndX = edges->SweepHorizontal(droneY, droneY, droneX, sweepDir);
+                            int ninjaX = edges->GetGridCoordinateFromWorldspace_1D(ninjaPos.x);
                             if (ninjaX < min(droneX, chaseEndX) || ninjaX > max(droneX, chaseEndX)) {
                                 continue;
                             }
                         }
                         else {
-                            int droneY = edges.GetGridCoordinateFromWorldspace_1D(pos.y);
-                            int droneX = edges.GetGridCoordinateFromWorldspace_1D(pos.x);
-                            int chaseEndY = edges.SweepVertical(droneX, droneX, droneY, sweepDir);
-                            int ninjaY = edges.GetGridCoordinateFromWorldspace_1D(ninjaPos.y);
+                            int droneY = edges->GetGridCoordinateFromWorldspace_1D(pos.y);
+                            int droneX = edges->GetGridCoordinateFromWorldspace_1D(pos.x);
+                            int chaseEndY = edges->SweepVertical(droneX, droneX, droneY, sweepDir);
+                            int ninjaY = edges->GetGridCoordinateFromWorldspace_1D(ninjaPos.y);
                             if (ninjaY < min(droneY, chaseEndY) || ninjaY > max(droneY, chaseEndY)) {
                                 continue;
                             }

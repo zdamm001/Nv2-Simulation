@@ -37,15 +37,15 @@ class Entity_Drone_Base : public Entity_Base {
         unsigned int facing_DIR;
         unsigned int move_TYPE;
     public:
-        Entity_Drone_Base(Grid_Entity& entities, double x, double y, double speed, unsigned int facingDir, unsigned int moveType);
-        Entity_Drone_Base(Grid_Entity& entities, entitySave& entity, double speed);
+        Entity_Drone_Base(Grid_Entity* entities, double x, double y, double speed, unsigned int facingDir, unsigned int moveType);
+        Entity_Drone_Base(Grid_Entity* entities, entitySave& entity, double speed);
         static void Initialize();
         void Move(Simulator* sim) override;
     private:
-        void Move_Forward(Grid_Edges& edges, Grid_Segment& segs, Grid_Entity& entities, const vector<Ninja*>& players);
+        void Move_Forward(Grid_Edges* edges, Grid_Segment* segs, Grid_Entity* entities, const vector<Ninja*>& players);
     protected:
-        virtual bool ChooseNextDirAndGoal(Grid_Edges& edges, const vector<Ninja*>& ninjas);
-        bool ChooseNextDirAndGoal_HELPER_TestDir(Grid_Edges& edges, unsigned int direction, vec2& nextGoal);
+        virtual bool ChooseNextDirAndGoal(Grid_Edges* edges, const vector<Ninja*>& ninjas);
+        bool ChooseNextDirAndGoal_HELPER_TestDir(Grid_Edges* edges, unsigned int direction, vec2& nextGoal);
     public:
         void Debug_Draw(SimpleRenderer& rend) override;
         void saveState(entitySave& state) override;

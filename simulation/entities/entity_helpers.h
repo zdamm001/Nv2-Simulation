@@ -11,5 +11,5 @@ class entity_helpers {
         static vector<int> potentialList;
     public:
         entity_helpers() = delete;
-        static int TryToAquireTarget(const vec2& pos, const vector<Ninja*>& playerList, Grid_Segment& segGrid);
+        static int TryToAquireTarget(const vec2& pos, const vector<Ninja*>& playerList, Grid_Segment* segGrid);
 };

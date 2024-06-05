@@ -1,13 +1,13 @@
 #include "Entity_Door_Regular.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Door_Regular.h"
 
-Entity_Door_Regular::Entity_Door_Regular(Grid_Entity& entities, Grid_Segment& segments, int segmentIndex, Segment* segment, Grid_Edges& edges, vector<int>& edgeIndices, bool isHorizontal, double x, double y)
+Entity_Door_Regular::Entity_Door_Regular(Grid_Entity* entities, Grid_Segment* segments, int segmentIndex, Segment* segment, Grid_Edges* edges, vector<int>& edgeIndices, bool isHorizontal, double x, double y)
     : close_timer(0), Entity_Door_Base(entities, segments, segmentIndex, segment, edges, edgeIndices, isHorizontal, x, y, 12.0 * (5.0 / 6.0), false) {
 }
 
-Entity_Door_Regular::Entity_Door_Regular(Grid_Entity& entities, entitySave& entity, Grid_Segment& segments, Grid_Edges& edges)
+Entity_Door_Regular::Entity_Door_Regular(Grid_Entity* entities, entitySave& entity, Grid_Segment* segments, Grid_Edges* edges)
     : close_timer(entity.state), Entity_Door_Base(entities, entity, segments, edges, 12.0 * (5.0 / 6.0)) {
-    entities.ENTITY_Add(trigger_pos, this);
+    entities->ENTITY_Add(trigger_pos, this);
 }
 
 void Entity_Door_Regular::OnCollision(Simulator* sim) {

@@ -1,22 +1,22 @@
 #include "Entity_FloorGuard.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_FloorGuard.h"
 
-Entity_FloorGuard::Entity_FloorGuard(Grid_Entity& entities, double x, double y)
+Entity_FloorGuard::Entity_FloorGuard(Grid_Entity* entities, double x, double y)
     : pos(x, y),
       speed(12.0 * (3.0 / 7.0) * (40 / sim_globals::sim_rate)),
       r(12 * 0.5),
       CUR_STATE(0),
       margin(0) {
-    entities.ENTITY_Add(pos, this);
+    entities->ENTITY_Add(pos, this);
 }
 
-Entity_FloorGuard::Entity_FloorGuard(Grid_Entity& entities, entitySave& entity)
+Entity_FloorGuard::Entity_FloorGuard(Grid_Entity* entities, entitySave& entity)
     : pos(entity.pos),
       speed(12.0 * (3.0 / 7.0) * (40 / sim_globals::sim_rate)),
       r(12 * 0.5),
       CUR_STATE(entity.state),
       margin(0) {
-    entities.ENTITY_Add(pos, this);
+    entities->ENTITY_Add(pos, this);
 }
 
 bool Entity_FloorGuard::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {
@@ -46,11 +46,11 @@ void Entity_FloorGuard::Think(Simulator* sim) {
                 double guardYMin = pos.y + r;
                 double guardYMax = guardYMin - 24;
                 if (ninjaPos.y >= guardYMax && ninjaPos.y <= guardYMin) {
-                    int ninjaX = sim->edgeGrid.GetGridCoordinateFromWorldspace_1D(ninjaPos.x);
-                    int guardX = sim->edgeGrid.GetGridCoordinateFromWorldspace_1D(pos.x);
-                    int guardY = sim->edgeGrid.GetGridCoordinateFromWorldspace_1D(pos.y);
+                    int ninjaX = sim->edgeGrid->GetGridCoordinateFromWorldspace_1D(ninjaPos.x);
+                    int guardX = sim->edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.x);
+                    int guardY = sim->edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.y);
                     int state = 0;
-                    if (sim->edgeGrid.ScanHorizontal(guardY, guardY, guardX, ninjaX)) {
+                    if (sim->edgeGrid->ScanHorizontal(guardY, guardY, guardX, ninjaX)) {
                         state = 1;
                         if (ninjaPos.x < pos.x) {
                             state = -1;
@@ -75,20 +75,20 @@ void Entity_FloorGuard::Move(Simulator* sim) {
     double newPos = pos.x + CUR_STATE * speed;
     double radiusInMoveDir = CUR_STATE * radius;
     
-    int currX = sim->edgeGrid.GetGridCoordinateFromWorldspace_1D(pos.x + radiusInMoveDir);
-    int newX = sim->edgeGrid.GetGridCoordinateFromWorldspace_1D(newPos + radiusInMoveDir);
+    int currX = sim->edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.x + radiusInMoveDir);
+    int newX = sim->edgeGrid->GetGridCoordinateFromWorldspace_1D(newPos + radiusInMoveDir);
     
     if (currX != newX) {
-        int guardY = sim->edgeGrid.GetGridCoordinateFromWorldspace_1D(pos.y);
+        int guardY = sim->edgeGrid->GetGridCoordinateFromWorldspace_1D(pos.y);
         
-        if (!sim->edgeGrid.IsEmpty(newX, guardY, CUR_STATE, 0) || !sim->edgeGrid.IsSolid_IgnoreDoors(currX, guardY, 0, 1)) {
-            newPos = sim->edgeGrid.GetWorldspaceCoordinateFromGridEdge_1D(newX, CUR_STATE) - CUR_STATE * (radius + 0.01);
+        if (!sim->edgeGrid->IsEmpty(newX, guardY, CUR_STATE, 0) || !sim->edgeGrid->IsSolid_IgnoreDoors(currX, guardY, 0, 1)) {
+            newPos = sim->edgeGrid->GetWorldspaceCoordinateFromGridEdge_1D(newX, CUR_STATE) - CUR_STATE * (radius + 0.01);
             CUR_STATE = 0;
         }
     }
     
     pos.x = newPos;
-    sim->objGrid.ENTITY_Move(pos, this);
+    sim->objGrid->ENTITY_Move(pos, this);
 }
 
 EntityGraphics* Entity_FloorGuard::GenerateGraphicComponent() {

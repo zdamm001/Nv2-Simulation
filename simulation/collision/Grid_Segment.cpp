@@ -247,7 +247,7 @@ Segment* Grid_Segment::DOOR_GetSegment(int cell_index, int seg_index) {
     return cell[seg_index];
 }
 
-Grid_Segment Grid_Segment::Clone() const {
+Grid_Segment* Grid_Segment::Clone() const {
     vector<vector<Segment*>> clonedCells(numcells);
     
     for (int i = 0; i < numcells; i++) {
@@ -256,5 +256,5 @@ Grid_Segment Grid_Segment::Clone() const {
             clonedCells[i].push_back(originalSegment->Clone());
         }
     }
-    return Grid_Segment(numcols, numrows, cellsize, clonedCells);
+    return new Grid_Segment(numcols, numrows, cellsize, clonedCells);
 }

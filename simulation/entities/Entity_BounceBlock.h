@@ -22,8 +22,8 @@ class Entity_BounceBlock : public Entity_Base {
         bool isSleeping;
         vec2 n;
     public:
-        Entity_BounceBlock(Grid_Entity& entities, double x, double y);
-        Entity_BounceBlock(Grid_Entity& entities, entitySave& entity);
+        Entity_BounceBlock(Grid_Entity* entities, double x, double y);
+        Entity_BounceBlock(Grid_Entity* entities, entitySave& entity);
         bool CollideVsCircle_Physical(collision_result_physical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius) override;
         bool CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) override;
         void Think(Simulator* sim) override;

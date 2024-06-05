@@ -1,7 +1,7 @@
 #include "Entity_Rocket.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Rocket.h"
 
-Entity_Rocket::Entity_Rocket(Grid_Entity& entities, double x, double y) {
+Entity_Rocket::Entity_Rocket(Grid_Entity* entities, double x, double y) {
     accel_start = 0.1 * (40.0 / sim_globals::sim_rate) * (40.0 / sim_globals::sim_rate);
     maxspeed = 12.0 * (2.0 / 7.0) * (40.0 / sim_globals::sim_rate);
     accel_rate = pow(1.1, 40.0 / sim_globals::sim_rate);
@@ -19,7 +19,7 @@ Entity_Rocket::Entity_Rocket(Grid_Entity& entities, double x, double y) {
     gfx_PREV_STATE = CUR_STATE;
 }
 
-Entity_Rocket::Entity_Rocket(Grid_Entity& entities, entitySave& entity) {
+Entity_Rocket::Entity_Rocket(Grid_Entity* entities, entitySave& entity) {
     accel_start = 0.1 * (40.0 / sim_globals::sim_rate) * (40.0 / sim_globals::sim_rate);
     maxspeed = 12.0 * (2.0 / 7.0) * (40.0 / sim_globals::sim_rate);
     accel_rate = pow(1.1, 40.0 / sim_globals::sim_rate);
@@ -95,7 +95,7 @@ void Entity_Rocket::Think(Simulator* sim) {
                     rocket_dir.y = 0;
                 }
 
-                sim->objGrid.ENTITY_Add(rocket_pos, this);
+                sim->objGrid->ENTITY_Add(rocket_pos, this);
                 CUR_STATE = STATE_HOMING;
             }
         }
@@ -115,8 +115,8 @@ void Entity_Rocket::Think(Simulator* sim) {
         rocket_pos.x += rocket_vel.x;
         rocket_pos.y += rocket_vel.y;
 
-        sim->objGrid.ENTITY_Move(rocket_pos, this);
-        sim->segGrid.GatherCellContentsFromWorldspaceRegion(min(old_pos.x, rocket_pos.x), min(old_pos.y, rocket_pos.y), max(old_pos.x, rocket_pos.x), max(old_pos.y, rocket_pos.y), nearSegs);
+        sim->objGrid->ENTITY_Move(rocket_pos, this);
+        sim->segGrid->GatherCellContentsFromWorldspaceRegion(min(old_pos.x, rocket_pos.x), min(old_pos.y, rocket_pos.y), max(old_pos.x, rocket_pos.x), max(old_pos.y, rocket_pos.y), nearSegs);
 
         hit_pos.x = 0;
         hit_pos.y = 0;
@@ -180,7 +180,7 @@ void Entity_Rocket::Think(Simulator* sim) {
 }
 
 void Entity_Rocket::Event_Explode(Simulator* sim) {
-    sim->objGrid.ENTITY_Remove(this);
+    sim->objGrid->ENTITY_Remove(this);
     CUR_STATE = STATE_IDLE;
     targetIndex = -1;
     //sim->HACKY_GetParticleManager().Spawn_Explosion(rocket_pos);

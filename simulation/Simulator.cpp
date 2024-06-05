@@ -1,6 +1,6 @@
 #include "Simulator.h"
 
-Simulator::Simulator(vector<int> tileIDs, Grid_Segment segGrid, Grid_Edges edgeGrid, Grid_Entity objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList)
+Simulator::Simulator(vector<int> tileIDs, Grid_Segment* segGrid, Grid_Edges* edgeGrid, Grid_Entity* objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList)
     : tileIDs(tileIDs), 
       segGrid(segGrid), 
       edgeGrid(edgeGrid), 
@@ -15,7 +15,7 @@ Simulator::Simulator(vector<int> tileIDs, Grid_Segment segGrid, Grid_Edges edgeG
     mathutils::SetRandomSeed(1);
 }
 
-Simulator::Simulator(appSave& appState, vector<int> tileIDs, Grid_Segment segGrid, Grid_Edges edgeGrid, Grid_Entity objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList)
+Simulator::Simulator(appSave& appState, vector<int> tileIDs, Grid_Segment* segGrid, Grid_Edges* edgeGrid, Grid_Entity* objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList)
     : Simulator(tileIDs, segGrid, edgeGrid, objGrid, objList, playerList) {
     frame_num = appState.frameNum;
 };
@@ -27,7 +27,12 @@ Simulator::~Simulator() {
     for (Ninja* player : playerList) {
         delete player;
     }
-    segGrid.Clear();
+    segGrid->Clear();
+    //edgeGrid->Clear();
+    //objGrid->Clear();
+    delete segGrid;
+    delete edgeGrid;
+    delete objGrid;
 }
 
 void Simulator::HACKY_SetAV(GraphicsManager* gfx, SoundManager* sfx) {
@@ -267,7 +272,7 @@ void Simulator::DEBUG_Draw_Tiles(SimpleRenderer& rend) {
 
     for (int u = 0; u < GRID_NUM_COLS; ++u) {
         for (int v = 0; v < GRID_NUM_ROWS; ++v) {
-            vector<Segment*> segments = segGrid.DEBUG_GetCellContentsFromGridspacePosition(u, v);
+            vector<Segment*> segments = segGrid->DEBUG_GetCellContentsFromGridspacePosition(u, v);
             for (int i = 0; i < segments.size(); ++i) {
                 segments[i]->DebugDraw_Simple(rend);
             }
@@ -276,11 +281,11 @@ void Simulator::DEBUG_Draw_Tiles(SimpleRenderer& rend) {
 }
 
 void Simulator::DEBUG_Draw_Edges(SimpleRenderer& rend) {
-    edgeGrid.Debug_Draw(rend);
+    edgeGrid->Debug_Draw(rend);
 }
 
 void Simulator::DEBUG_Draw_objGrid(SimpleRenderer& rend) {
-    objGrid.Debug_Draw(rend);
+    objGrid->Debug_Draw(rend);
 }
 
 void Simulator::DEBUG_Draw_Grid(SimpleRenderer& rend) {
@@ -333,6 +338,6 @@ void Simulator::saveState(appSave& appState) {
     for (int i = 0; i < objList.size(); ++i) {
         objList[i]->saveState(appState.entityState[i]);
     }
-    appState.segGrid = segGrid.Clone();
-    appState.edgeGrid = edgeGrid;
+    appState.segGrid = segGrid->Clone();
+    appState.edgeGrid = edgeGrid->Clone();
 }

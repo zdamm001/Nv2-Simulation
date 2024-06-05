@@ -13,8 +13,8 @@ class EntityGraphics_Door_Locked;
 
 class Entity_Door_Locked : public Entity_Door_Base {
     public:
-        Entity_Door_Locked(Grid_Entity& entities, Grid_Segment& segments, int segmentIndex, Segment* segment, Grid_Edges& edges, vector<int>& edgeIndices, bool isHorizontal, double x, double y);
-        Entity_Door_Locked(Grid_Entity& entities, entitySave& entity, Grid_Segment& segments, Grid_Edges& edges);
+        Entity_Door_Locked(Grid_Entity* entities, Grid_Segment* segments, int segmentIndex, Segment* segment, Grid_Edges* edges, vector<int>& edgeIndices, bool isHorizontal, double x, double y);
+        Entity_Door_Locked(Grid_Entity* entities, entitySave& entity, Grid_Segment* segments, Grid_Edges* edges);
     protected:
         void OnCollision(Simulator* sim) override;
     public:

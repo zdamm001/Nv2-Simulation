@@ -1,7 +1,7 @@
 #include "Entity_Drone_Chaingun.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Drone_Chaingun.h"
 
-Entity_Drone_Chaingun::Entity_Drone_Chaingun(Grid_Entity& entities, double x, double y, unsigned int facingDir, unsigned int moveType)
+Entity_Drone_Chaingun::Entity_Drone_Chaingun(Grid_Entity* entities, double x, double y, unsigned int facingDir, unsigned int moveType)
     : Entity_Drone_Shooter_Base(entities, x, y, 12.0 * (1.0 / 14.0) * 0.75 * (40.0 / sim_globals::sim_rate), facingDir, moveType, 35 * (sim_globals::sim_rate / 40), 60 * (sim_globals::sim_rate / 40)) {
     chaingun_rate = 6.0 * (sim_globals::sim_rate / 40);
     chaingun_count = 0;
@@ -9,7 +9,7 @@ Entity_Drone_Chaingun::Entity_Drone_Chaingun(Grid_Entity& entities, double x, do
     chaingun_HACKY_hitmode = 0;
 }
 
-Entity_Drone_Chaingun::Entity_Drone_Chaingun(Grid_Entity& entities, entitySave& entity)
+Entity_Drone_Chaingun::Entity_Drone_Chaingun(Grid_Entity* entities, entitySave& entity)
     : Entity_Drone_Shooter_Base(entities, entity, 12.0 * (1.0 / 14.0) * 0.75 * (40.0 / sim_globals::sim_rate), 35 * (sim_globals::sim_rate / 40), 60 * (sim_globals::sim_rate / 40)) {
     chaingun_rate = 6.0 * (sim_globals::sim_rate / 40);
     chaingun_count = entity.extra;
@@ -84,7 +84,7 @@ bool Entity_Drone_Chaingun::Update_Firing(Simulator* sim) {//fix var names
 
         gfxorn = atan2(newDirY, newDirX);
 
-        double hitDist = sim->segGrid.GetRaycastDistance(pos.x, pos.y, newDirX, newDirY, chaingun_hit_pos, chaingun_hit_n);
+        double hitDist = sim->segGrid->GetRaycastDistance(pos.x, pos.y, newDirX, newDirY, chaingun_hit_pos, chaingun_hit_n);
 
         //sim->HACKY_GetParticleManager().Spawn_ChainBullet(pos, chaingun_hit_pos);
 

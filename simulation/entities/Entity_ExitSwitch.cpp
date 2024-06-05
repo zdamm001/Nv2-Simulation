@@ -1,21 +1,21 @@
 #include "Entity_ExitSwitch.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_ExitSwitch.h"
 
-Entity_ExitSwitch::Entity_ExitSwitch(Grid_Entity& entities, double x, double y, Entity_ExitDoor* door)
+Entity_ExitSwitch::Entity_ExitSwitch(Grid_Entity* entities, double x, double y, Entity_ExitDoor* door)
     : pos(x, y), r(12 * 0.5), door(door) {
-    entities.ENTITY_Add(pos, this);
+    entities->ENTITY_Add(pos, this);
 }
 
-Entity_ExitSwitch::Entity_ExitSwitch(Grid_Entity& entities, entitySave& entity, Entity_ExitDoor* door)
+Entity_ExitSwitch::Entity_ExitSwitch(Grid_Entity* entities, entitySave& entity, Entity_ExitDoor* door)
     : pos(entity.pos), r(12 * 0.5), door(door) {
-    entities.ENTITY_Add(pos, this);
+    entities->ENTITY_Add(pos, this);
 }
 
 bool Entity_ExitSwitch::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {
     if (ninja != nullptr) {
         if (colutils::Overlap_Circle_Vs_Circle(pos, r, circlePosition, circleRadius)) {
             door->SWITCH_OpenTheExit(sim->objGrid);
-            sim->objGrid.ENTITY_Remove(this);
+            sim->objGrid->ENTITY_Remove(this);
         }
     }
     return false;

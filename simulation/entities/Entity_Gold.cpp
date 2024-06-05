@@ -1,14 +1,14 @@
 #include "Entity_Gold.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Gold.h"
 
-Entity_Gold::Entity_Gold(Grid_Entity& entities, double x, double y)
+Entity_Gold::Entity_Gold(Grid_Entity* entities, double x, double y)
     : pos(x, y), r(12 * 0.5), isCollected(false) {
-    entities.ENTITY_Add(pos, this);
+    entities->ENTITY_Add(pos, this);
 }
 
-Entity_Gold::Entity_Gold(Grid_Entity& entities, entitySave& entity)
+Entity_Gold::Entity_Gold(Grid_Entity* entities, entitySave& entity)
     : pos(entity.pos), r(6), isCollected(entity.is) {
-    if (!isCollected) entities.ENTITY_Add(pos, this);
+    if (!isCollected) entities->ENTITY_Add(pos, this);
 }
 
 bool Entity_Gold::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {
@@ -16,7 +16,7 @@ bool Entity_Gold::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collisio
         if (colutils::Overlap_Circle_Vs_Circle(pos, r, circlePosition, circleRadius)) {
             if (sim->Event_Gold_HitPlayer(ninja)) {
                 isCollected = true;
-                sim->objGrid.ENTITY_Remove(this);
+                sim->objGrid->ENTITY_Remove(this);
                 //sim->HACKY_GetSoundManager().PlaySound_Gold();
             }
         }

@@ -1,13 +1,13 @@
 #include "Entity_Drone_Laser.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Drone_Laser.h"
 
-Entity_Drone_Laser::Entity_Drone_Laser(Grid_Entity& entities, double x, double y, unsigned int facingDir, unsigned int moveType)
+Entity_Drone_Laser::Entity_Drone_Laser(Grid_Entity* entities, double x, double y, unsigned int facingDir, unsigned int moveType)
     : laser_duration(80),  Entity_Drone_Shooter_Base(entities, x, y, 12.0 * (1.0 / 14.0) * 0.5 * (40.0 / sim_globals::sim_rate), facingDir, moveType, 30 * (sim_globals::sim_rate / 40), 40 * (sim_globals::sim_rate / 40)) {
     laser_timer = 0;
     laser_dir = vec2(0, 0);
 }
 
-Entity_Drone_Laser::Entity_Drone_Laser(Grid_Entity& entities, entitySave& entity)
+Entity_Drone_Laser::Entity_Drone_Laser(Grid_Entity* entities, entitySave& entity)
     : laser_duration(80),  Entity_Drone_Shooter_Base(entities, entity, 12.0 * (1.0 / 14.0) * 0.5 * (40.0 / sim_globals::sim_rate), 30 * (sim_globals::sim_rate / 40), 40 * (sim_globals::sim_rate / 40)) {
     laser_timer = entity.timer2;
     laser_dir = entity.dir;
@@ -19,11 +19,11 @@ void Entity_Drone_Laser::Start_Prefiring(Simulator* sim, const vec2& ninjaPos) {
     laser_dir.x = ninjaPos.x - pos.x;
     laser_dir.y = ninjaPos.y - pos.y;
     laser_dir.Normalize();
-    double hitDist = sim->segGrid.GetRaycastDistance(pos.x, pos.y, laser_dir.x, laser_dir.y, laser_hit_pos, laser_hit_n);
+    double hitDist = sim->segGrid->GetRaycastDistance(pos.x, pos.y, laser_dir.x, laser_dir.y, laser_hit_pos, laser_hit_n);
 }
 
 void Entity_Drone_Laser::Update_Prefiring(Simulator* sim, const vec2& ninjaPos) {
-    double hitDist = sim->segGrid.GetRaycastDistance(pos.x, pos.y, laser_dir.x, laser_dir.y, laser_hit_pos, laser_hit_n);
+    double hitDist = sim->segGrid->GetRaycastDistance(pos.x, pos.y, laser_dir.x, laser_dir.y, laser_hit_pos, laser_hit_n);
     //sim->HACKY_GetParticleManager().Spawn_LaserCharge(pos);
 }
 
@@ -32,7 +32,7 @@ void Entity_Drone_Laser::Start_Firing(Simulator* sim, const vec2& ninjaPos, cons
 }
 
 bool Entity_Drone_Laser::Update_Firing(Simulator* sim) {    
-    double hitDist = sim->segGrid.GetRaycastDistance(pos.x, pos.y, laser_dir.x, laser_dir.y, laser_hit_pos, laser_hit_n);
+    double hitDist = sim->segGrid->GetRaycastDistance(pos.x, pos.y, laser_dir.x, laser_dir.y, laser_hit_pos, laser_hit_n);
     //sim->HACKY_GetParticleManager().Spawn_LaserCharge(pos);
     
     for (int i = 0; i < sim->playerList.size(); ++i) {

@@ -1,7 +1,7 @@
 #include "Entity_Turret.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Turret.h"
 
-Entity_Turret::Entity_Turret(Grid_Entity& entities, double x, double y)
+Entity_Turret::Entity_Turret(Grid_Entity* entities, double x, double y)
     : pos(x, y), aim_pos(x, y), aim_region(0), shot_timer(0), CUR_STATE(STATE_IDLE), targetIndex(-1), gfx_triggerEvent(false), HACKY_drawtimer(0), threshold2(3), aimspeed(4), timerstep(4) {
     timer_firetime = 60 * (sim_globals::sim_rate / 40);
     prefire_delay = 10 * (sim_globals::sim_rate / 40);
@@ -24,7 +24,7 @@ Entity_Turret::Entity_Turret(Grid_Entity& entities, double x, double y)
     prediction_scale = sim_globals::sim_rate / 40;
 }
 
-Entity_Turret::Entity_Turret(Grid_Entity& entities, entitySave& entity)
+Entity_Turret::Entity_Turret(Grid_Entity* entities, entitySave& entity)
     : Entity_Turret(entities, entity.pos.x, entity.pos.y) {
     aim_pos = entity.pos2;
     aim_region = entity.extra;
@@ -67,7 +67,7 @@ void Entity_Turret::Think(Simulator* sim) {
                     double distToAim = sqrt(aimDeltaX * aimDeltaX + aimDeltaY * aimDeltaY);
                     aimDeltaX /= distToAim;
                     aimDeltaY /= distToAim;
-                    double hitDist = sim->segGrid.GetRaycastDistance(pos.x, pos.y, aimDeltaX, aimDeltaY, HACKY_hit_pos, HACKY_hit_n);
+                    double hitDist = sim->segGrid->GetRaycastDistance(pos.x, pos.y, aimDeltaX, aimDeltaY, HACKY_hit_pos, HACKY_hit_n);
                     for (int i = 0; i < sim->playerList.size(); ++i) {
                         if (!sim->playerList[i]->IsDead()) {
                             vec2 ninjaPos = sim->playerList[i]->GetPos();
@@ -135,7 +135,7 @@ bool Entity_Turret::IsCurrentTargetVisible(Simulator* sim, vec2& hitPos, vec2& h
     Ninja* ninja = sim->playerList[targetIndex];
     bool isVisible = false;
     if (!ninja->IsDead()) {
-        isVisible = sim->segGrid.RaycastVsPlayer(pos, ninja->GetPos(), ninja->GetRadius(), hitPos, hitNormal);
+        isVisible = sim->segGrid->RaycastVsPlayer(pos, ninja->GetPos(), ninja->GetRadius(), hitPos, hitNormal);
     }
     return isVisible;
 }

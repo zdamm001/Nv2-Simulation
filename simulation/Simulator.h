@@ -29,9 +29,9 @@ class Simulator {
         vector<Entity_Base*> objList;
         vector<int> tileIDs;
     public:
-        Grid_Segment segGrid;
-        Grid_Edges edgeGrid;
-        Grid_Entity objGrid;
+        Grid_Segment* segGrid;
+        Grid_Edges* edgeGrid;
+        Grid_Entity* objGrid;
         vector<Ninja*> playerList;
     private:
         unsigned int frame_num;
@@ -40,8 +40,8 @@ class Simulator {
         GraphicsManager* HACKY_gfx;
         SoundManager* HACKY_sfx;
     public:
-        Simulator(vector<int> tileIDs, Grid_Segment segGrid, Grid_Edges edgeGrid, Grid_Entity objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList);
-        Simulator(appSave& appState, vector<int> tileIDs, Grid_Segment segGrid, Grid_Edges edgeGrid, Grid_Entity objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList);
+        Simulator(vector<int> tileIDs, Grid_Segment* segGrid, Grid_Edges* edgeGrid, Grid_Entity* objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList);
+        Simulator(appSave& appState, vector<int> tileIDs, Grid_Segment* segGrid, Grid_Edges* edgeGrid, Grid_Entity* objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList);
         ~Simulator();
         void HACKY_SetAV(GraphicsManager* gfx, SoundManager* sfx);
         ParticleManager* HACKY_GetParticleManager();
