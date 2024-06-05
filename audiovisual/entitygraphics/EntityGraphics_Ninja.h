@@ -2,10 +2,8 @@
 #include <vector>
 
 #include "..\\..\\math\\vec2.h"
-#include "..\\..\\simulation\\ninja\\Ninja.h"
+#include "EntityGraphics.h"
 
-class MovieClip;
-class EntityGraphics {};
 class Ninja;
 
 class EntityGraphics_Ninja : public EntityGraphics {
@@ -30,18 +28,29 @@ class EntityGraphics_Ninja : public EntityGraphics {
         MovieClip* sndMC;
         MovieClip* mc_sprite;
         vector<MovieClip*> ragdoll_mcList;
+    public:
         vector<vec2> ragdoll_posList;
         vector<double> ragdoll_lenList;
         vector<double> ragdoll_ornList;
+    private:
         vector<double> ragdoll_flipList;
+    public:
         vec2 pos;
         double vel;
         double orn;
         int anim;
         int facing;
+    private:
         double run_anim_leftovers;
         double scaling_factor;
         int prev_frame;
     public:
-        EntityGraphics_Ninja();
+        EntityGraphics_Ninja(Ninja* entity, unsigned int color);
+        virtual ~EntityGraphics_Ninja();
+        virtual void RegisterGraphics(vector<DisplayObject*>& displayObjects) override;
+        void HACKY_PlayOneshotSound(string soundName);
+        bool hasValidPose();
+        void NINJA_GetCurrentPose(vector<vec2>& posePos, vector<vec2>& poseVel);
+        void Hide();
+        virtual void UpdateState() override;
 };
