@@ -104,7 +104,7 @@ void sim_loader::LoadLevel_InitTileIDGridWithBoundaryEdges(vector<int>& tileIDGr
 
     for (int row = 1; row < numRows - 1; ++row) {
         tileIDGrid[row * numCols] = tiletypes::EDGE_RIGHT;
-        tileIDGrid[numCols - 1 + row * numCols] = tiletypes::EDGE_LEFT;
+        tileIDGrid[row * numCols + numCols - 1] = tiletypes::EDGE_LEFT;
     }
 
     tileIDGrid[0] = tiletypes::EDGE_CORNER_UL;
