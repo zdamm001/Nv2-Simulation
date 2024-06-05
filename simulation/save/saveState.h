@@ -104,6 +104,6 @@ struct appSave {
     vector<entitySave> entityState;
     bool isCoopMode;
     bool isReplay;
-    Grid_Segment segGrid = Grid_Segment(33, 25, 24.0);
-    Grid_Edges edgeGrid = Grid_Edges(33 * 2, 25 * 2, 24.0 * 0.5);
+    Grid_Segment* segGrid;
+    Grid_Edges* edgeGrid;
 };
