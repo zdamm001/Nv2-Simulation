@@ -112,7 +112,7 @@ void App_MultiPurpose::stopReplay() {
 }
 
 ByteArray* App_MultiPurpose::getReplay() {
-    return new ByteArray(_sim->APP_GetReplayBytes()[0]);
+    return _sim->APP_GetReplayBytes()[0];
 }
 
 void App_MultiPurpose::tick() {
@@ -200,7 +200,7 @@ void App_MultiPurpose::initializeEngine() {
     //_gfx = new GraphicsManager(gameStage, _sim->GFX_GetEntityList(), _sim->GFX_GetPlayerList(), _sim->GFX_GetTileIDs(), Simulator::GRID_NUM_ROWS, Simulator::GRID_NUM_COLS, true);
     //_sfx = new SoundManager();
     //_sim->HACKY_SetAV(_gfx,_sfx);
-    //_gfx.Render();
+    //_gfx->Render();
     _sim->APP_EnablePlayer(0);
     if (options->coopMode && !_replayChosenByPlayer) {
         _sim->APP_EnablePlayer(1);
@@ -243,7 +243,7 @@ void App_MultiPurpose::tickReplay() {
 
 void App_MultiPurpose::tickPreGame() {
     updateInGameDisplay();
-    //gfx.Render();
+    //gfx->Render();
     if (playerReadyToProceed()) {
         startGameImmediately();
     } else if (playerWantsToExit()) {
@@ -373,7 +373,7 @@ void App_MultiPurpose::tickChosenReplayPostGame() {
 
 void App_MultiPurpose::endReplay() {
     if (_replayChosenByPlayer) {
-        //stats.score = _currentTicks + _ticksPerGold * _goldCollected;
+        stats->score = _currentTicks + _ticksPerGold * _goldCollected;
         showGameOver("replay");
     } else {
         showNextReplay();
@@ -479,7 +479,7 @@ void App_MultiPurpose::clearGame() {
     delete _sim;
     _sim = nullptr;
     //if(_gfx != nullptr) {
-    //    _gfx.Clear();
+    //    _gfx->Clear();
     //    _gfx = nullptr;
     //}
     //_sfx = nullptr;
@@ -505,8 +505,8 @@ void App_MultiPurpose::tickSimulator() {
             }
         }
     }
-    //_gfx.Render();
-    //_sfx.Tick();
+    //_gfx->Render();
+    //_sfx->Tick();
 }
 
 void App_MultiPurpose::triggerGameEnd() {
@@ -534,13 +534,13 @@ void App_MultiPurpose::storeGameStats() {
     if (_isReplay || !victory()) {
         return;
     }
-    //stats.score = _currentTicks + _ticksPerGold * _goldCollected;
-    //stats.isEpisode = _playingLevelset;
-    //stats.level = _currentLevel;
+    stats->score = _currentTicks + _ticksPerGold * _goldCollected;
+    stats->isEpisode = _playingLevelset;
+    stats->level = _currentLevel;
     checkHighscore();
     if (_currentTicks != _startingTicks) {
         // try {
-            // stats.replayBytes = _sim->APP_GetReplayBytes()[0];
+            stats->replayBytes = _sim->APP_GetReplayBytes()[0];
         // } catch (const Error& in_error) {
         // 
         // }
@@ -648,12 +648,12 @@ void App_MultiPurpose::updateInGameDisplay() {
 
 void App_MultiPurpose::updateTimebar() {
     //if (!_hud) return;
-    //double timebarAnimLimit = 360 * sim_globals::sim_rate;
-    //double timebarPosition = max(0.0, min(1.0, static_cast<double>(_currentTicks) / timebarAnimLimit));
+    double timebarAnimLimit = 360 * sim_globals::sim_rate;
+    double timebarPosition = max(0.0, min(1.0, static_cast<double>(_currentTicks) / timebarAnimLimit));
     //int frame = 1 + static_cast<int>(timebarPosition * _hud.timebar.framesLoaded);
     //_hud.timebar.gotoAndStop(frame);
     string formattedTime = _timeFormatter->formatTime(_currentTicks, sim_globals::sim_rate);
-    //stats.formattedTime = formattedTime.substr(0, formattedTime.length() - 3) + "." + formattedTime.substr(formattedTime.length() - 3);
+    stats->formattedTime = formattedTime.substr(0, formattedTime.length() - 3) + "." + formattedTime.substr(formattedTime.length() - 3);
     //_hud.timetext.timetext0.text = formattedTime[0];
     //_hud.timetext.timetext1.text = formattedTime[1];
     //_hud.timetext.timetext2.text = formattedTime[2];
@@ -874,9 +874,17 @@ void App_MultiPurpose::NEW_prepareSessionFromSave() {
     }
 
     _sim = sim_loader::LoadFromSave(appState, _playerKeys->getActions({PlayerKeys::JUMP, PlayerKeys::LEFT, PlayerKeys::RIGHT}), {options->p1Colour, options->p2Colour}, input);
-    initializeEngine();
+
+    //_gfx = new GraphicsManager(gameStage, _sim->GFX_GetEntityList(), _sim->GFX_GetPlayerList(), _sim->GFX_GetTileIDs(), Simulator::GRID_NUM_ROWS, Simulator::GRID_NUM_COLS, true);
+    //_sfx = new SoundManager();
+    //_sim->HACKY_SetAV(_gfx,_sfx);
+    //_gfx->Render();
 }
 
 ByteArray& App_MultiPurpose::NEW_getSaveFrames(unsigned int playerIndex) {
     return appState.ninjaState[playerIndex].frames;
+}
+
+Simulator* App_MultiPurpose::NEW_getSim() const {
+    return _sim;
 }

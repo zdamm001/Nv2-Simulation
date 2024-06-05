@@ -1,12 +1,12 @@
 #pragma once
 #include <vector>
 
-// #include "..\\..\\audiovisual\\GraphicsManager.h"
+#include "..\\..\\audiovisual\\GraphicsManager.h"
 // #include "audiovisual\\SoundManager.h"
 #include "data\\AccountDetails.h"
 // #include "data\\AttractMode.h"
 // #include "data\\EpisodeData.h"
-// #include "data\\GameStats.h"
+#include "data\\GameStats.h"
 #include "data\\Level.h"
 #include "data\\Options.h"
 // #include "events\\InGameEvent.h"
@@ -48,7 +48,7 @@ class App_MultiPurpose : public Actor, public App {
         SimpleRenderer* debugRenderer;
         Options* options;
         // EpisodeData* episodeData;
-        // GameStats* stats;
+        GameStats* stats;
         // SharedObject* sharedObject;
         PlayerKeys* coopKeys;
         PlayerKeys* soloKeys;
@@ -58,7 +58,7 @@ class App_MultiPurpose : public Actor, public App {
     private:
         TimeFormatter* _timeFormatter;
         Simulator* _sim;
-        // GraphicsManager* _gfx;
+        GraphicsManager* _gfx;
         // SoundManager* _sfx;
         PlayerKeys* _playerKeys;
         // Bitmap* _performanceGraph;
@@ -181,4 +181,5 @@ class App_MultiPurpose : public Actor, public App {
         void NEW_watchReplayFromSave();
         void NEW_prepareSessionFromSave();
         ByteArray& NEW_getSaveFrames(unsigned int playerIndex);
+        Simulator* NEW_getSim() const;
 };
