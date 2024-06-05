@@ -225,7 +225,7 @@ void Ninja::PostCollision(Simulator* sim) {
             wallList_X.clear();
             wallList_Y.clear();
             result_logical.Clear();
-            sim->objGrid.GatherCellContentsInNeighbourhood(pos, objList);
+            sim->objGrid->GatherCellContentsInNeighbourhood(pos, objList);
             for (int i = 0; i < objList.size(); ++i) {
                 Entity_Base* entity = objList[i];
                 if (entity->CollideVsCircle_Logical(sim, this, result_logical, pos, vel, oldpos, r, epsilon)) {
@@ -236,7 +236,7 @@ void Ninja::PostCollision(Simulator* sim) {
                 }
             }
             double effectiveRadius = r + epsilon;
-            sim->segGrid.GatherCellContentsFromWorldspaceRegion(pos.x - effectiveRadius, pos.y - effectiveRadius, pos.x + effectiveRadius, pos.y + effectiveRadius, segList);
+            sim->segGrid->GatherCellContentsFromWorldspaceRegion(pos.x - effectiveRadius, pos.y - effectiveRadius, pos.x + effectiveRadius, pos.y + effectiveRadius, segList);
             for (int i = 0; i < segList.size(); ++i) {
                 segList[i]->GetClosestPoint(pos, seg_cp);
                 double dx = pos.x - seg_cp.x;
@@ -325,7 +325,7 @@ void Ninja::CollideVsObjects(Simulator* sim) {
         //raggy.CollideVsObjects(sim);
     } else {
         result_physical.Clear();
-        sim->objGrid.GatherCellContentsInNeighbourhood(pos, objList);
+        sim->objGrid->GatherCellContentsInNeighbourhood(pos, objList);
 
         for (int i = 0; i < objList.size(); ++i) {
             Entity_Base* entity = objList[i];
