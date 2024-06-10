@@ -20,47 +20,60 @@ const vector<vec2> Ragdoll::debugpose_vel(6, vec2(0, 0));
 Ragdoll::Ragdoll() : cur_state(STATE_UNEXPLODED), explosion_accumulator(0) {
     pList.resize(2);
     pList[STATE_UNEXPLODED].resize(6);
-    pList[STATE_UNEXPLODED][0] = RagParticle(pRadius[0], pDrag[0]);
-    pList[STATE_UNEXPLODED][1] = RagParticle(pRadius[1], pDrag[1]);
-    pList[STATE_UNEXPLODED][2] = RagParticle(pRadius[2], pDrag[2]);
-    pList[STATE_UNEXPLODED][3] = RagParticle(pRadius[3], pDrag[3]);
-    pList[STATE_UNEXPLODED][4] = RagParticle(pRadius[4], pDrag[4]);
-    pList[STATE_UNEXPLODED][5] = RagParticle(pRadius[5], pDrag[5]);
+    pList[STATE_UNEXPLODED][0] = new RagParticle(pRadius[0], pDrag[0]);
+    pList[STATE_UNEXPLODED][1] = new RagParticle(pRadius[1], pDrag[1]);
+    pList[STATE_UNEXPLODED][2] = new RagParticle(pRadius[2], pDrag[2]);
+    pList[STATE_UNEXPLODED][3] = new RagParticle(pRadius[3], pDrag[3]);
+    pList[STATE_UNEXPLODED][4] = new RagParticle(pRadius[4], pDrag[4]);
+    pList[STATE_UNEXPLODED][5] = new RagParticle(pRadius[5], pDrag[5]);
 
     pList[STATE_EXPLODED].resize(10);
-    pList[STATE_EXPLODED][0] = RagParticle(pRadius[0], pDrag[0]);
-    pList[STATE_EXPLODED][1] = RagParticle(pRadius[1], pDrag[1]);
-    pList[STATE_EXPLODED][2] = RagParticle(pRadius[2], pDrag[2]);
-    pList[STATE_EXPLODED][3] = RagParticle(pRadius[3], pDrag[3]);
-    pList[STATE_EXPLODED][4] = RagParticle(pRadius[4], pDrag[4]);
-    pList[STATE_EXPLODED][5] = RagParticle(pRadius[5], pDrag[5]);
-    pList[STATE_EXPLODED][6] = RagParticle(pRadius[0], pDrag[0]);
-    pList[STATE_EXPLODED][7] = RagParticle(pRadius[0], pDrag[0]);
-    pList[STATE_EXPLODED][8] = RagParticle(pRadius[1], pDrag[1]);
-    pList[STATE_EXPLODED][9] = RagParticle(pRadius[1], pDrag[1]);
+    pList[STATE_EXPLODED][0] = new RagParticle(pRadius[0], pDrag[0]);
+    pList[STATE_EXPLODED][1] = new RagParticle(pRadius[1], pDrag[1]);
+    pList[STATE_EXPLODED][2] = new RagParticle(pRadius[2], pDrag[2]);
+    pList[STATE_EXPLODED][3] = new RagParticle(pRadius[3], pDrag[3]);
+    pList[STATE_EXPLODED][4] = new RagParticle(pRadius[4], pDrag[4]);
+    pList[STATE_EXPLODED][5] = new RagParticle(pRadius[5], pDrag[5]);
+    pList[STATE_EXPLODED][6] = new RagParticle(pRadius[0], pDrag[0]);
+    pList[STATE_EXPLODED][7] = new RagParticle(pRadius[0], pDrag[0]);
+    pList[STATE_EXPLODED][8] = new RagParticle(pRadius[1], pDrag[1]);
+    pList[STATE_EXPLODED][9] = new RagParticle(pRadius[1], pDrag[1]);
 
     sList.resize(2);
     sList[STATE_UNEXPLODED].resize(5);
-    sList[STATE_UNEXPLODED][0] = RagStick(pList[STATE_UNEXPLODED][1], pList[STATE_UNEXPLODED][0], sWeight[0], sMinRatio[0], sMaxLen[0]);
-    sList[STATE_UNEXPLODED][1] = RagStick(pList[STATE_UNEXPLODED][0], pList[STATE_UNEXPLODED][2], sWeight[1], sMinRatio[1], sMaxLen[1]);
-    sList[STATE_UNEXPLODED][2] = RagStick(pList[STATE_UNEXPLODED][0], pList[STATE_UNEXPLODED][3], sWeight[2], sMinRatio[2], sMaxLen[2]);
-    sList[STATE_UNEXPLODED][3] = RagStick(pList[STATE_UNEXPLODED][1], pList[STATE_UNEXPLODED][4], sWeight[3], sMinRatio[3], sMaxLen[3]);
-    sList[STATE_UNEXPLODED][4] = RagStick(pList[STATE_UNEXPLODED][1], pList[STATE_UNEXPLODED][5], sWeight[4], sMinRatio[4], sMaxLen[4]);
+    sList[STATE_UNEXPLODED][0] = new RagStick(pList[STATE_UNEXPLODED][1], pList[STATE_UNEXPLODED][0], sWeight[0], sMinRatio[0], sMaxLen[0]);
+    sList[STATE_UNEXPLODED][1] = new RagStick(pList[STATE_UNEXPLODED][0], pList[STATE_UNEXPLODED][2], sWeight[1], sMinRatio[1], sMaxLen[1]);
+    sList[STATE_UNEXPLODED][2] = new RagStick(pList[STATE_UNEXPLODED][0], pList[STATE_UNEXPLODED][3], sWeight[2], sMinRatio[2], sMaxLen[2]);
+    sList[STATE_UNEXPLODED][3] = new RagStick(pList[STATE_UNEXPLODED][1], pList[STATE_UNEXPLODED][4], sWeight[3], sMinRatio[3], sMaxLen[3]);
+    sList[STATE_UNEXPLODED][4] = new RagStick(pList[STATE_UNEXPLODED][1], pList[STATE_UNEXPLODED][5], sWeight[4], sMinRatio[4], sMaxLen[4]);
 
     sList[STATE_EXPLODED].resize(5);
-    sList[STATE_EXPLODED][0] = RagStick(pList[STATE_EXPLODED][1], pList[STATE_EXPLODED][0], sWeight[0], sMinRatio[0], sMaxLen[0]);
-    sList[STATE_EXPLODED][1] = RagStick(pList[STATE_EXPLODED][6], pList[STATE_EXPLODED][2], sWeight[1], sMinRatio[1], sMaxLen[1]);
-    sList[STATE_EXPLODED][2] = RagStick(pList[STATE_EXPLODED][7], pList[STATE_EXPLODED][3], sWeight[2], sMinRatio[2], sMaxLen[2]);
-    sList[STATE_EXPLODED][3] = RagStick(pList[STATE_EXPLODED][8], pList[STATE_EXPLODED][4], sWeight[3], sMinRatio[3], sMaxLen[3]);
-    sList[STATE_EXPLODED][4] = RagStick(pList[STATE_EXPLODED][9], pList[STATE_EXPLODED][5], sWeight[4], sMinRatio[4], sMaxLen[4]);
+    sList[STATE_EXPLODED][0] = new RagStick(pList[STATE_EXPLODED][1], pList[STATE_EXPLODED][0], sWeight[0], sMinRatio[0], sMaxLen[0]);
+    sList[STATE_EXPLODED][1] = new RagStick(pList[STATE_EXPLODED][6], pList[STATE_EXPLODED][2], sWeight[1], sMinRatio[1], sMaxLen[1]);
+    sList[STATE_EXPLODED][2] = new RagStick(pList[STATE_EXPLODED][7], pList[STATE_EXPLODED][3], sWeight[2], sMinRatio[2], sMaxLen[2]);
+    sList[STATE_EXPLODED][3] = new RagStick(pList[STATE_EXPLODED][8], pList[STATE_EXPLODED][4], sWeight[3], sMinRatio[3], sMaxLen[3]);
+    sList[STATE_EXPLODED][4] = new RagStick(pList[STATE_EXPLODED][9], pList[STATE_EXPLODED][5], sWeight[4], sMinRatio[4], sMaxLen[4]);
+}
+
+Ragdoll::~Ragdoll() {
+    for (vector<RagParticle*>& pStates : pList) {
+        for (RagParticle* particle : pStates) {
+            delete particle;
+        }
+    }
+    for (vector<RagStick*>& sStates : sList) {
+        for (RagStick* stick : sStates) {
+            delete stick;
+        }
+    }
 }
 
 void Ragdoll::GFX_UpdateState(EntityGraphics_Ninja* graphic) {
 
 }
 
-RagParticle::RagParticle(double param1, double drag)
-    : r(param1), d(drag) { }
+RagParticle::RagParticle(double radius, double drag)
+    : r(radius), d(drag) { }
 
 void RagParticle::PreIntegrate(double g) {
     vel.x *= d;

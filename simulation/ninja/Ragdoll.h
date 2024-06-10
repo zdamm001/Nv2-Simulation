@@ -34,14 +34,15 @@ class Ragdoll {
 
         int cur_state;
         double explosion_accumulator = 0;
-        vector<vector<RagParticle>> pList;
-        vector<vector<RagStick>> sList;
+        vector<vector<RagParticle*>> pList;
+        vector<vector<RagStick*>> sList;
         vector<Entity_Base*> objList;
         collision_result_logical result_logical;
         collision_result_physical result_physical;
         vec2 cp;
     public:
         Ragdoll();
+        ~Ragdoll();
         void GFX_UpdateState(EntityGraphics_Ninja* graphic);
 };
 
@@ -53,7 +54,7 @@ class RagParticle {
         double r;
         double d;
     public:
-        RagParticle(double param1, double drag);
+        RagParticle(double radius, double drag);
         void PreIntegrate(double g);
         void PostIntegrate();
         void SetState(double posx, double posy, double velx, double vely);
