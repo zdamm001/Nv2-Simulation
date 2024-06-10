@@ -202,6 +202,21 @@ void Ragdoll::PostCollision(Simulator* sim) {
     }
 }
 
+void Ragdoll::CollideVsObjects(Simulator* sim) {
+    result_physical.Clear();
+
+    for (int i = 0; i < pList[cur_state].size(); ++i) {
+        RagParticle* part = pList[cur_state][i];
+        sim->objGrid->GatherCellContentsInNeighbourhood(part->solver_pos, objList);
+        for (int j = 0; j < objList.size(); ++j) {
+            Entity_Base* entity = objList[j];
+            if (entity->CollideVsCircle_Physical(result_physical, part->solver_pos, part->vel, part->pos, part->r)) {
+                RespondToCollision(sim, part, result_physical.nx, result_physical.ny, result_physical.pen);
+            }
+        }
+    }
+}
+
 void Ragdoll::GFX_UpdateState(EntityGraphics_Ninja* graphic) {
 
 }
