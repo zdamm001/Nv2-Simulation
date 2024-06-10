@@ -68,6 +68,48 @@ Ragdoll::~Ragdoll() {
     }
 }
 
+void Ragdoll::ActivateRagdoll(const vec2& ninjaPos, const vec2& ninjaVel, const vec2& deathPos, const vec2& deathForce, const vector<vec2>& posePos, const vector<vec2>& poseVel) 
+{
+    const vector<vec2>* ragPartPos;
+    const vector<vec2>* ragPartVel;
+
+    cur_state = STATE_UNEXPLODED;
+    explosion_accumulator = 0;
+
+    if (!posePos.empty() && !poseVel.empty()) {
+        ragPartPos = &posePos;
+        ragPartVel = &poseVel;
+    } else {
+        ragPartPos = &debugpose_pos;
+        ragPartVel = &debugpose_vel;
+    }
+
+    pList[STATE_UNEXPLODED][0]->SetState(ninjaPos.x + (*ragPartPos)[0].x, ninjaPos.y + (*ragPartPos)[0].y, ninjaVel.x + (*ragPartVel)[0].x, ninjaVel.y + (*ragPartVel)[0].y);
+    pList[STATE_UNEXPLODED][1]->SetState(ninjaPos.x + (*ragPartPos)[1].x, ninjaPos.y + (*ragPartPos)[1].y, ninjaVel.x + (*ragPartVel)[1].x, ninjaVel.y + (*ragPartVel)[1].y);
+    pList[STATE_UNEXPLODED][2]->SetState(ninjaPos.x + (*ragPartPos)[2].x, ninjaPos.y + (*ragPartPos)[2].y, ninjaVel.x + (*ragPartVel)[2].x, ninjaVel.y + (*ragPartVel)[2].y);
+    pList[STATE_UNEXPLODED][3]->SetState(ninjaPos.x + (*ragPartPos)[3].x, ninjaPos.y + (*ragPartPos)[3].y, ninjaVel.x + (*ragPartVel)[3].x, ninjaVel.y + (*ragPartVel)[3].y);
+    pList[STATE_UNEXPLODED][4]->SetState(ninjaPos.x + (*ragPartPos)[4].x, ninjaPos.y + (*ragPartPos)[4].y, ninjaVel.x + (*ragPartVel)[4].x, ninjaVel.y + (*ragPartVel)[4].y);
+    pList[STATE_UNEXPLODED][5]->SetState(ninjaPos.x + (*ragPartPos)[5].x, ninjaPos.y + (*ragPartPos)[5].y, ninjaVel.x + (*ragPartVel)[5].x, ninjaVel.y + (*ragPartVel)[5].y);
+
+    ShoveRagdoll(deathPos, deathForce);
+}
+
+void Ragdoll::ShoveRagdoll(const vec2& impactPos, const vec2& impactForce) {
+    double maxDist = 12.0;
+    double minMultiplier = 0.5;
+    double maxMultiplier = 1.5;
+
+    for (int i = 0; i < pList[STATE_UNEXPLODED].size(); ++i) {
+        double distX = pList[STATE_UNEXPLODED][i]->pos.x - impactPos.x;
+        double distY = pList[STATE_UNEXPLODED][i]->pos.y - impactPos.y;
+        double distance = sqrt(distX * distX + distY * distY);
+        double ratio = min(1.0, distance / maxDist);
+        double multiplier = minMultiplier + (1.0 - ratio) * maxMultiplier;
+        pList[STATE_UNEXPLODED][i]->vel.x += impactForce.x * multiplier;
+        pList[STATE_UNEXPLODED][i]->vel.y += impactForce.y * multiplier;
+    }
+}
+
 void Ragdoll::GFX_UpdateState(EntityGraphics_Ninja* graphic) {
 
 }

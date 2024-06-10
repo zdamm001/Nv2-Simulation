@@ -43,6 +43,8 @@ class Ragdoll {
     public:
         Ragdoll();
         ~Ragdoll();
+        void ActivateRagdoll(const vec2& ninjaPos, const vec2& ninjaVel, const vec2& deathPos, const vec2& deathForce, const vector<vec2>& posePos, const vector<vec2>& poseVel);
+        void ShoveRagdoll(const vec2& impactPos, const vec2& impactForce);
         void GFX_UpdateState(EntityGraphics_Ninja* graphic);
 };
 
