@@ -217,6 +217,32 @@ void Ragdoll::CollideVsObjects(Simulator* sim) {
     }
 }
 
+void Ragdoll::CollideVsTiles(Simulator* sim) {
+    for (int i = 0; i < pList[cur_state].size(); ++i) {
+        RagParticle* part = pList[cur_state][i];
+        int maxIterations = 32;
+        cp.x = 0;
+        cp.y = 0;
+
+        for (int j = 0; j < maxIterations; ++j) {
+            int cpSign = colutils::GetSingleClosestPoint_Signed(sim->segGrid, part->solver_pos, part->r * 4, cp);
+            if (cpSign == 0) break;
+            
+            double dx = part->solver_pos.x - cp.x;
+            double dy = part->solver_pos.y - cp.y;
+            double dist = sqrt(dx * dx + dy * dy);
+            double pen = part->r - cpSign * dist;
+
+            if (pen < 1e-7) break;
+            if (dist == 0) return;
+
+            dx /= dist;
+            dy /= dist;
+            RespondToCollision(sim, dist, dx, dy, cpSign * pen);
+        }
+    }
+}
+
 void Ragdoll::GFX_UpdateState(EntityGraphics_Ninja* graphic) {
 
 }
