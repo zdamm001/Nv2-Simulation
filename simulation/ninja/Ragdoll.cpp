@@ -227,7 +227,7 @@ void Ragdoll::CollideVsTiles(Simulator* sim) {
         for (int j = 0; j < maxIterations; ++j) {
             int cpSign = colutils::GetSingleClosestPoint_Signed(sim->segGrid, part->solver_pos, part->r * 4, cp);
             if (cpSign == 0) break;
-            
+
             double dx = part->solver_pos.x - cp.x;
             double dy = part->solver_pos.y - cp.y;
             double dist = sqrt(dx * dx + dy * dy);
@@ -238,13 +238,72 @@ void Ragdoll::CollideVsTiles(Simulator* sim) {
 
             dx /= dist;
             dy /= dist;
-            RespondToCollision(sim, dist, dx, dy, cpSign * pen);
+            RespondToCollision(sim, part, dx, dy, cpSign * pen);
         }
     }
 }
 
-void Ragdoll::GFX_UpdateState(EntityGraphics_Ninja* graphic) {
+void Ragdoll::RespondToCollision(Simulator* sim, RagParticle* part, double normx, double normy, double pen) {
+    part->solver_pos.x += pen * normx;
+    part->solver_pos.y += pen * normy;
 
+    double _loc6_ = 0;
+    double _loc7_ = 0.05;
+    double _loc8_ = 0;
+
+    double _loc9_ = part->solver_pos.x - part->pos.x;
+    double _loc10_ = part->solver_pos.y - part->pos.y;
+    double _loc11_ = _loc9_ * normx + _loc10_ * normy;
+    double _loc12_ = _loc9_ * -normy + _loc10_ * normx;
+
+    if (_loc11_ < 0) {
+        _loc6_ = 2;
+        _loc7_ = 0.15;
+        _loc8_ = 1;
+
+        if (_loc11_ < -3) {
+            sim->HACKY_GetParticleManager()->Spawn_RagBloodSpurt(part->solver_pos.x, part->solver_pos.y, -_loc11_ * normx, -_loc11_ * normy);
+            double sfxRand = mathutils::Random();
+            if (sfxRand < 0.33) {
+                sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("hard1");
+            } else if (sfxRand < 0.66) {
+                sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("hard2");
+            } else {
+                sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("hard3");
+            }
+        } else {
+            if (0.7 < _loc12_ * _loc12_) {
+                sim->HACKY_GetParticleManager()->Spawn_RagDust(part->solver_pos, part->r, _loc12_ * -normy, _loc12_ * normx, _loc12_ * _loc12_);
+            }
+            if (_loc11_ < -2) {
+                if (mathutils::Random() < 0.5) {
+                    sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("med1");
+                } else {
+                    sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("med2");
+                }
+            } else if (_loc11_ < -1.2) {
+                if (mathutils::Random() < 0.5) {
+                    sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("soft1");
+                } else {
+                    sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("soft2");
+                }
+            }
+        }
+    }
+    part->pos.x += _loc8_ * pen * normx + _loc6_ * _loc11_ * normx + _loc7_ * _loc12_ * -normy;
+    part->pos.y += _loc8_ * pen * normy + _loc6_ * _loc11_ * normy + _loc7_ * _loc12_ * normx;
+}
+
+void Ragdoll::GFX_UpdateState(EntityGraphics_Ninja* graphic) {
+    for (int i = 0; i < sList[cur_state].size(); ++i) {
+        double dx = sList[cur_state][i]->p1->pos.x - sList[cur_state][i]->p0->pos.x;
+        double dy = sList[cur_state][i]->p1->pos.y - sList[cur_state][i]->p0->pos.y;
+        double len = sqrt(dx * dx + dy * dy);
+
+        graphic->ragdoll_posList[i].Copy(sList[cur_state][i]->p0->pos);
+        graphic->ragdoll_ornList[i] = atan2(dy, dx);
+        graphic->ragdoll_lenList[i] = max(0.0, min(1.0, len / sList[cur_state][i]->maxlen));
+    }
 }
 
 void Ragdoll::TESTING_SetPosVel(const vec2& partPos, const vec2& partVel) {

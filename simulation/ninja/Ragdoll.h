@@ -61,7 +61,7 @@ class Ragdoll {
         void CollideVsObjects(Simulator* sim);
         void CollideVsTiles(Simulator* sim);
     private:
-        void RespondToCollision(Simulator* sim);
+        void RespondToCollision(Simulator* sim, RagParticle* part, double normx, double normy, double pen);
     public:
         void GFX_UpdateState(EntityGraphics_Ninja* graphic);
         void TESTING_SetPosVel(const vec2& partPos, const vec2& partVel);
