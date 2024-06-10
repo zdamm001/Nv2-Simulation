@@ -345,7 +345,7 @@ Simulator* sim_loader::LoadFromSave(appSave& appState, const vector<int>& player
 
     vector<int> tileIDGrid = appState.tiles;
     Grid_Segment* gridSegment = appState.segGrid->Clone();
-    Grid_Edges* gridEdges = appState.edgeGrid;
+    Grid_Edges* gridEdges = appState.edgeGrid->Clone();
     Grid_Entity* gridEntity = new Grid_Entity(Simulator::GRID_NUM_COLS, Simulator::GRID_NUM_ROWS, Simulator::GRID_CELL_SIZE);
 
     vector<Entity_Base*> entities;
