@@ -165,6 +165,43 @@ void Ragdoll::SolveConstraints() {
     }
 }
 
+void Ragdoll::PostCollision(Simulator* sim) {
+    for (int i = 0; i < pList[cur_state].size(); ++i) {
+        pList[cur_state][i]->PostIntegrate();
+    }
+
+    const double epsilon = 0.1;
+    result_logical.Clear();
+
+    for (int i = 0; i < pList[cur_state].size(); ++i) {
+        RagParticle* part = pList[cur_state][i];
+        sim->objGrid->GatherCellContentsInNeighbourhood(part->pos, objList);
+
+        for (int j = 0; j < objList.size(); ++j) {
+            Entity_Base* entity = objList[j];
+            if (entity->CollideVsCircle_Logical(sim, nullptr, result_logical, part->pos, part->vel, part->pos, part->r, epsilon)) {
+                part->vel.x += result_logical.vec_x;
+                part->vel.y += result_logical.vec_y;
+
+                if (dynamic_cast<Entity_Mine*>(entity)) {
+                    if (cur_state == STATE_UNEXPLODED) {
+                        explosion_accumulator += mathutils::Random() * 0.6;
+                        if (mathutils::Random() < explosion_accumulator) {
+                            ExplodeRagdoll(sim);
+                        }
+                    }
+                } else if (dynamic_cast<Entity_Drone_Zap*>(entity) || dynamic_cast<Entity_FloorGuard*>(entity) || dynamic_cast<Entity_Thwomp*>(entity)) {
+                    if (mathutils::Random() < 0.5) {
+                        //sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("zap1");
+                    } else {
+                        //sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("zap2");
+                    }
+                }
+            }
+        }
+    }
+}
+
 void Ragdoll::GFX_UpdateState(EntityGraphics_Ninja* graphic) {
 
 }
