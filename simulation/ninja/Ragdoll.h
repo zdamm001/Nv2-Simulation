@@ -44,8 +44,28 @@ class Ragdoll {
         Ragdoll();
         ~Ragdoll();
         void ActivateRagdoll(const vec2& ninjaPos, const vec2& ninjaVel, const vec2& deathPos, const vec2& deathForce, const vector<vec2>& posePos, const vector<vec2>& poseVel);
+    private:
         void ShoveRagdoll(const vec2& impactPos, const vec2& impactForce);
+        void ShoveParticle();
+    public:
+        bool DEBUG_IsExploded();
+        void ExplodeRagdoll(Simulator* sim);
+        void UnexplodeRagdoll();
+    private:
+        void InitUnexplodedParticles();
+    public:
+        void Integrate(double g);
+        void PreCollision();
+        void SolveConstraints();
+        void PostCollision(Simulator* sim);
+        void CollideVsObjects(Simulator* sim);
+        void CollideVsTiles(Simulator* sim);
+    private:
+        void RespondToCollision(Simulator* sim);
+    public:
         void GFX_UpdateState(EntityGraphics_Ninja* graphic);
+        void TESTING_SetPosVel(const vec2& partPos, const vec2& partVel);
+        void Draw(SimpleRenderer& rend);
 };
 
 class RagParticle {
@@ -60,7 +80,7 @@ class RagParticle {
         void PreIntegrate(double g);
         void PostIntegrate();
         void SetState(double posx, double posy, double velx, double vely);
-        void CopyState(const RagParticle &part);
+        void CopyState(const RagParticle* part);
 };
 
 class RagStick {

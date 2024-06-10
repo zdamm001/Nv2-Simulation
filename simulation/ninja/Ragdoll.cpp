@@ -68,8 +68,7 @@ Ragdoll::~Ragdoll() {
     }
 }
 
-void Ragdoll::ActivateRagdoll(const vec2& ninjaPos, const vec2& ninjaVel, const vec2& deathPos, const vec2& deathForce, const vector<vec2>& posePos, const vector<vec2>& poseVel) 
-{
+void Ragdoll::ActivateRagdoll(const vec2& ninjaPos, const vec2& ninjaVel, const vec2& deathPos, const vec2& deathForce, const vector<vec2>& posePos, const vector<vec2>& poseVel) {
     const vector<vec2>* ragPartPos;
     const vector<vec2>* ragPartVel;
 
@@ -110,8 +109,85 @@ void Ragdoll::ShoveRagdoll(const vec2& impactPos, const vec2& impactForce) {
     }
 }
 
+void Ragdoll::ShoveParticle() { }
+
+bool Ragdoll::DEBUG_IsExploded() {
+    return cur_state == STATE_EXPLODED;
+}
+
+void Ragdoll::ExplodeRagdoll(Simulator* sim) {
+    if (cur_state != STATE_EXPLODED) {
+        cur_state = STATE_EXPLODED;
+        InitUnexplodedParticles();
+        for (int i = 6; i < 10; ++i) {
+            //sim->HACKY_GetParticleManager()->Spawn_BloodSpurt(pList[STATE_EXPLODED][i]->pos.x, pList[STATE_EXPLODED][i]->pos.y, mathutils::Random() * 8 - 4, mathutils::Random() * 8 - 4, 3);
+        }
+    }
+}
+
+void Ragdoll::UnexplodeRagdoll() {
+    if (cur_state != STATE_UNEXPLODED) {
+        cur_state = STATE_UNEXPLODED;
+        for (int i = 0; i < 6; ++i) {
+            pList[STATE_UNEXPLODED][i]->CopyState(pList[STATE_EXPLODED][i]);
+        }
+    }
+}
+
+void Ragdoll::InitUnexplodedParticles() {
+    pList[STATE_EXPLODED][0]->CopyState(pList[STATE_UNEXPLODED][0]);
+    pList[STATE_EXPLODED][1]->CopyState(pList[STATE_UNEXPLODED][1]);
+    pList[STATE_EXPLODED][2]->CopyState(pList[STATE_UNEXPLODED][2]);
+    pList[STATE_EXPLODED][3]->CopyState(pList[STATE_UNEXPLODED][3]);
+    pList[STATE_EXPLODED][4]->CopyState(pList[STATE_UNEXPLODED][4]);
+    pList[STATE_EXPLODED][5]->CopyState(pList[STATE_UNEXPLODED][5]);
+    pList[STATE_EXPLODED][6]->CopyState(pList[STATE_UNEXPLODED][0]);
+    pList[STATE_EXPLODED][7]->CopyState(pList[STATE_UNEXPLODED][0]);
+    pList[STATE_EXPLODED][8]->CopyState(pList[STATE_UNEXPLODED][1]);
+    pList[STATE_EXPLODED][9]->CopyState(pList[STATE_UNEXPLODED][1]);
+    pList[STATE_EXPLODED][6]->vel.x += 2;
+    pList[STATE_EXPLODED][7]->vel.y += 4;
+    pList[STATE_EXPLODED][8]->vel.y -= 6;
+    pList[STATE_EXPLODED][9]->vel.x -= 8;
+}
+
+void Ragdoll::Integrate(double g) {
+    for (int i = 0; i < pList[cur_state].size(); i++) {
+        pList[cur_state][i]->PreIntegrate(g);
+    }
+}
+
+void Ragdoll::PreCollision() { }
+
+void Ragdoll::SolveConstraints() {
+    for (int i = 0; i < sList[cur_state].size(); i++) {
+        sList[cur_state][i]->Solve();
+    }
+}
+
 void Ragdoll::GFX_UpdateState(EntityGraphics_Ninja* graphic) {
 
+}
+
+void Ragdoll::TESTING_SetPosVel(const vec2& partPos, const vec2& partVel) {
+    pList[cur_state][0]->pos.Copy(partPos);
+    pList[cur_state][0]->vel.Copy(partVel);
+}
+
+void Ragdoll::Draw(SimpleRenderer& rend) {
+    //rend.SetStyle(0, 0, 100);
+
+    for (int i = 0; i < pList[cur_state].size(); ++i){
+        RagParticle* particle = pList[cur_state][i];
+        //rend.DrawCircle(particle->pos.x, particle->pos.y, particle->r);
+    }
+
+    for (int i = 0; i < sList[cur_state].size(); ++i) {
+        RagStick* stick = sList[cur_state][i];
+        vec2 p0pos = stick->p0->pos;
+        vec2 p1pos = stick->p1->pos;
+        //rend.DrawLine(p0pos.x, p0pos.y, p1pos.x, p1pos.y);
+    }
 }
 
 RagParticle::RagParticle(double radius, double drag)
@@ -139,9 +215,9 @@ void RagParticle::SetState(double posx, double posy, double velx, double vely) {
     vel.y = vely;
 }
 
-void RagParticle::CopyState(const RagParticle &part) {
-    pos.Copy(part.pos);
-    vel.Copy(part.vel);
+void RagParticle::CopyState(const RagParticle* part) {
+    pos.Copy(part->pos);
+    vel.Copy(part->vel);
 }
 
 RagStick::RagStick(RagParticle* part0, RagParticle* part1, double weight0, double minRatio, double maxLength)
