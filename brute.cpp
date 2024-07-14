@@ -35,6 +35,7 @@ string flownReplayOfficial = "eNpjYqIOYEYBrBAAZkMVMBAyAGEKCysVAAt2QKY2coxCMZZEs4
 string flownReplayLowJump = "eNpjYqIOYEYBrBAAZkMVMBAyAGEKCysVAAt2QKY2coxCMZZEs4myHi3QkUOb1AjDCaidMkgzEqSWAQDwwQik";
 string shakeReplay = "eNpjYYEAVlTAggaYKAUMaDYw4wVIGlHsxq2MCUULBBClGqaYgTizGWDhxUjI4VjDER0wAABRrARl";
 string oceanReplay = "eNpjYoIABla8gIVSwEhLw1EAA3mOINsdDABVxAVC";
+string oceanReplay2 = "eNpjYoICVryAhXzAyEoIsFAKGKjjFDItBwBdJQVK";
 
 void Initialize(App_MultiPurpose& app);
 void Inject(App_MultiPurpose& app);
@@ -46,12 +47,12 @@ void bruteForce(ByteArray&, ByteArray&, unsigned int, unsigned int, unsigned int
 ofstream fout;
 
 int main() {
-    ByteArray levelBytes = sim_globals::StringtoBA(shake);
-    ByteArray replayBytes = Base64::decode(shakeReplay);
+    ByteArray levelBytes = sim_globals::StringtoBA(ocean);
+    ByteArray replayBytes = Base64::decode(oceanReplay2);
     replayBytes.uncompress();
     fout.open("resultBrute.txt");
     if (!fout.is_open()) {cerr << "Error opening resultBrute.txt"; return 1;}
-    bruteForce(levelBytes, replayBytes, 306+8, 22, bruteTypes::allCombosWithoutJump, finishTypes::continueUntilFrame, vector<char>({clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::N, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L}));
+    bruteForce(levelBytes, replayBytes, 198+15, 17, bruteTypes::allCombosWithoutJump, finishTypes::continueUntilFrame, vector<char>({clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::N, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L}));
     fout.close();
     return 0;
 }
@@ -82,8 +83,10 @@ void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFram
                 replayCopy.writeByte(endFrames[i]);
             }
         }cout << "WE ARE HERE" << endl;
-        replayCopy.setPosition(306 - 1);
-        replayCopy.writeByte(clocks::L);
+        replayCopy.setPosition(133 - 1);
+        replayCopy.writeByte(clocks::RJ);
+        replayCopy.setPosition(198 - 1);
+        replayCopy.writeByte(clocks::R);
         app.watchPlayerSelectedReplay(&level, &replayCopy);
         for (int j = 0; j < startBruteFrame - 1; ++j) {
             app.tick();
@@ -101,10 +104,10 @@ void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFram
                 ++numTypes[num % inputTypes.size()];
                 //fout << inputTypesChar[num % inputTypes.size()];
                 bruteClocks += inputTypesChar[num % inputTypes.size()];
-                replaySave.writeByte(inputTypes[num % inputTypes.size()] | ((j != -1) ? 1 : 0));
+                replaySave.writeByte(inputTypes[num % inputTypes.size()]);// | ((j != -1) ? 1 : 0));
                 num /= inputTypes.size();
             }
-            if (numTypes[2] > 2 || numTypes[1] > 3 || numTypes[2] + numTypes[1] > 4) continue;
+            if (numTypes[0] > 2 || numTypes[1] > 4 || numTypes[0] + numTypes[1] > 5) continue;
             //if (numTypes[1] > 8) continue;
             app.NEW_watchReplayFromSave();
             for (int j = 0; j < numBruteFrames; ++j) {
@@ -132,17 +135,18 @@ void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFram
                 //372 216
             }
             else if (finishType == finishTypes::continueUntilFrame) {
-                while (app.NEW_getFrameNum() != 383) {
+                while (app.NEW_getFrameNum() != 238) {
                     app.tick();
                 }
             }
             //if (app.NEW_getFrameNum() != 109) continue;
             //app.exitReplay();
             vec2 pos = player->GetPos();
-            if (pos.x < 89) continue;
+            //if (pos.x < 89) continue;
             vec2 vel = player->GetVel();
+            if (vel.y > -3.1) continue;
             //if (abs(vel.y + 1.4) > 0.00001) continue;
-            fout << bruteClocks << ' ' << app.NEW_getFrameNum() << ' ' << pos.x << ' ' << pos.y << ' ' << vel.x << ' ' << vel.y << ' ' << app.NEW_getCurrentTicks() << ' ' << Ninja::PSTATE_TO_STRING[player->NEW_GetState()] << '\n';
+            fout << bruteClocks << ' ' << app.NEW_getFrameNum() << ' ' << pos.x << ' ' << pos.y << ' ' << vel.x << ' ' << vel.y << ' ' << app.NEW_getCurrentTicks() << '\n';// << Ninja::PSTATE_TO_STRING[player->NEW_GetState()] << '\n';
         }
     }
 }
