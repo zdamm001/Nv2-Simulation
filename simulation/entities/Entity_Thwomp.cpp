@@ -2,7 +2,7 @@
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Thwomp.h"
 
 Entity_Thwomp::Entity_Thwomp(Grid_Entity* entities, double x, double y, int fallDir, bool isHorizontal)
-    : pos(x, y), anchor(x, y), r(12 * (3.0 / 4.0)), fallspeed(12 * (5.0 / 14.0) * (40.0 / sim_globals::sim_rate)), raisespeed(12 * (1.0 / 7.0) * (40.0 / sim_globals::sim_rate)), CUR_STATE(0), falldir(falldir), isHorizontal(isHorizontal) {
+    : pos(x, y), anchor(x, y), r(12 * (3.0 / 4.0)), fallspeed(12 * (5.0 / 14.0) * (40.0 / sim_globals::sim_rate)), raisespeed(12 * (1.0 / 7.0) * (40.0 / sim_globals::sim_rate)), CUR_STATE(0), falldir(fallDir), isHorizontal(isHorizontal) {
     entities->ENTITY_Add(pos, this);
     n = vec2();
 }
