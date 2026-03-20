@@ -1,0 +1,5 @@
+zcircdeptest/
+zlevelinfo/
+zresults/
+*.exe
+*.o
