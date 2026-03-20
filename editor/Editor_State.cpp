@@ -69,7 +69,7 @@ Editor_State Editor_State::Load_From_Bytes(ByteArray& bytes) {
                 if (bytes.bytesAvailable() < edat::STRUCT_SIZE[i]) {
                     return Editor_State();
                 }
-                for (int j = 0; j < edat::STRUCT_SIZE[i]; ++j) {
+                for (int k = 0; k < edat::STRUCT_SIZE[i]; ++k) {
                     entityData.push_back(bytes.readUnsignedByte());
                 }
                 editorState.entities.push_back(entityData);
