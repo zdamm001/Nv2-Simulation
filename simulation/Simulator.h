@@ -16,7 +16,7 @@ using namespace std;
 
 class SimpleRenderer;
 class GraphicsManager;
-class SoundManager;
+class SoundManager {};
 class ParticleManager {};
 
 class Simulator {
