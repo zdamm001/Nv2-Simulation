@@ -16,6 +16,7 @@
 #include "audiovisual\\entitygraphics\\EntityGraphics_Mine.h"
 #include "audiovisual\\entitygraphics\\EntityGraphics_FloorGuard.h"
 #include "audiovisual\\entitygraphics\\EntityGraphics_BounceBlock.h"
+#include "audiovisual\\entitygraphics\\EntityGraphics_Turret.h"
 
 using namespace std;
 
@@ -84,6 +85,10 @@ int main() {
     lockedSwitchTexture.loadFromFile(".\\lockedSwitch.png");
     sf::Texture lockedDoorTexture;
     lockedDoorTexture.loadFromFile(".\\lockedDoor.png");
+    sf::Texture lockedSwitchOpenTexture;
+    lockedSwitchOpenTexture.loadFromFile(".\\lockedSwitchOpen.png");
+    sf::Texture lockedDoorOpenTexture;
+    lockedDoorOpenTexture.loadFromFile(".\\lockedDoorOpenTemp.png");
     
     sf::Sprite player(ninjaTexture);
     sf::CircleShape playerCircle(10);
@@ -99,7 +104,7 @@ int main() {
     Initialize(app);
     Inject(app);
     vector<int> keys = ImportantKeys(app.soloKeys, app.globalKeys);
-    ByteArray levelBytes = sim_globals::StringtoBA(shakeItMadam);
+    ByteArray levelBytes = sim_globals::StringtoBA(pokeyman);
     app.playSingleLevelFromBytes(&levelBytes, "1");
 
     while (window.isOpen()) {
@@ -285,21 +290,37 @@ int main() {
                         lockedDoor->RegisterGraphics(graphics);
                         sf::VertexArray entityLine(sf::Lines, 2);
                         sf::Sprite entityDoor;
-                        if (useTextures) {
-                            entity.setTexture(lockedSwitchTexture);
-                            r = 9/2;
-                            entity.setPosition(graphics.front()->x - r, graphics.front()->y - r);
-                            entityDoor.setTexture(lockedDoorTexture);
-                            entityDoor.setPosition(graphics.back()->x - 24/2, graphics.back()->y - 5/2);
+                        if (lockedDoor->anim == EntityGraphics_Door_Locked::ANIM_OPEN) {
+                            if (useTextures) {
+                                entity.setTexture(lockedSwitchOpenTexture);
+                                r = 9/2;
+                                entity.setPosition(graphics.front()->x - r, graphics.front()->y - r);
+                                entityDoor.setTexture(lockedDoorOpenTexture);
+                                entityDoor.setPosition(graphics.back()->x - 24/2, graphics.back()->y - 4/2);
+                            }
+                            else {
+                                entityCircle.setRadius(r = 5);
+                                entityCircle.setFillColor(sf::Color::White);
+                                entityCircle.setPosition(graphics.front()->x - r, graphics.front()->y - r);
+                            }
                         }
                         else {
-                            entityCircle.setRadius(r = 5);
-                            entityCircle.setFillColor(sf::Color::Red);
-                            entityCircle.setPosition(graphics.front()->x - r, graphics.front()->y - r);
-                            entityLine[0].position = sf::Vector2f(graphics.back()->x - 12, graphics.back()->y);
-                            entityLine[1].position = sf::Vector2f(graphics.back()->x + 12, graphics.back()->y);
-                            entityLine[0].color  = sf::Color::Black;
-                            entityLine[1].color = sf::Color::Black;
+                            if (useTextures) {
+                                entity.setTexture(lockedSwitchTexture);
+                                r = 9/2;
+                                entity.setPosition(graphics.front()->x - r, graphics.front()->y - r);
+                                entityDoor.setTexture(lockedDoorTexture);
+                                entityDoor.setPosition(graphics.back()->x - 24/2, graphics.back()->y - 5/2);
+                            }
+                            else {
+                                entityCircle.setRadius(r = 5);
+                                entityCircle.setFillColor(sf::Color::Red);
+                                entityCircle.setPosition(graphics.front()->x - r, graphics.front()->y - r);
+                                entityLine[0].position = sf::Vector2f(graphics.back()->x - 12, graphics.back()->y);
+                                entityLine[1].position = sf::Vector2f(graphics.back()->x + 12, graphics.back()->y);
+                                entityLine[0].color  = sf::Color::Black;
+                                entityLine[1].color = sf::Color::Black;
+                            }
                         }
                         if (useTextures) {
                             window.draw(entity);
@@ -310,12 +331,27 @@ int main() {
                             window.draw(entityLine);
                         }
                     }
+                    else if (dynamic_cast<Entity_Turret*>(entityList[i])) {
+                        EntityGraphics_Turret* turret = dynamic_cast<EntityGraphics_Turret*>(entityList[i]->GenerateGraphicComponent());
+                        turret->UpdateState();
+                        turret->RegisterGraphics(graphics);
+                        sf::VertexArray entityLine(sf::Lines, 2);
+                        sf::Sprite entityCross;
+                        sf::RectangleShape entitySquare;
+                        //if (turret->an)
+                    }
                 }
             }
         }
         if (playerList.size() != 0 && playerList[0] != nullptr) {
             if (useTextures) {
                 player.setPosition(playerList[0]->GetPos().x - ninjaRadius, playerList[0]->GetPos().y - ninjaRadius);
+                EntityGraphics_Ninja* ninja = playerList[0]->GenerateGraphicComponent();
+                ninja->UpdateState();
+                //if (ninja->facing != 1) {
+                //    player.setScale(ninja->facing, 1);
+                //    player.move(20, 0);
+                //}
                 window.draw(player);
             }
             else {
