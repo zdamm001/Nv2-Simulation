@@ -6,7 +6,7 @@ Entity_ExitDoor::Entity_ExitDoor(double x, double y)
 }
 
 Entity_ExitDoor::Entity_ExitDoor(Grid_Entity* entities, entitySave& entity)
-    : pos(entity.pos), r(12), isOpen(entity.state) {
+    : pos(entity.pos), r(12), isOpen(entity.is) {
     if (isOpen) entities->ENTITY_Add(pos, this);
 }
 
