@@ -1,4 +1,9 @@
 #include "Ragdoll.h"
+#include "..\\entities\\Entity_Base.h"
+#include "..\\entities\\Entity_Drone_Zap.h"
+#include "..\\entities\\Entity_FloorGuard.h"
+#include "..\\entities\\Entity_Mine.h"
+#include "..\\entities\\Entity_Thwomp.h"
 
 const vector<double> Ragdoll::pRadius = {2.49, 2.49, 1.99, 1.99, 2.99, 2.99};
 const vector<double> Ragdoll::pDrag = {0.99, 0.995, 0.995, 0.99, 0.99, 0.995};
@@ -251,10 +256,10 @@ void Ragdoll::RespondToCollision(Simulator* sim, RagParticle* part, double normx
     double _loc7_ = 0.05;
     double _loc8_ = 0;
 
-    double _loc9_ = part->solver_pos.x - part->pos.x;
-    double _loc10_ = part->solver_pos.y - part->pos.y;
-    double _loc11_ = _loc9_ * normx + _loc10_ * normy;
-    double _loc12_ = _loc9_ * -normy + _loc10_ * normx;
+    double dx = part->solver_pos.x - part->pos.x;
+    double dy = part->solver_pos.y - part->pos.y;
+    double _loc11_ = dx * normx + dy * normy;
+    double _loc12_ = dx * -normy + dy * normx;
 
     if (_loc11_ < 0) {
         _loc6_ = 2;
@@ -262,36 +267,40 @@ void Ragdoll::RespondToCollision(Simulator* sim, RagParticle* part, double normx
         _loc8_ = 1;
 
         if (_loc11_ < -3) {
-            sim->HACKY_GetParticleManager()->Spawn_RagBloodSpurt(part->solver_pos.x, part->solver_pos.y, -_loc11_ * normx, -_loc11_ * normy);
+            //sim->HACKY_GetParticleManager()->Spawn_RagBloodSpurt(part->solver_pos.x, part->solver_pos.y, -_loc11_ * normx, -_loc11_ * normy);
             double sfxRand = mathutils::Random();
             if (sfxRand < 0.33) {
-                sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("hard1");
+                //sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("hard1");
             } else if (sfxRand < 0.66) {
-                sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("hard2");
+                //sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("hard2");
             } else {
-                sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("hard3");
+                //sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("hard3");
             }
         } else {
-            if (0.7 < _loc12_ * _loc12_) {
-                sim->HACKY_GetParticleManager()->Spawn_RagDust(part->solver_pos, part->r, _loc12_ * -normy, _loc12_ * normx, _loc12_ * _loc12_);
+            if (_loc12_ * _loc12_ > 0.7) {
+                //sim->HACKY_GetParticleManager()->Spawn_RagDust(part->solver_pos, part->r, _loc12_ * -normy, _loc12_ * normx, _loc12_ * _loc12_);
             }
             if (_loc11_ < -2) {
                 if (mathutils::Random() < 0.5) {
-                    sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("med1");
+                    //sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("med1");
                 } else {
-                    sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("med2");
+                    //sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("med2");
                 }
             } else if (_loc11_ < -1.2) {
                 if (mathutils::Random() < 0.5) {
-                    sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("soft1");
+                    //sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("soft1");
                 } else {
-                    sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("soft2");
+                    //sim->HACKY_GetSoundManager()->PlaySound_Ragdoll("soft2");
                 }
             }
         }
     }
-    part->pos.x += _loc8_ * pen * normx + _loc6_ * _loc11_ * normx + _loc7_ * _loc12_ * -normy;
-    part->pos.y += _loc8_ * pen * normy + _loc6_ * _loc11_ * normy + _loc7_ * _loc12_ * normx;
+    part->pos.x += _loc8_ * pen     * normx 
+                 + _loc6_ * _loc11_ * normx 
+                 + _loc7_ * _loc12_ * -normy;
+    part->pos.y += _loc8_ * pen     * normy 
+                 + _loc6_ * _loc11_ * normy 
+                 + _loc7_ * _loc12_ * normx;
 }
 
 void Ragdoll::GFX_UpdateState(EntityGraphics_Ninja* graphic) {

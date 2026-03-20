@@ -8,11 +8,6 @@
 #include "..\\..\\simpleFramework\\SimpleRenderer.h"
 #include "..\\Simulator.h"
 #include "..\\collision\\colutils.h"
-#include "..\\entities\\Entity_Base.h"
-#include "..\\entities\\Entity_Drone_Zap.h"
-#include "..\\entities\\Entity_FloorGuard.h"
-#include "..\\entities\\Entity_Mine.h"
-#include "..\\entities\\Entity_Thwomp.h"
 #include "..\\entities\\collision_result_logical.h"
 #include "..\\entities\\collision_result_physical.h"
 
