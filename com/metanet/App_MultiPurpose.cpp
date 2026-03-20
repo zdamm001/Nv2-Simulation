@@ -1,7 +1,20 @@
 #include "App_MultiPurpose.h"
 
 App_MultiPurpose::App_MultiPurpose() {
+    globalKeys = nullptr;
+    debugRenderer = nullptr;
+    options = nullptr;
+    stats = nullptr;
+    soloKeys = nullptr;
+    coopKeys = nullptr;
+    account = nullptr;
+    _timeFormatter = nullptr;
     _sim = nullptr;
+    _gfx = nullptr;
+    _playerKeys = nullptr;
+    _levelData = nullptr;
+    _lastLevel = nullptr;
+    _lastReplay = nullptr;
     _timeFormatter = new TimeFormatter();
 }
 
