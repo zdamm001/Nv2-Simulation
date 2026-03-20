@@ -69,19 +69,18 @@ int main() {
 }
 
 void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFrame, unsigned int numBruteFrames, unsigned int bruteType, unsigned int finishType, vector<char> endFrames) {
-    cout << "WE ARE HERE" << endl;
-    App_MultiPurpose app;cout << "WE ARE HERE" << endl;
+    App_MultiPurpose app;
     Initialize(app);cout << "WE ARE HERE" << endl;
-    Inject(app);cout << "WE ARE HERE" << endl;
-    app.options->resetScoreOnDeath = true;cout << "WE ARE HERE" << endl;
-    app.options->scoreGoldImmediately = true;cout << "WE ARE HERE" << endl;
+    Inject(app);
+    app.options->resetScoreOnDeath = true;
+    app.options->scoreGoldImmediately = true;
     ByteArray replayCopy = replay;//if frames < start + brute add them FIX
-    if (bruteType == bruteTypes::allCombosWithoutJump) {cout << "WE ARE HERE" << endl;
-        vector<int> inputTypes = {2, 0, 4};cout << "WE ARE HERE" << endl;
-        vector<char> inputTypesChar = {'L', 'N', 'R'};cout << "WE ARE HERE" << endl;
+    if (bruteType == bruteTypes::allCombosWithoutJump) {
+        vector<int> inputTypes = {2, 0, 4};
+        vector<char> inputTypesChar = {'L', 'N', 'R'};
         // vector<int> inputTypes = {4, 0};
         // vector<char> inputTypesChar = {'R', 'N'};
-        long long int totalCombinations = pow(inputTypes.size(), numBruteFrames);cout << "WE ARE HERE" << endl;
+        long long int totalCombinations = pow(inputTypes.size(), numBruteFrames);
         if (finishType == finishTypes::holdRUntilCanJump) {
             replayCopy.setPosition(startBruteFrame + numBruteFrames - 1);
             for (int i = 0; i < 100; ++i) {
@@ -120,7 +119,7 @@ void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFram
                 num /= inputTypes.size();
             }
             if (numTypes[2] > 8 || numTypes[1] > 10 || numTypes[2] + numTypes[1] > 11) continue;
-            //if (numTypes[2] != 7 && numTypes[1] != 2) continue;
+            //if (numTypes[2] != 7 || numTypes[1] != 2) continue;
             //if (numTypes[1] > 8) continue;
             app.NEW_watchReplayFromSave();
             for (int j = 0; j < numBruteFrames; ++j) {
