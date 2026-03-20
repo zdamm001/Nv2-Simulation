@@ -70,6 +70,7 @@ void Inject(App_MultiPurpose& app) {
     app.coopKeys = new PlayerKeys();
     app.globalKeys = new GlobalKeys();
     app.options = new Options();
+    app.stats = new GameStats();
     StoreDefaults defaults;
     defaults.soloKeys = app.soloKeys;
     defaults.coopKeys = app.coopKeys;
