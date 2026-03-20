@@ -14,9 +14,9 @@
 #include "..\\entities\\collision_result_physical.h"
 #include "..\\inputsource\\InputSource_Base.h"
 #include "..\\sim_globals.h"
-#include "Ragdoll.h"
 #include "..\\save\\saveState.h"
 
+class Ragdoll;
 class EntityGraphics_Ninja;
 
 using namespace std;
@@ -71,7 +71,7 @@ class Ninja {
         vec2 fvec;
         double impulse_scale;
         int pID;
-        Ragdoll raggy;
+        Ragdoll* raggy;
         EntityGraphics_Ninja* ninja_gfx;
         double crush_threshold;
         vec2 crush_vec;
@@ -111,7 +111,7 @@ class Ninja {
         vec2 GetVel();
         double GetRadius();
         bool IsDead();
-        Ragdoll& DEBUG_GetRagdoll();
+        Ragdoll* DEBUG_GetRagdoll();
         void APP_Enable();
         void APP_Disable();
         void Integrate();

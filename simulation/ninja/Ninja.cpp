@@ -1,5 +1,6 @@
 #include "Ninja.h"
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Ninja.h"
+#include "Ragdoll.h"
 
 const unsigned int Ninja::PSTATE_STANDING = 0;
 const unsigned int Ninja::PSTATE_RUNNING = 1;
@@ -59,6 +60,7 @@ Ninja::Ninja(int pID, InputSource_Base* input, double x, double y, unsigned int 
       floorN(0, -1),
       fcount(1), 
       fvec(0, 0),
+      raggy(new Ragdoll),
       ninja_gfx(nullptr), 
       crush_threshold(0.05),
       crush_dist(0), 
@@ -105,6 +107,7 @@ Ninja::Ninja(ninjaSave& ninjaState, InputSource_Base* input)
       floorN(0, -1),
       fcount(1), 
       fvec(0, 0),
+      raggy(new Ragdoll),
       ninja_gfx(nullptr), 
       crush_threshold(0.05),
       crush_dist(0), 
@@ -122,6 +125,7 @@ Ninja::Ninja(ninjaSave& ninjaState, InputSource_Base* input)
 Ninja::~Ninja() {
     delete inputsource;
     delete ninja_gfx;
+    delete raggy;
 }
 
 void Ninja::DEBUG_SetPosVel(const vec2& pos, const vec2& vel) {
@@ -165,7 +169,7 @@ bool Ninja::IsDead() {
     return curState == PSTATE_DEAD || curState == PSTATE_DISABLED;
 }
 
-Ragdoll& Ninja::DEBUG_GetRagdoll() {
+Ragdoll* Ninja::DEBUG_GetRagdoll() {
     return raggy;
 }
 
@@ -754,7 +758,7 @@ void Ninja::GFX_UpdateState(EntityGraphics_Ninja* graphics) {
         graphics->anim = EntityGraphics_Ninja::ANIM_OFF;
     } else if (curState == PSTATE_DEAD) {
         graphics->anim = EntityGraphics_Ninja::ANIM_DEAD;
-        raggy.GFX_UpdateState(graphics);
+        raggy->GFX_UpdateState(graphics);
     } else {
         graphics->pos.x = pos.x;
         graphics->pos.y = pos.y;
