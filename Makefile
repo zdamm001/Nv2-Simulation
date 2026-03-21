@@ -53,4 +53,4 @@ help:
 	@echo "  make clean"
 
 clean:
-	rm *.o *.exe
+	rm -f $(COMMON_OBJ) *.o *.exe
