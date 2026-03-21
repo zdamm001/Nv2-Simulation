@@ -23,7 +23,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "make brute"
+            "preLaunchTask": "make ${fileBasenameNoExtension}"
         }
     ]
 }
