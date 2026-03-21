@@ -1,5 +1,8 @@
+.sfml-2.6.1/
 zcircdeptest/
+zother/
 zlevelinfo/
 zresults/
 *.exe
 *.o
+resultBrute.txt
