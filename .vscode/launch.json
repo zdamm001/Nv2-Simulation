@@ -21,14 +21,9 @@
                     "description": "Enable pretty-printing for gdb",
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
-                },
-                {
-                    "description": "Set include path",
-                    "text": "-environment-directory ${workspaceFolder}/.sfml-2.5.1/include",
-                    "ignoreFailures": false
                 }
             ],
-            "preLaunchTask": "C/C++: g++.exe build active file"
+            "preLaunchTask": "make brute"
         }
     ]
 }
