@@ -5,7 +5,10 @@
             "label": "make brute",
             "type": "shell",
             "command": "mingw32-make.exe",
-            "args": ["brute", "CXXFLAGS=-std=c++17 -g -Og -fdiagnostics-color=always -fdiagnostics-show-option -Wall -Wextra -Wpedantic"],
+            "args": [
+                "brute", 
+                "CXXFLAGS=-std=c++17 -g -Og -fdiagnostics-color=always -fdiagnostics-show-option -Wall -Wextra -Wpedantic"
+            ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
@@ -19,7 +22,10 @@
             "label": "make main",
             "type": "shell",
             "command": "mingw32-make.exe",
-            "args": ["main"],
+            "args": [
+                "main", 
+                "CXXFLAGS=-std=c++17 -g -Og -fdiagnostics-color=always -fdiagnostics-show-option -Wall -Wextra -Wpedantic"
+            ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
@@ -29,7 +35,11 @@
             "label": "make sim",
             "type": "shell",
             "command": "mingw32-make.exe",
-            "args": ["sim"],
+            "args": [
+                "sim",
+                "MWINDOWS=0",
+                "CXXFLAGS=-std=c++17 -g -Og -fdiagnostics-color=always -fdiagnostics-show-option -Wall -Wextra -Wpedantic"
+            ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },

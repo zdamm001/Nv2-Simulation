@@ -3,9 +3,13 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -O3
 
+MWINDOWS ?= 1
+
 SFML_CPPFLAGS = -I".\.sfml-2.5.1\include" -DSFML_STATIC
 SFML_LDFLAGS = -L".\.sfml-2.5.1\lib"
-SFML_LIBS = -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lfreetype -lwinmm -lgdi32 -mwindows -lsfml-main
+
+SFML_LIBS = -lsfml-graphics-s -lsfml-window-s -lsfml-system-s \
+            -lopengl32 -lfreetype -lwinmm -lgdi32 -lsfml-main
 
 COMMON_SRC = \
     $(wildcard audiovisual/entitygraphics/*.cpp) \
@@ -37,7 +41,7 @@ brute: brute.o $(COMMON_OBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ -lz
 
 sim: sim.o $(COMMON_OBJ)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(SFML_LDFLAGS) $(SFML_LIBS) -lz
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(SFML_LDFLAGS) $(SFML_LIBS) -lz $(if $(filter 1,$(USE_MWINDOWS)),-mwindows)
 
 sim.o: sim.cpp
 	$(CXX) -c $< -o $@ $(CXXFLAGS) $(SFML_CPPFLAGS)
