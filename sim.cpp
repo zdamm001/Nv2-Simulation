@@ -45,6 +45,7 @@ int main() {
 
     sf::Font font;
     if (!font.loadFromFile("audiovisual/assets/Uni0553.ttf")) {
+        cerr << "Error: could not load font" << endl;
         return EXIT_FAILURE;
     }
     sf::Text timebarText;
@@ -55,7 +56,6 @@ int main() {
     timebarText.setPosition(30.f, 6.f);
     timebarText.setLetterSpacing(2.f);
     
-
     vector<sf::Texture> tiles(42);
     for (int i = 0; i < 34; ++i) {
         tiles.at(i).loadFromFile("audiovisual/assets/tiles.png", sf::IntRect(i * CELL_SIZE, 0, CELL_SIZE, CELL_SIZE));
@@ -88,7 +88,11 @@ int main() {
     sf::Texture lockedSwitchOpenTexture;
     lockedSwitchOpenTexture.loadFromFile("audiovisual/assets/lockedSwitchOpen.png");
     sf::Texture lockedDoorOpenTexture;
-    lockedDoorOpenTexture.loadFromFile("audiovisual/assets/lockedDoorOpenTemp.png");
+    lockedDoorOpenTexture.loadFromFile("audiovisual/assets/lockedDoorOpen.png");
+    sf::Texture turretBaseTexture;
+    turretBaseTexture.loadFromFile("audiovisual/assets/gaussBase.png");
+    sf::Texture turretCrosshairTexture;
+    turretCrosshairTexture.loadFromFile("audiovisual/assets/gaussAim.png");
     
     sf::Sprite player(ninjaTexture);
     sf::CircleShape playerCircle(10);
@@ -120,6 +124,8 @@ int main() {
                         useTextures = !useTextures;
                     }
                     break;
+                default:
+                    break;
             }
         }
 
@@ -138,23 +144,25 @@ int main() {
         vector<Entity_Base*> entityList = sim->GFX_GetEntityList();
 
         if (tileIDs.size() != 0) {
-        for (int y = 0; y < gameHeight; ++y) {
-            for (int x = 0; x < gameWidth; ++x) {
-                sf::Sprite wall(tiles.at(tileIDs.at(y * gameWidth + x)));
-                wall.setPosition(x * CELL_SIZE, y * CELL_SIZE);
-                window.draw(wall);
+            for (int y = 0; y < gameHeight; ++y) {
+                for (int x = 0; x < gameWidth; ++x) {
+                    sf::Sprite wall(tiles.at(tileIDs.at(y * gameWidth + x)));
+                    wall.setPosition(x * CELL_SIZE, y * CELL_SIZE);
+                    window.draw(wall);
+                }
             }
         }
-        }
+
         if (entityList.size() != 0) {
             vector<DisplayObject*> graphics;
-            for (int i = 0; i < entityList.size(); ++i) {
+            for (size_t i = 0; i < entityList.size(); ++i) {
                 sf::Sprite entity;
                 sf::CircleShape entityCircle;
                 double r = 0;
                 if (entityList[i] != nullptr) {
                     if (dynamic_cast<Entity_Gold*>(entityList[i])) {
                         EntityGraphics_Gold* gold = dynamic_cast<EntityGraphics_Gold*>(entityList[i]->GenerateGraphicComponent());
+                        gold->UpdateState();
                         gold->RegisterGraphics(graphics);
                         if (useTextures) {
                             entity.setTexture(goldTexture);
@@ -166,7 +174,6 @@ int main() {
                             entityCircle.setFillColor(sf::Color::Yellow);
                             entityCircle.setPosition(graphics.back()->x - r, graphics.back()->y - r);
                         }
-                        dynamic_cast<Entity_Gold*>(entityList[i])->GFX_UpdateState(gold);
                         if (gold->anim == EntityGraphics_Gold::ANIM_NOT_COLLECTED) {
                             if (useTextures) window.draw(entity);
                             else window.draw(entityCircle);
@@ -174,6 +181,7 @@ int main() {
                     }
                     else if (dynamic_cast<Entity_Mine*>(entityList[i])) {
                         EntityGraphics_Mine* mine = dynamic_cast<EntityGraphics_Mine*>(entityList[i]->GenerateGraphicComponent());
+                        mine->UpdateState();
                         mine->RegisterGraphics(graphics);
                         if (useTextures) {
                             entity.setTexture(mineTexture);
@@ -186,7 +194,6 @@ int main() {
                             entityCircle.setFillColor(sf::Color::Red);
                             entityCircle.setPosition(graphics.back()->x - r, graphics.back()->y - r);
                         }
-                        dynamic_cast<Entity_Mine*>(entityList[i])->GFX_UpdateState(mine);
                         if (mine->anim == EntityGraphics_Mine::ANIM_UNEXPLODED) {
                             if (useTextures) window.draw(entity);
                             else window.draw(entityCircle);
@@ -194,6 +201,7 @@ int main() {
                     }
                     else if (dynamic_cast<Entity_ExitSwitch*>(entityList[i])) {
                         EntityGraphics_ExitSwitch* switch_ = dynamic_cast<EntityGraphics_ExitSwitch*>(entityList[i]->GenerateGraphicComponent());
+                        switch_->UpdateState();
                         switch_->RegisterGraphics(graphics);
                         double ry = 8/2;
                         if (useTextures) {
@@ -206,7 +214,6 @@ int main() {
                             entityCircle.setFillColor(sf::Color::Cyan);
                             entityCircle.setPosition(graphics.front()->x - r, graphics.front()->y - r);
                         }
-                        dynamic_cast<Entity_ExitSwitch*>(entityList[i])->GFX_UpdateState(switch_);
                         if (switch_->anim == EntityGraphics_ExitSwitch::ANIM_OPEN) {
                             if (useTextures) {
                                 entity.setTexture(switchOpenTexture);
@@ -222,6 +229,7 @@ int main() {
                     }
                     else if (dynamic_cast<Entity_ExitDoor*>(entityList[i])) {
                         EntityGraphics_ExitDoor* door = dynamic_cast<EntityGraphics_ExitDoor*>(entityList[i]->GenerateGraphicComponent());
+                        door->UpdateState();
                         door->RegisterGraphics(graphics);
                         if (useTextures) {
                             entity.setTexture(doorClosedTexture);
@@ -233,7 +241,6 @@ int main() {
                             entityCircle.setFillColor(sf::Color(0x7F7F7FFF));
                             entityCircle.setPosition(graphics.front()->x - r, graphics.front()->y - r);
                         }
-                        dynamic_cast<Entity_ExitDoor*>(entityList[i])->GFX_UpdateState(door);
                         if (door->anim == EntityGraphics_ExitDoor::ANIM_OPEN) {
                             if (useTextures) {
                                 entity.setTexture(doorOpenTexture, true);
@@ -318,7 +325,7 @@ int main() {
                                 entityCircle.setPosition(graphics.front()->x - r, graphics.front()->y - r);
                                 entityLine[0].position = sf::Vector2f(graphics.back()->x - 12, graphics.back()->y);
                                 entityLine[1].position = sf::Vector2f(graphics.back()->x + 12, graphics.back()->y);
-                                entityLine[0].color  = sf::Color::Black;
+                                entityLine[0].color = sf::Color::Black;
                                 entityLine[1].color = sf::Color::Black;
                             }
                         }
@@ -335,10 +342,71 @@ int main() {
                         EntityGraphics_Turret* turret = dynamic_cast<EntityGraphics_Turret*>(entityList[i]->GenerateGraphicComponent());
                         turret->UpdateState();
                         turret->RegisterGraphics(graphics);
+                        sf::CircleShape entityCircleInner;
                         sf::VertexArray entityLine(sf::Lines, 2);
                         sf::Sprite entityCross;
                         sf::RectangleShape entitySquare;
-                        //if (turret->an)
+                        if (useTextures) {
+                            entity.setTexture(turretBaseTexture);
+                            r = 13/2;
+                            entity.setPosition(graphics.front()->x - r, graphics.front()->y - r);
+                            entityCross.setTexture(turretCrosshairTexture);
+                            double rCross = 7/2;
+                            entityCross.setPosition(graphics.front()->x - rCross, graphics.front()->y - rCross);
+                        }
+                        else {
+                            entityCircle.setRadius(r = 6);
+                            entityCircle.setFillColor(sf::Color::Transparent);
+                            entityCircle.setOutlineColor(sf::Color::Black);
+                            entityCircle.setOutlineThickness(1);
+                            entityCircle.setPosition(graphics.front()->x - r, graphics.front()->y - r);
+                            double rInner = 3.5;
+                            entityCircleInner.setRadius(rInner);
+                            entityCircleInner.setFillColor(sf::Color::Transparent);
+                            entityCircleInner.setOutlineColor(sf::Color::Magenta);
+                            entityCircleInner.setOutlineThickness(1);
+                            entityCircleInner.setPosition(graphics.front()->x - rInner, graphics.front()->y - rInner);
+                            double dCross = 7;
+                            if (turret->anim_crosshair <= 3) {
+                                dCross = turret->anim_crosshair * 2 + 1;
+                            }
+                            entitySquare.setSize(sf::Vector2f(dCross - 2, dCross - 2));
+                            entitySquare.setFillColor(sf::Color::Transparent);
+                            entitySquare.setOutlineColor(sf::Color::Black);
+                            entitySquare.setOutlineThickness(1);
+                            if (turret->anim_crosshair == EntityGraphics_Turret::CROSSHAIR_PREFIRE) {
+                                entitySquare.setOutlineColor(sf::Color::Red);
+                            }
+                            if (turret->anim_crosshair == EntityGraphics_Turret::CROSSHAIR_POSTFIRE) {
+                                entitySquare.setOutlineColor(sf::Color::White);
+                            }
+                            entitySquare.setPosition(graphics.back()->x - (dCross/2 - 1), graphics.back()->y - (dCross/2 - 1));
+                        }
+                        if (turret->anim_base == EntityGraphics_Turret::ANIM_FIRING) {
+                            vec2 aimDir(graphics.back()->x - graphics.front()->x, graphics.back()->y - graphics.front()->y);
+                            aimDir.Normalize();
+                            vec2 hit_pos, hit_n;
+                            sim->segGrid->GetRaycastDistance(graphics.front()->x, graphics.front()->y, aimDir.x, aimDir.y, hit_pos, hit_n);
+                            entityLine[0].position = sf::Vector2f(graphics.front()->x, graphics.front()->y);
+                            entityLine[1].position = sf::Vector2f(hit_pos.x, hit_pos.y);
+                            entityLine[0].color = sf::Color::Black;
+                            entityLine[1].color = sf::Color::Black;
+                            entityCircleInner.setFillColor(sf::Color::Magenta);
+                        }
+                        if (useTextures) {
+                            window.draw(entity);
+                            if (turret->anim_crosshair != EntityGraphics_Turret::CROSSHAIR_OFF) {
+                                window.draw(entityCross);
+                            }
+                        }
+                        else {
+                            window.draw(entityCircle);
+                            window.draw(entityCircleInner);
+                            if (turret->anim_crosshair != EntityGraphics_Turret::CROSSHAIR_OFF) {
+                                window.draw(entitySquare);
+                            }
+                        }
+                        window.draw(entityLine);
                     }
                 }
             }
@@ -366,7 +434,7 @@ int main() {
         window.display();
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 void Initialize(App_MultiPurpose& app) {
@@ -412,7 +480,7 @@ vector<int> ImportantKeys(PlayerKeys* soloKeys, GlobalKeys* globalKeys) {
 }
 
 void CheckKeys(SimpleInput& input, vector<int>& keys) {
-    for (int i = 0; i < keys.size(); ++i) {
+    for (size_t i = 0; i < keys.size(); ++i) {
         SHORT keyState = GetAsyncKeyState(keys[i]);
         if (keyState & 0x8000) {
             input.NEW_PRIVATE_EVENT_KeyDown(keys[i]);
