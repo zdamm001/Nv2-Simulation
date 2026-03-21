@@ -5,7 +5,7 @@
             "label": "make brute",
             "type": "shell",
             "command": "mingw32-make.exe",
-            "args": ["brute", "CXXFLAGS=-std=c++17 -g -O0 -fdiagnostics-color=always -Wall -Wextra -Wpedantic"],
+            "args": ["brute", "CXXFLAGS=-std=c++17 -g -Og -fdiagnostics-color=always -fdiagnostics-show-option -Wall -Wextra -Wpedantic"],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
