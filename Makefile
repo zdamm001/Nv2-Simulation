@@ -12,9 +12,11 @@ COMMON_SRC = \
     $(wildcard com/foxarc/util/*.cpp) \
     $(wildcard com/metanet/*.cpp) \
     $(wildcard com/metanet/commands/*.cpp) \
+	$(wildcard com/metanet/data/*.cpp) \
     $(wildcard com/metanet/global/*.cpp) \
     $(wildcard com/metanet/ui/*.cpp) \
     $(wildcard editor/*.cpp) \
+    $(wildcard flash/ui/*.cpp) \
     $(wildcard flash/utils/*.cpp) \
     $(wildcard math/*.cpp) \
     $(wildcard simpleFramework/*.cpp) \
@@ -23,6 +25,7 @@ COMMON_SRC = \
     $(wildcard simulation/entities/*.cpp) \
     $(wildcard simulation/inputsource/*.cpp) \
     $(wildcard simulation/ninja/*.cpp) \
+	$(wildcard simulation/save/*.cpp) \
     $(wildcard tiles/*.cpp)
 
 COMMON_OBJ = $(COMMON_SRC:.cpp=.o)
