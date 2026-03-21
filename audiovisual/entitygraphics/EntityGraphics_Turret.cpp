@@ -2,7 +2,7 @@
 #include "../../simulation/entities/Entity_Turret.h"
 
 EntityGraphics_Turret::EntityGraphics_Turret(Entity_Turret* entity, double x, double y)
-    : entity(entity), anim_base(ANIM_IDLE), anim_crosshair(CROSSHAIR_OFF), pos_crosshair(0, 0) {
+    : entity(entity), anim_base(ANIM_IDLE), pos_crosshair(0, 0), anim_crosshair(CROSSHAIR_OFF)  {
     mc_base = new MovieClip(); //new asset_gfx_turret();
     mc_base->x = x;
     mc_base->y = y;
