@@ -44,7 +44,7 @@ int main() {
     window.setFramerateLimit(FRAME_RATE);
 
     sf::Font font;
-    if (!font.loadFromFile("Uni0553.ttf")) {
+    if (!font.loadFromFile("audiovisual/assets/Uni0553.ttf")) {
         return EXIT_FAILURE;
     }
     sf::Text timebarText;
@@ -58,37 +58,37 @@ int main() {
 
     vector<sf::Texture> tiles(42);
     for (int i = 0; i < 34; ++i) {
-        tiles.at(i).loadFromFile(".\\tiles.png", sf::IntRect(i * CELL_SIZE, 0, CELL_SIZE, CELL_SIZE));
+        tiles.at(i).loadFromFile("audiovisual/assets/tiles.png", sf::IntRect(i * CELL_SIZE, 0, CELL_SIZE, CELL_SIZE));
     }
     for (int i = 34; i < 42; ++i) tiles.at(i) = tiles.at(1);
 
     bool useTextures = false;
     sf::Texture goldTexture;
-    goldTexture.loadFromFile(".\\gold.png");
+    goldTexture.loadFromFile("audiovisual/assets/gold.png");
     sf::Texture mineTexture;
-    mineTexture.loadFromFile(".\\mine.png");
+    mineTexture.loadFromFile("audiovisual/assets/mine.png");
     sf::Texture ninjaTexture;
-    ninjaTexture.loadFromFile(".\\ninja.png");
+    ninjaTexture.loadFromFile("audiovisual/assets/ninja.png");
     sf::Texture doorClosedTexture;
-    doorClosedTexture.loadFromFile(".\\door.png");
+    doorClosedTexture.loadFromFile("audiovisual/assets/door.png");
     sf::Texture doorOpenTexture;
-    doorOpenTexture.loadFromFile(".\\doorOpen.png");
+    doorOpenTexture.loadFromFile("audiovisual/assets/doorOpen.png");
     sf::Texture switchClosedTexture;
-    switchClosedTexture.loadFromFile(".\\switch.png");
+    switchClosedTexture.loadFromFile("audiovisual/assets/switch.png");
     sf::Texture switchOpenTexture;
-    switchOpenTexture.loadFromFile(".\\switchOpen.png");
+    switchOpenTexture.loadFromFile("audiovisual/assets/switchOpen.png");
     sf::Texture floorGuardTexture;
-    floorGuardTexture.loadFromFile(".\\floorguard.png");
+    floorGuardTexture.loadFromFile("audiovisual/assets/floorguard.png");
     sf::Texture bounceBlockTexture;
-    bounceBlockTexture.loadFromFile(".\\bounceblock.png");
+    bounceBlockTexture.loadFromFile("audiovisual/assets/bounceblock.png");
     sf::Texture lockedSwitchTexture;
-    lockedSwitchTexture.loadFromFile(".\\lockedSwitch.png");
+    lockedSwitchTexture.loadFromFile("audiovisual/assets/lockedSwitch.png");
     sf::Texture lockedDoorTexture;
-    lockedDoorTexture.loadFromFile(".\\lockedDoor.png");
+    lockedDoorTexture.loadFromFile("audiovisual/assets/lockedDoor.png");
     sf::Texture lockedSwitchOpenTexture;
-    lockedSwitchOpenTexture.loadFromFile(".\\lockedSwitchOpen.png");
+    lockedSwitchOpenTexture.loadFromFile("audiovisual/assets/lockedSwitchOpen.png");
     sf::Texture lockedDoorOpenTexture;
-    lockedDoorOpenTexture.loadFromFile(".\\lockedDoorOpenTemp.png");
+    lockedDoorOpenTexture.loadFromFile("audiovisual/assets/lockedDoorOpenTemp.png");
     
     sf::Sprite player(ninjaTexture);
     sf::CircleShape playerCircle(10);
