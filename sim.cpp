@@ -386,11 +386,13 @@ void Inject(App_MultiPurpose& app) {
     app.globalKeys = new GlobalKeys();
     app.options = new Options();
     app.stats = new GameStats();
+    app.account = new AccountDetails();
     StoreDefaults defaults;
     defaults.soloKeys = app.soloKeys;
     defaults.coopKeys = app.coopKeys;
     defaults.globalKeys = app.globalKeys;
     defaults.options = app.options;
+    defaults.account = app.account;
     app.options->coopMode = false;
     defaults.execute();
     //app.soloKeys->bindActionKeyForPlayer(PlayerKeys::LEFT, VK_LEFT, 0);

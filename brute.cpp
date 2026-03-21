@@ -1,8 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <windows.h>
-#include <chrono>
-#include <thread>
 
 #include "com\\metanet\\App_MultiPurpose.h"
 #include "com\\foxarc\\util\\Base64.h"
@@ -70,7 +67,7 @@ int main() {
 
 void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFrame, unsigned int numBruteFrames, unsigned int bruteType, unsigned int finishType, vector<char> endFrames) {
     App_MultiPurpose app;
-    Initialize(app);cout << "WE ARE HERE" << endl;
+    Initialize(app);
     Inject(app);
     app.options->resetScoreOnDeath = true;
     app.options->scoreGoldImmediately = true;
@@ -92,7 +89,7 @@ void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFram
             for (int i = 0; i < endFrames.size(); ++i) {
                 replayCopy.writeByte(endFrames[i]);
             }
-        }cout << "WE ARE HERE" << endl;
+        }
         replayCopy.setPosition(414 - 1); //subtract 1
         replayCopy.writeByte(clocks::RJ);
         replayCopy.writeByte(clocks::RJ);
@@ -182,11 +179,13 @@ void Inject(App_MultiPurpose& app) {
     app.globalKeys = new GlobalKeys();
     app.options = new Options();
     app.stats = new GameStats();
+    app.account = new AccountDetails();
     StoreDefaults defaults;
     defaults.soloKeys = app.soloKeys;
     defaults.coopKeys = app.coopKeys;
     defaults.globalKeys = app.globalKeys;
     defaults.options = app.options;
+    defaults.account = app.account;
     app.options->coopMode = false;
     defaults.execute();
 }
