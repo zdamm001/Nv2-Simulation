@@ -96,10 +96,6 @@ int main(int argc, char *argv[]) {
     sf::Texture turretCrosshairTexture;
     turretCrosshairTexture.loadFromFile("audiovisual/assets/gaussAim.png");
     
-    sf::Sprite player(ninjaTexture);
-    sf::CircleShape playerCircle(10);
-    playerCircle.setFillColor(sf::Color::Black);
-    
     App_MultiPurpose app;
     Initialize(app);
     Inject(app);
@@ -422,10 +418,10 @@ int main(int argc, char *argv[]) {
             }
         }
         if (playerList.size() != 0 && playerList[0] != nullptr) {
-            double ninjaRadius;
             if (useTextures) {
-                ninjaRadius = 19/2;
-                player.setOrigin(ninjaRadius, ninjaRadius);
+                sf::Sprite player(ninjaTexture);
+                vec2 ninjaRadius(player.getTexture()->getSize().x/2, player.getTexture()->getSize().y/2);
+                player.setOrigin(ninjaRadius.x, ninjaRadius.y);
                 player.setPosition(playerList[0]->GetPos().x, playerList[0]->GetPos().y);
                 EntityGraphics_Ninja* ninja = playerList[0]->GenerateGraphicComponent();
                 ninja->UpdateState();
@@ -433,8 +429,11 @@ int main(int argc, char *argv[]) {
                 window.draw(player);
             }
             else {
-                ninjaRadius = 10;
-                playerCircle.setPosition(playerList[0]->GetPos().x - ninjaRadius, playerList[0]->GetPos().y - ninjaRadius);
+                double ninjaRadius = 10;
+                sf::CircleShape playerCircle(ninjaRadius);
+                playerCircle.setOrigin(ninjaRadius, ninjaRadius);
+                playerCircle.setPosition(playerList[0]->GetPos().x, playerList[0]->GetPos().y);
+                playerCircle.setFillColor(sf::Color::Black);
                 window.draw(playerCircle);
             }
         }
