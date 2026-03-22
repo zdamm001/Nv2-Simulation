@@ -352,7 +352,7 @@ int main() {
                             entity.setPosition(graphics.front()->x - r, graphics.front()->y - r);
                             entityCross.setTexture(turretCrosshairTexture);
                             double rCross = 7/2;
-                            entityCross.setPosition(graphics.front()->x - rCross, graphics.front()->y - rCross);
+                            entityCross.setPosition(graphics.back()->x - rCross, graphics.back()->y - rCross);
                         }
                         else {
                             entityCircle.setRadius(r = 6);
