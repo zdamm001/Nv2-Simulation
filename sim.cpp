@@ -99,12 +99,6 @@ int main(int argc, char *argv[]) {
     sf::Sprite player(ninjaTexture);
     sf::CircleShape playerCircle(10);
     playerCircle.setFillColor(sf::Color::Black);
-    double ninjaRadius;
-    if (useTextures) {
-        ninjaRadius = 19/2;
-    } else {
-        ninjaRadius = 10;
-    }
     
     App_MultiPurpose app;
     Initialize(app);
@@ -371,7 +365,7 @@ int main(int argc, char *argv[]) {
                             entityCross.setPosition(graphics.back()->x - rCross, graphics.back()->y - rCross);
                         }
                         else {
-                            entityCircle.setRadius(r = 6);
+                            entityCircle.setRadius(r = 13/2);
                             entityCircle.setFillColor(sf::Color::Transparent);
                             entityCircle.setOutlineColor(sf::Color::Black);
                             entityCircle.setOutlineThickness(1);
@@ -428,17 +422,18 @@ int main(int argc, char *argv[]) {
             }
         }
         if (playerList.size() != 0 && playerList[0] != nullptr) {
+            double ninjaRadius;
             if (useTextures) {
-                player.setPosition(playerList[0]->GetPos().x - ninjaRadius, playerList[0]->GetPos().y - ninjaRadius);
+                ninjaRadius = 19/2;
+                player.setOrigin(ninjaRadius, ninjaRadius);
+                player.setPosition(playerList[0]->GetPos().x, playerList[0]->GetPos().y);
                 EntityGraphics_Ninja* ninja = playerList[0]->GenerateGraphicComponent();
                 ninja->UpdateState();
-                //if (ninja->facing != 1) {
-                //    player.setScale(ninja->facing, 1);
-                //    player.move(20, 0);
-                //}
+                player.setScale(ninja->facing, 1);
                 window.draw(player);
             }
             else {
+                ninjaRadius = 10;
                 playerCircle.setPosition(playerList[0]->GetPos().x - ninjaRadius, playerList[0]->GetPos().y - ninjaRadius);
                 window.draw(playerCircle);
             }
