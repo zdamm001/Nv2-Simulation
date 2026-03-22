@@ -130,7 +130,7 @@ Ninja::~Ninja() {
 
 void Ninja::DEBUG_SetPosVel(const vec2& pos, const vec2& vel) {
     if (this->curState == PSTATE_DEAD) {
-        //this->raggy.TESTING_SetPosVel(pos, vel);
+        this->raggy->TESTING_SetPosVel(pos, vel);
     } else {
         this->pos = pos;
         this->vel = vel;
@@ -184,7 +184,7 @@ void Ninja::APP_Disable() {
 void Ninja::Integrate() {
     if (curState != PSTATE_DISABLED) {
         if (curState == PSTATE_DEAD) {
-            //raggy.Integrate(normGrav);
+            raggy->Integrate(normGrav);
         } else {
             vel.x *= d;
             vel.y *= d;
@@ -198,7 +198,7 @@ void Ninja::Integrate() {
 void Ninja::PreCollision() {
     if (curState != PSTATE_DISABLED) {
         if (curState == PSTATE_DEAD) {
-            //raggy.PreCollision();
+            raggy->PreCollision();
         } else {
             oldv.x = vel.x;
             oldv.y = vel.y;
@@ -215,14 +215,14 @@ void Ninja::PreCollision() {
 
 void Ninja::SolveInternalConstraints() {
     if(curState == PSTATE_DEAD) {
-        //raggy.SolveConstraints();
+        raggy->SolveConstraints();
     }
 }
 
 void Ninja::PostCollision(Simulator* sim) {
     if (curState != PSTATE_DISABLED) {
         if (curState == PSTATE_DEAD) {
-            //raggy.PostCollision(sim);
+            raggy->PostCollision(sim);
         } else {
             oldpos.Copy(pos);
             double epsilon = 0.1;
@@ -326,7 +326,7 @@ void Ninja::CollideVsObjects(Simulator* sim) {
     bool isThwompCollision = false;
 
     if (curState == PSTATE_DEAD) {
-        //raggy.CollideVsObjects(sim);
+        raggy->CollideVsObjects(sim);
     } else {
         result_physical.Clear();
         sim->objGrid->GatherCellContentsInNeighbourhood(pos, objList);
@@ -346,7 +346,7 @@ void Ninja::CollideVsTiles(Simulator* sim) {
     int maxIterations = 32;
     
     if (curState == PSTATE_DEAD) {
-        //raggy.CollideVsTiles(sim);
+        raggy->CollideVsTiles(sim);
     } else {
         int closestPointSign = 0;
         cp.x = 0;
@@ -398,14 +398,14 @@ void Ninja::Think(Simulator* sim, unsigned int frame_num) {
     if (curState == PSTATE_AWAITINGDEATH) {
         currentPosePos.clear();
         currentPoseVel.clear();
-        if (ninja_gfx != nullptr/* && ninja_gfx->hasValidPose*/) {
+        if (ninja_gfx != nullptr && ninja_gfx->hasValidPose()) {
             currentPosePos.resize(6);
             currentPoseVel.resize(6);
-            //ninja_gfx->NINJA_GetCurrentPose(currentPosePos, currentPoseVel);
+            ninja_gfx->NINJA_GetCurrentPose(currentPosePos, currentPoseVel);
         }
-        //raggy.ActivateRagdoll(pos, vel, death_pos, death_force, currentPosePos, currentPoseVel);
+        raggy->ActivateRagdoll(pos, vel, death_pos, death_force, currentPosePos, currentPoseVel);
         if (death_type == sim_globals::DEATHTYPE_EXPLOSIVE || death_type == sim_globals::DEATHTYPE_SUICIDE) {
-            //raggy.ExplodeRagdoll(sim);
+            raggy->ExplodeRagdoll(sim);
         }
         //sim->HACKY_GetParticleManager().Spawn_BloodSpurt(death_pos.x, death_pos.y, death_force.x, death_force.y, 3 + static_cast<int>(floor(rand() / (RAND_MAX + 1.0) * 4)));
         bool randomSoundChoice = (rand() / static_cast<double>(RAND_MAX)) < 0.5;
@@ -477,9 +477,7 @@ void Ninja::Think(Simulator* sim, unsigned int frame_num) {
             }
             return;
         }
-        if (curState == PSTATE_FALLING) {
-            // ...
-        }
+        if (curState == PSTATE_FALLING) {}
 
         if (NEAR_WALL) {
             if (isNewJumpPress) {
@@ -808,7 +806,7 @@ void Ninja::Draw(SimpleRenderer& rend) {
     double angle, dir;
 
     if (curState == PSTATE_DEAD) {
-        //raggy.Draw(rend);
+        raggy->Draw(rend);
     } else {
         //rend.SetStyle(0, 0, 20);
         //rend.DrawCircle(oldpos.x, oldpos.y, r);
