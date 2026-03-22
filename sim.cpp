@@ -341,6 +341,8 @@ int main(int argc, char *argv[]) {
                                     entityLine[0].position = sf::Vector2f(graphics.back()->x - 12, graphics.back()->y);
                                     entityLine[1].position = sf::Vector2f(graphics.back()->x + 12, graphics.back()->y);
                                 }
+                                entityLine[0].color = sf::Color::Black;
+                                entityLine[1].color = sf::Color::Black;
                             }
                         }
                         if (useTextures) {
