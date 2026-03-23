@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
     
     vector<sf::Texture> tiles(42);
     for (int i = 0; i < 34; ++i) {
-        tiles.at(i).loadFromFile("audiovisual/assets/tiles.png", sf::IntRect(i * CELL_SIZE, 0, CELL_SIZE, CELL_SIZE));
+        tiles.at(i).loadFromFile("audiovisual/assets/tilesTransparent.png", sf::IntRect(i * CELL_SIZE, 0, CELL_SIZE, CELL_SIZE));
     }
     for (int i = 34; i < 42; ++i) tiles.at(i) = tiles.at(1);
 
@@ -134,16 +134,6 @@ int main(int argc, char *argv[]) {
         vector<int>& tileIDs = sim->GFX_GetTileIDs();
         vector<Ninja*> playerList = sim->GFX_GetPlayerList();
         vector<Entity_Base*> entityList = sim->GFX_GetEntityList();
-
-        if (tileIDs.size() != 0) {
-            for (int y = 0; y < gameHeight; ++y) {
-                for (int x = 0; x < gameWidth; ++x) {
-                    sf::Sprite wall(tiles.at(tileIDs.at(y * gameWidth + x)));
-                    wall.setPosition(x * CELL_SIZE, y * CELL_SIZE);
-                    window.draw(wall);
-                }
-            }
-        }
 
         if (entityList.size() != 0) {
             vector<DisplayObject*> graphics;
@@ -431,10 +421,26 @@ int main(int argc, char *argv[]) {
             else {
                 double ninjaRadius = 10;
                 sf::CircleShape playerCircle(ninjaRadius);
+                if (playerList[0]->IsDead()) {
+                    ninjaRadius -= 1;
+                    playerCircle.setRadius(ninjaRadius);
+                    playerCircle.setOutlineColor(sf::Color::Red);
+                    playerCircle.setOutlineThickness(1);
+                }
                 playerCircle.setOrigin(ninjaRadius, ninjaRadius);
                 playerCircle.setPosition(playerList[0]->GetPos().x, playerList[0]->GetPos().y);
                 playerCircle.setFillColor(sf::Color::Black);
                 window.draw(playerCircle);
+            }
+        }
+
+        if (tileIDs.size() != 0) {
+            for (int y = 0; y < gameHeight; ++y) {
+                for (int x = 0; x < gameWidth; ++x) {
+                    sf::Sprite wall(tiles.at(tileIDs.at(y * gameWidth + x)));
+                    wall.setPosition(x * CELL_SIZE, y * CELL_SIZE);
+                    window.draw(wall);
+                }
             }
         }
 
