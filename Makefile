@@ -34,9 +34,6 @@ COMMON_SRC = \
 
 COMMON_OBJ = $(COMMON_SRC:.cpp=.o)
 
-main: main.o $(COMMON_OBJ)
-	$(CXX) $(CXXFLAGS) -o $@ $^ -lz
-
 brute: brute.o $(COMMON_OBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ -lz
 
@@ -51,7 +48,6 @@ sim.o: sim.cpp
 
 help:
 	@echo "Available targets:"
-	@echo "  make main"
 	@echo "  make brute"
 	@echo "  make sim"
 	@echo "  make clean"

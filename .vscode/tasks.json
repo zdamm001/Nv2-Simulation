@@ -19,19 +19,6 @@
             "problemMatcher": ["$gcc"]
         },
         {
-            "label": "make main",
-            "type": "shell",
-            "command": "mingw32-make.exe",
-            "args": [
-                "main", 
-                "CXXFLAGS=-std=c++17 -g -Og -fdiagnostics-color=always -fdiagnostics-show-option -Wall -Wextra -Wpedantic"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": ["$gcc"]
-        },
-        {
             "label": "make sim",
             "type": "shell",
             "command": "mingw32-make.exe",
