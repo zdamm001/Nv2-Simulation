@@ -49,11 +49,11 @@ void Initialize(App_MultiPurpose& app);
 void Inject(App_MultiPurpose& app);
 void InitSettings(App_MultiPurpose& app);
 
-enum bruteTypes {allCombosWithoutJump};
+enum bruteTypes {nonJumpCombos, nonJumpCombosKeepJump};
 enum finishTypes {holdRUntilCanJump, completeUnlessInAir, continueUntilFrame};
 enum clocks {N, J, L, LJ, R, RJ, LR, LRJ};
 
-void bruteForce(ByteArray&, ByteArray&, unsigned int, unsigned int, unsigned int, unsigned int, vector<char>);
+void bruteForce(ByteArray&, ByteArray&, unsigned int, unsigned int, unsigned int, unsigned int, vector<pair<unsigned int,vector<char>>>, vector<char>);
 
 ofstream fout;
 
@@ -63,7 +63,7 @@ int main() {
 
     unsigned int startFrame = 414+4;
     unsigned int numFrames = 20;
-    unsigned int bruteType = bruteTypes::allCombosWithoutJump;
+    unsigned int bruteType = bruteTypes::nonJumpCombosKeepJump;
     unsigned int finishType = finishTypes::continueUntilFrame;
     
     vector<pair<unsigned int,vector<char>>> replayTweaks = {
@@ -93,90 +93,98 @@ void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFram
 
     ByteArray replayCopy = replay;
     //if (replayCopy.length() < startBruteFrame + numBruteFrames) {}; //add frames (check if necessary)
-    if (bruteType == bruteTypes::allCombosWithoutJump) {
+
+    if (finishType == finishTypes::holdRUntilCanJump) {
+        replayCopy.setPosition(startBruteFrame + numBruteFrames - 1);
+        for (unsigned int i = 0; i < 100; ++i) {
+            replayCopy.writeByte(clocks::R);
+        }
+    }
+    else if (finishType == finishTypes::completeUnlessInAir) {
+        replayCopy.setPosition(startBruteFrame + numBruteFrames - 1);
+        for (size_t i = 0; i < endFrames.size(); ++i) {
+            replayCopy.writeByte(endFrames[i]);
+        }
+    }
+
+    for (pair<unsigned int, vector<char>>& tweak : replayTweaks) {
+        replayCopy.setPosition(tweak.first - 1);
+        for (size_t i = 0; i < tweak.second.size(); ++i) {
+            replayCopy.writeByte(tweak.second[i]);
+        }
+    }
+
+    app.watchPlayerSelectedReplay(&level, &replayCopy);
+    for (unsigned int i = 0; i < startBruteFrame - 1; ++i) {
+        app.tick();
+        cout << app.NEW_getDebugOneLine() << '\n';
+    }
+    app.NEW_SaveState();
+    fout << "brute_clocks end_frame posx posy velx vely ticks\n";
+
+    vector<int> inputTypes = {2, 0, 4};
+    vector<char> inputTypesChar = {'L', 'N', 'R'};
+    // vector<int> inputTypes = {4, 0};
+    // vector<char> inputTypesChar = {'R', 'N'};
+    size_t totalCombinations = pow(inputTypes.size(), numBruteFrames);
+    for (size_t i = 0; i < totalCombinations; ++i) {
+        size_t num = i;
+        ByteArray& replaySave = app.NEW_getSaveFrames(0);
+        replaySave.setPosition(startBruteFrame - 1);
+
+        string bruteClocks = "";
+        unsigned int numTypes[3] = {0,0,0};
+        for (unsigned int j = 0; j < numBruteFrames; ++j) {
+            ++numTypes[num % inputTypes.size()];
+            bruteClocks += inputTypesChar[num % inputTypes.size()];
+            replaySave.writeByte(inputTypes[num % inputTypes.size()] | (bruteType == bruteTypes::nonJumpCombosKeepJump ? (replaySave[replaySave.getPosition()] & clocks::J) : clocks::N));
+            num /= inputTypes.size();
+        }
+
+        if (numTypes[2] > 8 || numTypes[1] > 10 || numTypes[2] + numTypes[1] > 11) continue;
+        //if (numTypes[2] != 7 || numTypes[1] != 2) continue;
+        //if (numTypes[1] > 8) continue;
+
+        app.NEW_watchReplayFromSave();
+        for (unsigned int j = 0; j < numBruteFrames; ++j) {
+            app.tick();
+        }
+
+        Ninja* player = app.NEW_getPlayer(0);
+        vec2 pos = player->GetPos();
+        vec2 vel = player->GetVel();
         if (finishType == finishTypes::holdRUntilCanJump) {
-            replayCopy.setPosition(startBruteFrame + numBruteFrames - 1);
-            for (unsigned int i = 0; i < 100; ++i) {
-                replayCopy.writeByte(clocks::R);
+            for (unsigned int j = 0; j < 100; ++j) {
+                app.tick();
+                if (player->NEW_GetInAir() == false) {
+                    break;
+                }
             }
         }
         else if (finishType == finishTypes::completeUnlessInAir) {
-            replayCopy.setPosition(startBruteFrame + numBruteFrames - 1);
-            for (size_t i = 0; i < endFrames.size(); ++i) {
-                replayCopy.writeByte(endFrames[i]);
+            //if (vel.y > 2.4) continue;
+            for (size_t j = 0; j < endFrames.size(); ++j) {
+                app.tick();
+                if (player->NEW_GetInAir() == true) {
+                    break;
+                }
             }
+            //if (!dynamic_cast<Entity_Gold*>(app.NEW_getSim()->GFX_GetEntityList()[0])->isCollected) continue;
         }
-        for (pair<unsigned int, vector<char>>& tweak : replayTweaks) {
-            replayCopy.setPosition(tweak.first - 1);
-            for (size_t i = 0; i < tweak.second.size(); ++i) {
-                replayCopy.writeByte(tweak.second[i]);
-            }
-        }
-        app.watchPlayerSelectedReplay(&level, &replayCopy);
-        for (unsigned int i = 0; i < startBruteFrame - 1; ++i) {
-            app.tick();
-            cout << app.NEW_getDebugOneLine() << '\n';
-        }
-        app.NEW_SaveState();
-        fout << "brute_clocks end_frame posx posy velx vely ticks\n";
-        vector<int> inputTypes = {2, 0, 4};
-        vector<char> inputTypesChar = {'L', 'N', 'R'};
-        // vector<int> inputTypes = {4, 0};
-        // vector<char> inputTypesChar = {'R', 'N'};
-        size_t totalCombinations = pow(inputTypes.size(), numBruteFrames);
-        for (size_t i = 0; i < totalCombinations; ++i) {
-            size_t num = i;
-            ByteArray& replaySave = app.NEW_getSaveFrames(0);
-            replaySave.setPosition(startBruteFrame - 1);
-            string bruteClocks = "";
-            unsigned int numTypes[3] = {0,0,0};
-            for (unsigned int j = 0; j < numBruteFrames; ++j) {
-                ++numTypes[num % inputTypes.size()];
-                bruteClocks += inputTypesChar[num % inputTypes.size()];
-                replaySave.writeByte(inputTypes[num % inputTypes.size()] | (replaySave[replaySave.getPosition()] & 1));// | ((j != -1) ? 1 : 0));
-                num /= inputTypes.size();
-            }
-            if (numTypes[2] > 8 || numTypes[1] > 10 || numTypes[2] + numTypes[1] > 11) continue;
-            //if (numTypes[2] != 7 || numTypes[1] != 2) continue;
-            //if (numTypes[1] > 8) continue;
-            app.NEW_watchReplayFromSave();
-            for (unsigned int j = 0; j < numBruteFrames; ++j) {
+        else if (finishType == finishTypes::continueUntilFrame) {
+            while (app.NEW_getFrameNum() != 439) {
                 app.tick();
             }
-            Ninja* player = app.NEW_getPlayer(0);
-            if (finishType == finishTypes::holdRUntilCanJump) {
-                for (unsigned int j = 0; j < 100; ++j) {
-                    app.tick();
-                    if (player->NEW_GetInAir() == false) {
-                        break;
-                    }
-                }
-            }
-            else if (finishType == finishTypes::completeUnlessInAir) {
-                //if (player->GetVel().y > 2.4) continue;
-                for (size_t j = 0; j < endFrames.size(); ++j) {
-                    app.tick();
-                    if (player->NEW_GetInAir() == true) {
-                        break;
-                    }
-                }
-                //if (!dynamic_cast<Entity_Gold*>(app.NEW_getSim()->GFX_GetEntityList()[0])->isCollected) continue;
-            }
-            else if (finishType == finishTypes::continueUntilFrame) {
-                while (app.NEW_getFrameNum() != 439) {
-                    app.tick();
-                }
-            }
-            vec2 pos = player->GetPos();
-            vec2 vel = player->GetVel();
-            //if (pos.x < 89) continue;
-            if (vel.x > -6.23 + 1) continue;
-            //if (abs(vel.y + 1.4) > 0.00001) continue;
-            //if (app.NEW_getFrameNum() != 109) continue;
-            //if (player->NEW_GetInAir() == true) continue;
-            //Entity_Thwomp* t = dynamic_cast<Entity_Thwomp*>(app.NEW_getSim()->GFX_GetEntityList().front());
-            fout << bruteClocks << ' ' << app.NEW_getFrameNum() << ' ' << pos.x << ' ' << pos.y << ' ' << vel.x << ' ' << vel.y << ' ' << app.NEW_getCurrentTicks() << '\n';// << Ninja::PSTATE_TO_STRING[player->NEW_GetState()] << '\n';
         }
+
+        //if (pos.x < 89) continue;
+        if (vel.x > -6.23 + 1) continue;
+        //if (abs(vel.y + 1.4) > 0.00001) continue;
+        //if (app.NEW_getFrameNum() != 109) continue;
+        //if (player->NEW_GetInAir() == true) continue;
+        //Entity_Thwomp* t = dynamic_cast<Entity_Thwomp*>(app.NEW_getSim()->GFX_GetEntityList().front());
+
+        fout << bruteClocks << ' ' << app.NEW_getFrameNum() << ' ' << pos.x << ' ' << pos.y << ' ' << vel.x << ' ' << vel.y << ' ' << app.NEW_getCurrentTicks() << '\n';// << Ninja::PSTATE_TO_STRING[player->NEW_GetState()] << '\n';
     }
 }
 
