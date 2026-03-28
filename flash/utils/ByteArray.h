@@ -9,30 +9,30 @@ class ByteArray {
     public:
         enum class Endian {BIG_ENDIAN, LITTLE_ENDIAN};
     private:
-        vector<unsigned char> data;
         unsigned int position;
+        vector<unsigned char> data;
         Endian endian;
     public:
         ByteArray();
         unsigned int length() const;
+        void length(unsigned int newLength);
         unsigned char operator[](unsigned int index) const;
-        void writeByte(unsigned char byte);
-        void compress();
-        void uncompress();
+        unsigned int getPosition() const;
         void setPosition(unsigned int newPosition);
+        unsigned int bytesAvailable() const;
+        void writeByte(unsigned char byte);
+        unsigned char readUnsignedByte();
+        signed char readByte();
+        signed short readShort();
+        unsigned short readUnsignedShort();
+        unsigned int readUnsignedInt();
+        signed int readInt();
         string readUTF();
         string readUTFBytes(unsigned int length);
         void readBytes(ByteArray& bytes);
         void readBytes(ByteArray& bytes, unsigned int offset, unsigned int length);
-        unsigned int bytesAvailable() const;
-        unsigned char readUnsignedByte();
-        signed short readShort();
-        unsigned short readUnsignedShort();
-        unsigned int getPosition() const;
-        signed char readByte();
-        void length(unsigned int newLength);
-        signed int readInt();
-        unsigned int readUnsignedInt();
         void writeBytes(const ByteArray& bytes);
         void writeBytes(const ByteArray& bytes, unsigned int offset, unsigned int length);
+        void compress();
+        void uncompress();
 };
