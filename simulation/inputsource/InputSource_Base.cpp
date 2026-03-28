@@ -10,7 +10,7 @@ InputSource_Base::~InputSource_Base() {
 ByteArray* InputSource_Base::DumpFrames() {
     frames->setPosition(frames->length() - 1);
 
-    while (frames->getPosition() >= 0) {
+    while (frames->getPosition() > 0) {
         if (frames->readByte() != 0) {
             break;
         }
@@ -20,8 +20,13 @@ ByteArray* InputSource_Base::DumpFrames() {
     unsigned int position = frames->getPosition();
     ByteArray* result = new ByteArray;
     result->setPosition(0);
+    
+    if (position == 0 && frames->getPosition() == 0) {
+        return result;
+    }
+
     frames->setPosition(0);
-    for (int i = 0; i <= position; ++i) {
+    for (unsigned int i = 0; i <= position; ++i) {
         result->writeByte(frames->readByte());
     }
 

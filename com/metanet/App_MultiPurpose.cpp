@@ -552,11 +552,7 @@ void App_MultiPurpose::storeGameStats() {
     stats->level = _currentLevel;
     checkHighscore();
     if (_currentTicks != _startingTicks) {
-        // try {
-            stats->replayBytes = _sim->APP_GetReplayBytes()[0];
-        // } catch (const Error& in_error) {
-        // 
-        // }
+        stats->replayBytes = _sim->APP_GetReplayBytes()[0];
     }
     if (_isPersonalBest && !options->coopMode && !_playingLevelset && !_gameTooSlow) {
         //dispatch(InGameEvent(InGameEvent::SUBMIT_SCORE));
