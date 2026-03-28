@@ -54,7 +54,7 @@ enum bruteTypes {nonJumpCombos, nonJumpCombosKeepJump};
 enum finishTypes {holdUntilGrounded, holdUntilCanJump, completeUnlessInAir, continueUntilFrame};
 enum clocks {N, J, L, LJ, R, RJ, LR, LRJ};
 
-void bruteForce(ByteArray&, ByteArray&, unsigned int, unsigned int, unsigned int, unsigned int, vector<pair<unsigned int,vector<char>>>, vector<char>);
+void bruteForce(ByteArray&, ByteArray&, unsigned int, unsigned int, unsigned int, unsigned int, vector<pair<unsigned int,vector<char>>>, char, unsigned int);
 
 ofstream fout;
 
@@ -70,7 +70,9 @@ int main() {
     vector<pair<unsigned int,vector<char>>> replayTweaks = {
         {414, {clocks::RJ, clocks::RJ, clocks::RJ, clocks::RJ}}
     };
-    vector<char> endFrames = {clocks::L};//{clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::N, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L};
+    
+    char holdInput = clocks::L;
+    unsigned int finishFrame = 439;
     
     ByteArray levelBytes = sim_globals::StringtoBA("0000" + level); //added empty title
     ByteArray replayBytes = Base64::decode(replay);
@@ -80,13 +82,13 @@ int main() {
     fout.open(outputFile);
     if (!fout.is_open()) {cerr << "Error opening " << outputFile << endl; return 1;}
 
-    bruteForce(levelBytes, replayBytes, startFrame, numFrames, bruteType, finishType, replayTweaks, endFrames);
+    bruteForce(levelBytes, replayBytes, startFrame, numFrames, bruteType, finishType, replayTweaks, holdInput, finishFrame);
     
     fout.close();
     return 0;
 }
 
-void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFrame, unsigned int numBruteFrames, unsigned int bruteType, unsigned int finishType, vector<pair<unsigned int,vector<char>>> replayTweaks, vector<char> endFrames) {
+void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFrame, unsigned int numBruteFrames, unsigned int bruteType, unsigned int finishType, vector<pair<unsigned int,vector<char>>> replayTweaks, char holdInput, unsigned int finishFrame) {
     App_MultiPurpose app;
     Inject(app);
     Initialize(app);
@@ -97,13 +99,7 @@ void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFram
     if (finishType == finishTypes::holdUntilGrounded || finishType == finishTypes::holdUntilCanJump) {
         replayCopy.setPosition(startBruteFrame + numBruteFrames - 1);
         for (unsigned int i = 0; i < 100; ++i) {
-            replayCopy.writeByte(endFrames[0]);
-        }
-    }
-    else if (finishType == finishTypes::completeUnlessInAir) {
-        replayCopy.setPosition(startBruteFrame + numBruteFrames - 1);
-        for (size_t i = 0; i < endFrames.size(); ++i) {
-            replayCopy.writeByte(endFrames[i]);
+            replayCopy.writeByte(holdInput);
         }
     }
 
@@ -157,23 +153,21 @@ void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFram
                 if (player->NEW_GetInAir() == false) {
                     break;
                 }
-                if (player->NEW_GetNearWall() == true && finishType == finishTypes::holdUntilCanJump) {
+                if (finishType == finishTypes::holdUntilCanJump && player->NEW_GetNearWall() == true) {
                     break;
                 }
             }
         }
         else if (finishType == finishTypes::completeUnlessInAir) {
-            //if (player->GetVel().y > 2.4) continue;
-            for (size_t j = 0; j < endFrames.size(); ++j) {
+            while (!player->inputsource->IsReplayFinished() && !app.NEW_getSim()->APP_IsGameDone()) {
                 app.tick();
                 if (player->NEW_GetInAir() == true) {
                     break;
                 }
             }
-            //if (!dynamic_cast<Entity_Gold*>(app.NEW_getSim()->GFX_GetEntityList()[0])->isCollected) continue;
         }
         else if (finishType == finishTypes::continueUntilFrame) {
-            while (app.NEW_getFrameNum() != 439) {
+            while (app.NEW_getFrameNum() != finishFrame) {
                 app.tick();
             }
         }
@@ -186,6 +180,7 @@ void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFram
         //if (app.NEW_getFrameNum() != 109) continue;
         //if (player->NEW_GetInAir() == true) continue;
         if (player->IsDead() == true) continue;
+        //if (!dynamic_cast<Entity_Gold*>(app.NEW_getSim()->GFX_GetEntityList()[0])->isCollected) continue;
         //Entity_Thwomp* t = dynamic_cast<Entity_Thwomp*>(app.NEW_getSim()->GFX_GetEntityList().front());
 
         fout << bruteClocks << ' ' << app.NEW_getFrameNum() << ' ' << pos.x << ' ' << pos.y << ' ' << vel.x << ' ' << vel.y << ' ' << app.NEW_getCurrentTicks() << '\n'; //' ' << Ninja::PSTATE_TO_STRING[player->NEW_GetState()] << '\n';
