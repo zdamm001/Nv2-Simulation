@@ -32,7 +32,7 @@ void SimpleInput::Init() {
 }
 
 void SimpleInput::Tick() {
-    for (int i = 0; i < keytriggers.size(); i++) {
+    for (size_t i = 0; i < keytriggers.size(); i++) {
         keytriggers[i] = 0;
     }
 
@@ -59,7 +59,7 @@ void SimpleInput::Tick() {
     posx = xmouse;
     posy = ymouse;
 
-    for (int i = 0; i < keys.size(); i++) {
+    for (size_t i = 0; i < keys.size(); i++) {
         if (IsKeyDown(i)) {
             if (!oldkeys[i]) {
                 keytriggers[i] = 1;
@@ -69,7 +69,7 @@ void SimpleInput::Tick() {
         }
     }
 
-    for (int i = 0; i < oldkeys.size(); i++) {
+    for (size_t i = 0; i < oldkeys.size(); i++) {
         oldkeys[i] = keys[i];
     }
 }
@@ -137,7 +137,7 @@ bool SimpleInput::IsKeyDown(unsigned int key) {
 }
 
 bool SimpleInput::IsOnePressed(vector<int>& keyList) {
-    for (int i = 0; i < keyList.size(); ++i) {
+    for (size_t i = 0; i < keyList.size(); ++i) {
         if (keytriggers[keyList[i]] > 0) {
             return true;
         }
@@ -154,10 +154,9 @@ bool SimpleInput::IsKeyReleased(unsigned int key) {
 }
 
 bool SimpleInput::IsAnyKeyPressed() {
-    //return keytriggers.indexOf(1) != -1;
     return find(keytriggers.begin(), keytriggers.end(), 1) != keytriggers.end();
 }
 
 bool SimpleInput::CapsLock() {
-    //return Keyboard::capsLock;
+    return IsKeyDown(Keyboard::CAPS_LOCK); //Keyboard::capsLock
 }

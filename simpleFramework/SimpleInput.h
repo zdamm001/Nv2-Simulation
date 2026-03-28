@@ -5,7 +5,7 @@
 // #include "..\\flash\\events\\IEventDispatcher.h"
 // #include "..\\flash\\events\\KeyboardEvent.h"
 // #include "..\\flash\\events\\MouseEvent.h"
-// #include "..\\flash\\ui\\Keyboard.h"
+#include "..\\flash\\ui\\Keyboard.h"
 #include "..\\math\\vec2.h"
 
 using namespace std;
