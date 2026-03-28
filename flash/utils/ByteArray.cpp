@@ -36,12 +36,10 @@ unsigned int ByteArray::bytesAvailable() const {
 }
 
 void ByteArray::writeByte(unsigned char byte) {
-    if (position >= data.size()) {
-        data.push_back(byte);
-    } else {
-        data[position] = byte;
+    if (1 > bytesAvailable()) {
+        data.resize(position + 1, 0);
     }
-    position++;
+    data[position++] = byte;
 }
 
 unsigned char ByteArray::readUnsignedByte() {
