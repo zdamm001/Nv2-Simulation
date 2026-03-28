@@ -25,7 +25,8 @@ string Base64::encode(const ByteArray& data) {
     int paddingBytes = length % 3;
     int bytesInGroupsOfThree = length - paddingBytes;
     while (byteIndex < bytesInGroupsOfThree) {
-        int val = (data[byteIndex++] << 16) | (data[byteIndex++] << 8) | data[byteIndex++];
+        int val = (data[byteIndex] << 16) | (data[byteIndex + 1] << 8) | data[byteIndex + 2];
+        byteIndex += 3;
         result.push_back(encodeChars[val >> 18]);
         result.push_back(encodeChars[(val >> 12) & 63]);
         result.push_back(encodeChars[(val >> 6) & 63]);
@@ -39,7 +40,8 @@ string Base64::encode(const ByteArray& data) {
         result.push_back('=');
     }
     else if (paddingBytes == 2) {
-        int val = (data[byteIndex++] << 8) | data[byteIndex++];
+        int val = (data[byteIndex] << 8) | data[byteIndex + 1];
+        byteIndex += 2;
         result.push_back(encodeChars[val >> 10]);
         result.push_back(encodeChars[(val >> 4) & 63]);
         result.push_back(encodeChars[(val & 15) << 2]);
