@@ -51,6 +51,7 @@ void EntityGraphics_Ninja::HACKY_PlayOneshotSound(string soundName) {
 }
 
 bool EntityGraphics_Ninja::hasValidPose() {
+    return false;
     //return mc_sprite->shoulder && mc_sprite->pelvis && mc_sprite->handR && mc_sprite->handL && mc_sprite->footR && mc_sprite->footL;
 }
 
