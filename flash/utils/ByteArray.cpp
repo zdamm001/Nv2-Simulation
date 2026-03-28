@@ -9,9 +9,8 @@ unsigned int ByteArray::length() const {
 unsigned char ByteArray::operator[](unsigned int index) const {
     if (index < data.size()) {
         return data[index];
-    } else {
-        return 0;
     }
+    return 0;
 }
 
 void ByteArray::writeByte(unsigned char byte) {
@@ -56,27 +55,21 @@ void ByteArray::uncompress() {
 }
 
 void ByteArray::setPosition(unsigned int newPosition) {
-    if (newPosition <= data.size()) {
-        position = newPosition;
-    }
+    position = newPosition;
 }
 
 string ByteArray::readUTF() {
-    unsigned short length = 0;
-    if (position + 2 <= data.size()) {
-        length = (data[position] << 8) | data[position + 1];
-        position += 2;
-    } else {
-        return "";
-    }
+    unsigned int length = readUnsignedShort();
+    return readUTFBytes(length);
+}
 
-    if (position + length <= data.size()) {
-        string utfString(data.begin() + position, data.begin() + position + length);
-        position += length;
-        return utfString;
-    } else {
-        return "";
+string ByteArray::readUTFBytes(unsigned int length) {
+    if (length > bytesAvailable()) {
+        throw runtime_error("EOFError: not enough bytes available");
     }
+    string result(data.begin() + position, data.begin() + position + length);
+    position += length;
+    return result;
 }
 
 void ByteArray::readBytes(ByteArray& bytes) {
@@ -85,87 +78,113 @@ void ByteArray::readBytes(ByteArray& bytes) {
 
 void ByteArray::readBytes(ByteArray& bytes, unsigned int offset, unsigned int length) {
     if (length == 0) {
-        length = data.size() - position;
+        length = bytesAvailable();
     }
-    //OFFSET IS WRONG
-    if (position + length <= data.size()) {
-        for (unsigned int i = 0; i < length; ++i) {
-            bytes.writeByte(data[position + i]);
-        }
-        bytes.setPosition(offset);
-        position += length;
-    }
-}
 
-bool ByteArray::isEmpty() const {
-    return data.empty(); //original has no isEmpty just null check
+    if (length > bytesAvailable()) {
+        throw runtime_error("EOFError: not enough bytes available");
+    }
+
+    if (bytes.length() < offset) {
+        bytes.length(offset);
+    }
+
+    bytes.setPosition(offset);
+    for (unsigned int i = 0; i < length; ++i) {
+        bytes.writeByte(readUnsignedByte());
+    }
 }
 
 unsigned int ByteArray::bytesAvailable() const {
+    if (position >= data.size()) {
+        return 0;
+    }
     return data.size() - position;
 }
 
 unsigned char ByteArray::readUnsignedByte() {
-    if (position < data.size()) {
-        unsigned char byteValue = data[position];
-        ++position;
-        return byteValue;
-    } else {
-        return 0;
+    if (1 > bytesAvailable()) {
+        throw runtime_error("EOFError: not enough bytes available");
     }
+    return data[position++];
 }
 
-short ByteArray::readShort() {
-    if (position + 2 <= data.size()) {
-        short shortValue = (data[position] << 8) | data[position + 1];
-        position += 2;
-        return shortValue;
-    } else {
-        return 0;
+signed short ByteArray::readShort() {
+    return readUnsignedShort();
+}
+
+unsigned short ByteArray::readUnsignedShort() {
+    if (2 > bytesAvailable()) {
+        throw runtime_error("EOFError: not enough bytes available");
     }
+
+    unsigned short value = 0;
+    if (endian == Endian::BIG_ENDIAN) {
+        value = (data[position] << 8) | data[position + 1];
+    } else {
+        value = data[position] | (data[position + 1] << 8);
+    }
+
+    position += 2;
+    return value;
 }
 
 unsigned int ByteArray::getPosition() const {
     return position;
 }
 
-unsigned char ByteArray::readByte() {
-    if (position < data.size()) {
-        unsigned char byteValue = data[position];
-        ++position;
-        return byteValue;
-    } else {
-        return 0;
+signed char ByteArray::readByte() {
+    if (1 > bytesAvailable()) {
+        throw runtime_error("EOFError: not enough bytes available");
     }
+    return data[position++];
 }
 
 void ByteArray::length(unsigned int newLength) {
-    data.resize(newLength);
+    data.resize(newLength, 0);
+    if (position > data.size()) {
+        position = data.size();
+    }
 }
 
-int ByteArray::readInt() {
-    if (position + 4 <= data.size()) {
-        int intValue = (data[position] << 24) | (data[position + 1] << 16) | (data[position + 2] << 8) | data[position + 3];
-        position += 4;
-        return intValue;
-    } else {
-        return 0;
+signed int ByteArray::readInt() {
+    return readUnsignedInt();
+}
+
+unsigned int ByteArray::readUnsignedInt() {
+    if (4 > bytesAvailable()) {
+        throw runtime_error("EOFError: not enough bytes available");
     }
+
+    unsigned int value = 0;
+    if (endian == Endian::BIG_ENDIAN) {
+        value = (data[position] << 24) | (data[position + 1] << 16) | (data[position + 2] << 8) | data[position + 3];
+    } else {
+        value = data[position] | (data[position + 1] << 8) | (data[position + 2] << 16) | (data[position + 3] << 24);
+    }
+
+    position += 4;
+    return value;
 }
 
 void ByteArray::writeBytes(const ByteArray& bytes) {
-    setPosition(0);
-    for (unsigned int i = 0; i < bytes.length(); ++i) {
-        writeByte(bytes[i]);
-    }
+    writeBytes(bytes, 0, 0);
 }
 
 void ByteArray::writeBytes(const ByteArray& bytes, unsigned int offset, unsigned int length) {
-    setPosition(offset);
-    if (length == 0) length = bytes.length() - offset;
-    if (offset + length <= bytes.length()) {
-        for (unsigned int i = offset; i < offset + length; ++i) {
-            writeByte(bytes[i]);
-        }
+    const unsigned int sourceLength = bytes.length();
+
+    if (offset >= sourceLength) {
+        return;
+    }
+
+    const unsigned int maxWritable = sourceLength - offset;
+
+    if (length == 0 || length > maxWritable) {
+        length = maxWritable;
+    }
+
+    for (unsigned int i = 0; i < length; ++i) {
+        writeByte(bytes[offset + i]);
     }
 }

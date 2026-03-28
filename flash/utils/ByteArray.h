@@ -6,9 +6,12 @@
 using namespace std;
 
 class ByteArray {
+    public:
+        enum class Endian {BIG_ENDIAN, LITTLE_ENDIAN};
     private:
         vector<unsigned char> data;
         unsigned int position;
+        Endian endian;
     public:
         ByteArray();
         unsigned int length() const;
@@ -18,16 +21,18 @@ class ByteArray {
         void uncompress();
         void setPosition(unsigned int newPosition);
         string readUTF();
+        string readUTFBytes(unsigned int length);
         void readBytes(ByteArray& bytes);
         void readBytes(ByteArray& bytes, unsigned int offset, unsigned int length);
-        bool isEmpty() const; //maybe delete later
         unsigned int bytesAvailable() const;
         unsigned char readUnsignedByte();
-        short readShort();
+        signed short readShort();
+        unsigned short readUnsignedShort();
         unsigned int getPosition() const;
-        unsigned char readByte();
+        signed char readByte();
         void length(unsigned int newLength);
-        int readInt();
+        signed int readInt();
+        unsigned int readUnsignedInt();
         void writeBytes(const ByteArray& bytes);
         void writeBytes(const ByteArray& bytes, unsigned int offset, unsigned int length);
 };
