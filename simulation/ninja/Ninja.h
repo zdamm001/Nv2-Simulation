@@ -141,6 +141,7 @@ class Ninja {
         void Draw(SimpleRenderer& rend);
         unsigned int NEW_GetState() const;
         bool NEW_GetInAir() const;
+        bool NEW_GetNearWall() const;
         //ByteArray saveState();
         void saveState(ninjaSave& state);
 };

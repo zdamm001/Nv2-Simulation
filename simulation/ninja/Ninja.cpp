@@ -875,6 +875,10 @@ bool Ninja::NEW_GetInAir() const {
     return this->IN_AIR;
 }
 
+bool Ninja::NEW_GetNearWall() const {
+    return this->NEAR_WALL;
+}
+
 // ByteArray Ninja::saveState() {
 //     ByteArray state;
 //     //inputsource->
