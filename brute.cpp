@@ -44,13 +44,14 @@ string minimalReplay = "eNpjYcEFmJiYmGGAEc5iZmJmxQQsBAADEwKwsMAMBWsFkkxIphMLGFhI
 string arcReplay = "eNpjZmZmZiIGEKeKDMAABDikWKgFGADpIQJc";
 string matrixReplay = "eNqt0FEKACAIA1Cb7f5XLk2ICAqj9zVBUaz1E3RigaZwiJJfVhC6iwWL17642pLXcIKNXuAkPTBJ3umh0gAicQYg";
 string secretReplay = "eNqt0UkOAEAEBEDb/P/LQ8zqJtRV0kGLuEF8UQN5gHpG3JteAXa6K2dRL+3B1sK1HYRZV09/KPF+Rxbkf8URnk4yFU7wtQh+";
+string secretReplayTest = "eNpjYYEAViZmBGCiAmBBAgxAgCTFTF3TKQEMIK9DAMVmMVEXMKMAFCkGAA9gBNM=";
 
 void Initialize(App_MultiPurpose& app);
 void Inject(App_MultiPurpose& app);
 void InitSettings(App_MultiPurpose& app);
 
 enum bruteTypes {nonJumpCombos, nonJumpCombosKeepJump};
-enum finishTypes {holdRUntilCanJump, completeUnlessInAir, continueUntilFrame};
+enum finishTypes {holdUntilGrounded, holdUntilCanJump, completeUnlessInAir, continueUntilFrame};
 enum clocks {N, J, L, LJ, R, RJ, LR, LRJ};
 
 void bruteForce(ByteArray&, ByteArray&, unsigned int, unsigned int, unsigned int, unsigned int, vector<pair<unsigned int,vector<char>>>, vector<char>);
@@ -59,17 +60,17 @@ ofstream fout;
 
 int main() {
     string level = secret;
-    string replay = secretReplay;
+    string replay = secretReplayTest;
 
     unsigned int startFrame = 414+4;
     unsigned int numFrames = 20;
     unsigned int bruteType = bruteTypes::nonJumpCombosKeepJump;
-    unsigned int finishType = finishTypes::continueUntilFrame;
+    unsigned int finishType = finishTypes::holdUntilCanJump;
     
     vector<pair<unsigned int,vector<char>>> replayTweaks = {
         {414, {clocks::RJ, clocks::RJ, clocks::RJ, clocks::RJ}}
     };
-    vector<char> endFrames = {};//{clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::N, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L};
+    vector<char> endFrames = {clocks::L};//{clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::R, clocks::N, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L, clocks::L};
     
     ByteArray levelBytes = sim_globals::StringtoBA("0000" + level); //added empty title
     ByteArray replayBytes = Base64::decode(replay);
@@ -92,12 +93,11 @@ void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFram
     InitSettings(app);
 
     ByteArray replayCopy = replay;
-    //if (replayCopy.length() < startBruteFrame + numBruteFrames) {}; //add frames (check if necessary)
 
-    if (finishType == finishTypes::holdRUntilCanJump) {
+    if (finishType == finishTypes::holdUntilGrounded || finishType == finishTypes::holdUntilCanJump) {
         replayCopy.setPosition(startBruteFrame + numBruteFrames - 1);
         for (unsigned int i = 0; i < 100; ++i) {
-            replayCopy.writeByte(clocks::R);
+            replayCopy.writeByte(endFrames[0]);
         }
     }
     else if (finishType == finishTypes::completeUnlessInAir) {
@@ -141,8 +141,8 @@ void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFram
             num /= inputTypes.size();
         }
 
-        if (numTypes[2] > 8 || numTypes[1] > 10 || numTypes[2] + numTypes[1] > 11) continue;
-        //if (numTypes[2] != 7 || numTypes[1] != 2) continue;
+        //if (numTypes[2] > 8 || numTypes[1] > 10 || numTypes[2] + numTypes[1] > 11) continue;
+        if (numTypes[2] != 7 || numTypes[1] != 2) continue;
         //if (numTypes[1] > 8) continue;
 
         app.NEW_watchReplayFromSave();
@@ -151,18 +151,19 @@ void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFram
         }
 
         Ninja* player = app.NEW_getPlayer(0);
-        vec2 pos = player->GetPos();
-        vec2 vel = player->GetVel();
-        if (finishType == finishTypes::holdRUntilCanJump) {
+        if (finishType == finishTypes::holdUntilGrounded || finishType == finishTypes::holdUntilCanJump) {
             for (unsigned int j = 0; j < 100; ++j) {
                 app.tick();
                 if (player->NEW_GetInAir() == false) {
                     break;
                 }
+                if (player->NEW_GetNearWall() == true && finishType == finishTypes::holdUntilCanJump) {
+                    break;
+                }
             }
         }
         else if (finishType == finishTypes::completeUnlessInAir) {
-            //if (vel.y > 2.4) continue;
+            //if (player->GetVel().y > 2.4) continue;
             for (size_t j = 0; j < endFrames.size(); ++j) {
                 app.tick();
                 if (player->NEW_GetInAir() == true) {
@@ -177,14 +178,17 @@ void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFram
             }
         }
 
+        vec2 pos = player->GetPos();
+        vec2 vel = player->GetVel();
         //if (pos.x < 89) continue;
-        if (vel.x > -6.23 + 1) continue;
+        //if (vel.x > -6.23 + 1) continue;
         //if (abs(vel.y + 1.4) > 0.00001) continue;
         //if (app.NEW_getFrameNum() != 109) continue;
         //if (player->NEW_GetInAir() == true) continue;
+        if (player->IsDead() == true) continue;
         //Entity_Thwomp* t = dynamic_cast<Entity_Thwomp*>(app.NEW_getSim()->GFX_GetEntityList().front());
 
-        fout << bruteClocks << ' ' << app.NEW_getFrameNum() << ' ' << pos.x << ' ' << pos.y << ' ' << vel.x << ' ' << vel.y << ' ' << app.NEW_getCurrentTicks() << '\n';// << Ninja::PSTATE_TO_STRING[player->NEW_GetState()] << '\n';
+        fout << bruteClocks << ' ' << app.NEW_getFrameNum() << ' ' << pos.x << ' ' << pos.y << ' ' << vel.x << ' ' << vel.y << ' ' << app.NEW_getCurrentTicks() << '\n'; //' ' << Ninja::PSTATE_TO_STRING[player->NEW_GetState()] << '\n';
     }
 }
 
