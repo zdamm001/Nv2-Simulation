@@ -1,6 +1,6 @@
 #include "StoreDefaults.h"
 
-StoreDefaults::StoreDefaults() {};
+StoreDefaults::StoreDefaults() {}
 
 void StoreDefaults::execute() {
     defaultPlayerKeys();

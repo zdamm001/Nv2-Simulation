@@ -18,7 +18,7 @@ Simulator::Simulator(vector<int> tileIDs, Grid_Segment* segGrid, Grid_Edges* edg
 Simulator::Simulator(appSave& appState, vector<int> tileIDs, Grid_Segment* segGrid, Grid_Edges* edgeGrid, Grid_Entity* objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList)
     : Simulator(tileIDs, segGrid, edgeGrid, objGrid, objList, playerList) {
     frame_num = appState.frameNum;
-};
+}
 
 Simulator::~Simulator() {
     for (Entity_Base* obj : objList) {

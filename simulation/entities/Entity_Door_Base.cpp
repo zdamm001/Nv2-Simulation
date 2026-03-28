@@ -22,7 +22,7 @@ bool Entity_Door_Base::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, col
     return false;
 }
 
-void Entity_Door_Base::OnCollision(Simulator* sim) {};
+void Entity_Door_Base::OnCollision(Simulator* sim) {}
 
 bool Entity_Door_Base::IsDoorOpen() {
     return isOpen;
