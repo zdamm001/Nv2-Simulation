@@ -1,14 +1,14 @@
 #include "Simulator.h"
 
 Simulator::Simulator(vector<int> tileIDs, Grid_Segment* segGrid, Grid_Edges* edgeGrid, Grid_Entity* objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList)
-    : tileIDs(tileIDs), 
-      segGrid(segGrid), 
-      edgeGrid(edgeGrid), 
-      objGrid(objGrid), 
-      objList(objList), 
-      playerList(playerList), 
-      frame_num(0), 
-      num_gold_collected_during_tick(playerList.size(), 0), 
+    : tileIDs(tileIDs),
+      segGrid(segGrid),
+      edgeGrid(edgeGrid),
+      objGrid(objGrid),
+      objList(objList),
+      playerList(playerList),
+      frame_num(0),
+      num_gold_collected_during_tick(playerList.size(), 0),
       STATEFLAG_won(false),
       HACKY_gfx(nullptr),
       HACKY_sfx(nullptr) {
@@ -62,34 +62,34 @@ vector<int>& Simulator::GFX_GetTileIDs() {
 }
 
 void Simulator::Tick(SimpleRenderer* renderer) {
-    for (int i = 0; i < num_gold_collected_during_tick.size(); ++i) {
+    for (size_t i = 0; i < num_gold_collected_during_tick.size(); ++i) {
         num_gold_collected_during_tick[i] = 0;
     }
-    for (int i = 0; i < objList.size(); ++i) {
+    for (size_t i = 0; i < objList.size(); ++i) {
         objList[i]->Move(this);
     }
-    for (int i = 0; i < objList.size(); ++i) {
+    for (size_t i = 0; i < objList.size(); ++i) {
         objList[i]->Think(this);
     }
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         playerList[i]->Integrate();
         playerList[i]->PreCollision();
     }
     for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j < playerList.size(); ++j) {
+        for (size_t j = 0; j < playerList.size(); ++j) {
             playerList[j]->SolveInternalConstraints();
         }
-        for (int j = 0; j < playerList.size(); ++j) {
+        for (size_t j = 0; j < playerList.size(); ++j) {
             playerList[j]->CollideVsObjects(this);
         }
-        for (int j = 0; j < playerList.size(); ++j) {
+        for (size_t j = 0; j < playerList.size(); ++j) {
             playerList[j]->CollideVsTiles(this);
         }
     }
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         playerList[i]->PostCollision(this);
     }
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         playerList[i]->Think(this, frame_num);
     }
     ++frame_num;
@@ -107,7 +107,7 @@ void Simulator::Event_Launchpad_HitPlayer(Ninja* ninja, double launchForceX, dou
 
 void Simulator::Event_Exit_HitPlayer(Ninja* ninja) {
     STATEFLAG_won = true;
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         playerList[i]->SIM_Win();
     }
 }
@@ -125,7 +125,7 @@ void Simulator::Event_PlayerWasKilled(Ninja* ninja, int enemyType, double deathP
 }
 
 bool Simulator::AreAllPlayersDead() {
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         if (!playerList[i]->IsDead()) {
             return false;
         }
@@ -134,7 +134,7 @@ bool Simulator::AreAllPlayersDead() {
 }
 
 void Simulator::APP_Event_TimeUp() {
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         InternalEvent_KillPlayer(playerList[i], sim_globals::ENEMYTYPE_TIME, 0, 0, 0, 0);
     }
 }
@@ -170,13 +170,13 @@ void Simulator::APP_DisablePlayer(int pID) {
 }
 
 void Simulator::App_EnableAllPlayers() {
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         playerList[i]->APP_Enable();
     }
 }
 
 void Simulator::App_DisableAllPlayers() {
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         playerList[i]->APP_Disable();
     }
 }
@@ -186,7 +186,7 @@ int Simulator::APP_GetNumGoldCollectedDuringTick(int pID) {
 }
 
 bool Simulator::APP_IsPlaybackFinished() {
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         if (!playerList[i]->inputsource->IsReplayFinished()) {
             return false;
         }
@@ -195,7 +195,7 @@ bool Simulator::APP_IsPlaybackFinished() {
 }
 
 void Simulator::APP_GetReplayData(vector<string>& outReplayData) {
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         string replayData = playerList[i]->inputsource->DumpString();
         outReplayData.push_back(replayData);
     }
@@ -203,7 +203,7 @@ void Simulator::APP_GetReplayData(vector<string>& outReplayData) {
 
 vector<ByteArray*> Simulator::APP_GetReplayBytes() {
     vector<ByteArray*> replayBytes;
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         ByteArray* replayData = playerList[i]->inputsource->DumpFrames();
         replayBytes.push_back(replayData);
     }
@@ -211,7 +211,7 @@ vector<ByteArray*> Simulator::APP_GetReplayBytes() {
 }
 
 void Simulator::DEBUG_SetPlayerPosVel(const vec2& pos, const vec2& vel) {
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         playerList[i]->DEBUG_SetPosVel(pos, vel);
     }
 }
@@ -229,7 +229,7 @@ void Simulator::DEATHMATCH_GibPlayer(int pID, double deathPosX, double deathPosY
 }
 
 void Simulator::DEBUG_ToggleRagdoll(const vec2& mousePos) {
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         if (playerList[i]->IsDead()) {
             playerList[i]->DEBUG_Respawn(mousePos);
         } else {
@@ -246,7 +246,7 @@ void Simulator::DEBUG_ToggleRagdoll(const vec2& mousePos) {
 }
 
 void Simulator::DEBUG_ToggleExploded() {
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         if (playerList[i]->IsDead()) {
             //if (playerList[i]->DEBUG_GetRagdoll().DEBUG_IsExploded()) {
             //    playerList[i]->DEBUG_GetRagdoll().UnexplodeRagdoll();
@@ -258,7 +258,7 @@ void Simulator::DEBUG_ToggleExploded() {
 }
 
 void Simulator::DEBUG_GrabRagdoll(const vec2& pos, const vec2& vel) {
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         if (playerList[i]->IsDead()) {
             //playerList[i]->DEBUG_GetRagdoll().TESTING_SetPosVel(pos, vel);
         }
@@ -273,7 +273,7 @@ void Simulator::DEBUG_Draw_Tiles(SimpleRenderer& rend) {
     for (int u = 0; u < GRID_NUM_COLS; ++u) {
         for (int v = 0; v < GRID_NUM_ROWS; ++v) {
             vector<Segment*> segments = segGrid->DEBUG_GetCellContentsFromGridspacePosition(u, v);
-            for (int i = 0; i < segments.size(); ++i) {
+            for (size_t i = 0; i < segments.size(); ++i) {
                 segments[i]->DebugDraw_Simple(rend);
             }
         }
@@ -298,11 +298,11 @@ void Simulator::DEBUG_Draw_Grid(SimpleRenderer& rend) {
 }
 
 void Simulator::DEBUG_Draw_Entities(SimpleRenderer& rend) {
-    for (int i = 0; i < objList.size(); ++i) {
+    for (size_t i = 0; i < objList.size(); ++i) {
         //rend.SetStyle(0, 0, 100);
         objList[i]->Debug_Draw(rend);
     }
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         playerList[i]->Draw(rend);
     }
 }
@@ -321,7 +321,7 @@ unsigned int Simulator::NEW_GetFrameNum() const {
 //     ByteArray state;
 //     state.writeUnsignedInt(frame_num);
 //     state.writeBytes(playerList[0].saveState());
-//     for (int i = 0; i < objList.size(); ++i) {
+//     for (size_t i = 0; i < objList.size(); ++i) {
 //         state.writeBytes(objList[i]);
 //     }
 // I THINK NEED NUM GOLD
@@ -331,11 +331,11 @@ void Simulator::saveState(appSave& appState) {
     appState.frameNum = frame_num;
     appState.tiles = tileIDs;
     appState.ninjaState.resize(playerList.size());
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         playerList[i]->saveState(appState.ninjaState[i]);
     }
     appState.entityState.resize(objList.size());
-    for (int i = 0; i < objList.size(); ++i) {
+    for (size_t i = 0; i < objList.size(); ++i) {
         objList[i]->saveState(appState.entityState[i]);
     }
     appState.segGrid = segGrid->Clone();

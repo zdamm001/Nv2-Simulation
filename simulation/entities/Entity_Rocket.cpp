@@ -124,7 +124,7 @@ void Entity_Rocket::Think(Simulator* sim) {
         hit_n.y = 0;
 
         double best_t = 2.0;
-        for (int i = 0; i < nearSegs.size(); ++i) {
+        for (size_t i = 0; i < nearSegs.size(); ++i) {
             Segment* segment = nearSegs[i];
             double curr_t = segment->IntersectWithRay(old_pos, rocket_vel, 0, hit_pos, hit_n);
 

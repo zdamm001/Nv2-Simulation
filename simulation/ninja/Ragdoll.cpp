@@ -103,7 +103,7 @@ void Ragdoll::ShoveRagdoll(const vec2& impactPos, const vec2& impactForce) {
     double minMultiplier = 0.5;
     double maxMultiplier = 1.5;
 
-    for (int i = 0; i < pList[STATE_UNEXPLODED].size(); ++i) {
+    for (size_t i = 0; i < pList[STATE_UNEXPLODED].size(); ++i) {
         double distX = pList[STATE_UNEXPLODED][i]->pos.x - impactPos.x;
         double distY = pList[STATE_UNEXPLODED][i]->pos.y - impactPos.y;
         double distance = sqrt(distX * distX + distY * distY);
@@ -157,7 +157,7 @@ void Ragdoll::InitUnexplodedParticles() {
 }
 
 void Ragdoll::Integrate(double g) {
-    for (int i = 0; i < pList[cur_state].size(); i++) {
+    for (size_t i = 0; i < pList[cur_state].size(); i++) {
         pList[cur_state][i]->PreIntegrate(g);
     }
 }
@@ -165,24 +165,24 @@ void Ragdoll::Integrate(double g) {
 void Ragdoll::PreCollision() { }
 
 void Ragdoll::SolveConstraints() {
-    for (int i = 0; i < sList[cur_state].size(); i++) {
+    for (size_t i = 0; i < sList[cur_state].size(); i++) {
         sList[cur_state][i]->Solve();
     }
 }
 
 void Ragdoll::PostCollision(Simulator* sim) {
-    for (int i = 0; i < pList[cur_state].size(); ++i) {
+    for (size_t i = 0; i < pList[cur_state].size(); ++i) {
         pList[cur_state][i]->PostIntegrate();
     }
 
     const double epsilon = 0.1;
     result_logical.Clear();
 
-    for (int i = 0; i < pList[cur_state].size(); ++i) {
+    for (size_t i = 0; i < pList[cur_state].size(); ++i) {
         RagParticle* part = pList[cur_state][i];
         sim->objGrid->GatherCellContentsInNeighbourhood(part->pos, objList);
 
-        for (int j = 0; j < objList.size(); ++j) {
+        for (size_t j = 0; j < objList.size(); ++j) {
             Entity_Base* entity = objList[j];
             if (entity->CollideVsCircle_Logical(sim, nullptr, result_logical, part->pos, part->vel, part->pos, part->r, epsilon)) {
                 part->vel.x += result_logical.vec_x;
@@ -210,10 +210,10 @@ void Ragdoll::PostCollision(Simulator* sim) {
 void Ragdoll::CollideVsObjects(Simulator* sim) {
     result_physical.Clear();
 
-    for (int i = 0; i < pList[cur_state].size(); ++i) {
+    for (size_t i = 0; i < pList[cur_state].size(); ++i) {
         RagParticle* part = pList[cur_state][i];
         sim->objGrid->GatherCellContentsInNeighbourhood(part->solver_pos, objList);
-        for (int j = 0; j < objList.size(); ++j) {
+        for (size_t j = 0; j < objList.size(); ++j) {
             Entity_Base* entity = objList[j];
             if (entity->CollideVsCircle_Physical(result_physical, part->solver_pos, part->vel, part->pos, part->r)) {
                 RespondToCollision(sim, part, result_physical.nx, result_physical.ny, result_physical.pen);
@@ -223,7 +223,7 @@ void Ragdoll::CollideVsObjects(Simulator* sim) {
 }
 
 void Ragdoll::CollideVsTiles(Simulator* sim) {
-    for (int i = 0; i < pList[cur_state].size(); ++i) {
+    for (size_t i = 0; i < pList[cur_state].size(); ++i) {
         RagParticle* part = pList[cur_state][i];
         int maxIterations = 32;
         cp.x = 0;
@@ -304,7 +304,7 @@ void Ragdoll::RespondToCollision(Simulator* sim, RagParticle* part, double normx
 }
 
 void Ragdoll::GFX_UpdateState(EntityGraphics_Ninja* graphic) {
-    for (int i = 0; i < sList[cur_state].size(); ++i) {
+    for (size_t i = 0; i < sList[cur_state].size(); ++i) {
         double dx = sList[cur_state][i]->p1->pos.x - sList[cur_state][i]->p0->pos.x;
         double dy = sList[cur_state][i]->p1->pos.y - sList[cur_state][i]->p0->pos.y;
         double len = sqrt(dx * dx + dy * dy);
@@ -323,12 +323,12 @@ void Ragdoll::TESTING_SetPosVel(const vec2& partPos, const vec2& partVel) {
 void Ragdoll::Draw(SimpleRenderer& rend) {
     //rend.SetStyle(0, 0, 100);
 
-    for (int i = 0; i < pList[cur_state].size(); ++i){
+    for (size_t i = 0; i < pList[cur_state].size(); ++i){
         RagParticle* particle = pList[cur_state][i];
         //rend.DrawCircle(particle->pos.x, particle->pos.y, particle->r);
     }
 
-    for (int i = 0; i < sList[cur_state].size(); ++i) {
+    for (size_t i = 0; i < sList[cur_state].size(); ++i) {
         RagStick* stick = sList[cur_state][i];
         vec2 p0pos = stick->p0->pos;
         vec2 p1pos = stick->p1->pos;

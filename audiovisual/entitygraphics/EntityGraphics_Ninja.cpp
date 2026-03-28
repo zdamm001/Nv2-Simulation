@@ -30,7 +30,7 @@ EntityGraphics_Ninja::EntityGraphics_Ninja(Ninja* entity, unsigned int color)
     //ColorTransform colorTransform(color);
     //mc_sprite->transform.colorTransform = colorTransform;
 
-    for (int i = 0; i < ragdoll_mcList.size(); ++i) {
+    for (size_t i = 0; i < ragdoll_mcList.size(); ++i) {
         //ragdoll_mcList[i]->transform.colorTransform = colorTransform;
     }
 }
@@ -82,14 +82,14 @@ void EntityGraphics_Ninja::NINJA_GetCurrentPose(vector<vec2>& posePos, vector<ve
 
 void EntityGraphics_Ninja::RegisterGraphics(vector<DisplayObject*>& displayObjects) {
     displayObjects.push_back(mc_sprite);
-    for (int i = 0; i < ragdoll_mcList.size(); ++i) {
+    for (size_t i = 0; i < ragdoll_mcList.size(); ++i) {
         displayObjects.push_back(ragdoll_mcList[i]);
     }
 }
 
 void EntityGraphics_Ninja::Hide() {
     mc_sprite->visible = false;
-    for (int i = 0; i < ragdoll_mcList.size(); ++i) {
+    for (size_t i = 0; i < ragdoll_mcList.size(); ++i) {
         ragdoll_mcList[i]->visible = false;
     }
 }
@@ -100,14 +100,14 @@ void EntityGraphics_Ninja::UpdateState() {
 
     if (anim == ANIM_OFF) {
         mc_sprite->visible = false;
-        for (int i = 0; i < ragdoll_mcList.size(); ++i) {
+        for (size_t i = 0; i < ragdoll_mcList.size(); ++i) {
             ragdoll_mcList[i]->visible = false;
         }
     } else if (anim == ANIM_DEAD) {
         //sndLoopMC->gotoAndPlay("wallslide_stop");
         //sndLoopMC->gotoAndPlay("skid_stop");
         mc_sprite->visible = false;
-        for (int i = 0; i < ragdoll_mcList.size(); ++i) {
+        for (size_t i = 0; i < ragdoll_mcList.size(); ++i) {
             ragdoll_mcList[i]->visible = true;
             ragdoll_mcList[i]->x = ragdoll_posList[i].x;
             ragdoll_mcList[i]->y = ragdoll_posList[i].y;
@@ -119,7 +119,7 @@ void EntityGraphics_Ninja::UpdateState() {
     } else {
         prev_frame = mc_sprite->currentFrame;
         mc_sprite->visible = true;
-        for (int i = 0; i < ragdoll_mcList.size(); ++i) {
+        for (size_t i = 0; i < ragdoll_mcList.size(); ++i) {
             ragdoll_mcList[i]->visible = false;
         }
         mc_sprite->x = pos.x;

@@ -42,14 +42,14 @@ void Entity_Door_Base::ChangeDoorState(bool state) {
 
 void Entity_Door_Base::RemoveDoorFromWorld() {
     seg_grid->DOOR_RemoveSegment(seg_index, seg);
-    for (int i = 0; i < edge_indices.size(); i++) {
+    for (size_t i = 0; i < edge_indices.size(); i++) {
         edge_grid->DOOR_DecrementEdge(edge_indices[i], isHorizontal);
     }
 }
 
 void Entity_Door_Base::AddDoorToWorld() {
     seg_grid->DOOR_AddSegment(seg_index, seg);
-    for (int i = 0; i < edge_indices.size(); i++) {
+    for (size_t i = 0; i < edge_indices.size(); i++) {
         edge_grid->DOOR_IncrementEdge(edge_indices[i], isHorizontal);
     }
 }

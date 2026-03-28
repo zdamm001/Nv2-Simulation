@@ -56,7 +56,7 @@ void Entity_Drone_Shooter_Base::Think(Simulator* sim) {
         } else if (CUR_FIRING_STATE == FIRING_STATE_POSTFIRING) {
             ++firing_timer;
             if (postfire_delay <= firing_timer) {
-                for (int i = 0; i < sim->playerList.size(); ++i) {
+                for (size_t i = 0; i < sim->playerList.size(); ++i) {
                     if (!sim->playerList[i]->IsDead()) {
                         if (sim->segGrid->RaycastVsPlayer(pos, sim->playerList[i]->GetPos(), sim->playerList[i]->GetRadius(), zero_vec, zero_vec)) {
                             Internal_StartPrefiring(sim, i, sim->playerList[i]->GetPos());

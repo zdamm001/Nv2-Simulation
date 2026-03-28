@@ -7,7 +7,7 @@ int entity_helpers::TryToAquireTarget(const vec2& pos, const vector<Ninja*>& pla
     potentialList.clear();
     
     vec2 temp_zero_vec(0, 0);
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         if (!playerList[i]->IsDead()) {
             if (segGrid->RaycastVsPlayer(pos, playerList[i]->GetPos(), playerList[i]->GetRadius(), temp_zero_vec, temp_zero_vec)) {
                 potentialList.push_back(i);
@@ -20,7 +20,7 @@ int entity_helpers::TryToAquireTarget(const vec2& pos, const vector<Ninja*>& pla
         double deltaX = playerList[potentialList[0]]->GetPos().x - pos.x;
         double deltaY = playerList[potentialList[0]]->GetPos().y - pos.y;
         double closestDistSq = deltaX * deltaX + deltaY * deltaY;
-        for (int i = 1; i < potentialList.size(); ++i) {
+        for (size_t i = 1; i < potentialList.size(); ++i) {
             deltaX = playerList[potentialList[i]]->GetPos().x - pos.x;
             deltaY = playerList[potentialList[i]]->GetPos().y - pos.y;
             double currDistSq = deltaX * deltaX + deltaY * deltaY;

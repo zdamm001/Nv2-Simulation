@@ -88,7 +88,7 @@ bool Entity_Drone_Chaingun::Update_Firing(Simulator* sim) {//fix var names
 
         //sim->HACKY_GetParticleManager().Spawn_ChainBullet(pos, chaingun_hit_pos);
 
-        for (int i = 0; i < sim->playerList.size(); ++i) {
+        for (size_t i = 0; i < sim->playerList.size(); ++i) {
             if (!sim->playerList[i]->IsDead()) {
                 if (colutils::Overlap_Circle_Vs_Segment(sim->playerList[i]->GetPos(), sim->playerList[i]->GetRadius(), pos, chaingun_hit_pos, hitDist)) {
                     double deltaX = sim->playerList[i]->GetPos().x - pos.x;

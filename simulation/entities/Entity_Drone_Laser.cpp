@@ -35,7 +35,7 @@ bool Entity_Drone_Laser::Update_Firing(Simulator* sim) {
     double hitDist = sim->segGrid->GetRaycastDistance(pos.x, pos.y, laser_dir.x, laser_dir.y, laser_hit_pos, laser_hit_n);
     //sim->HACKY_GetParticleManager().Spawn_LaserCharge(pos);
     
-    for (int i = 0; i < sim->playerList.size(); ++i) {
+    for (size_t i = 0; i < sim->playerList.size(); ++i) {
         if (!sim->playerList[i]->IsDead()) {
             if (colutils::Overlap_Circle_Vs_Segment(sim->playerList[i]->GetPos(), sim->playerList[i]->GetRadius(), pos, laser_hit_pos, hitDist)) {
                 double deltaX = sim->playerList[i]->GetPos().x - pos.x;

@@ -19,7 +19,7 @@ Simulator* sim_loader::LoadLevel_EditorState(const vector<int>& playerKeys, cons
         ninjaSpawnLocations.push_back(vec2(32, 32));
     }
 
-    while (ninjaSpawnLocations.size() < playerCount) {
+    while (int(ninjaSpawnLocations.size()) < playerCount) {
         ninjaSpawnLocations.push_back(ninjaSpawnLocations[0]);
     }
 
@@ -50,14 +50,14 @@ void sim_loader::LoadLevel_EditorState_Tiles(const vector<unsigned int>& tileIDs
     gridEdges->Clear();
     LoadLevel_InitTileIDGridWithBoundaryEdges(tileIDGrid, numCols, numRows);
 
-    for (int i = 0; i < tileIDs.size(); ++i) {
+    for (size_t i = 0; i < tileIDs.size(); ++i) {
         int colIndex = 1 + i % edat::num_cols;
         int rowIndex = 1 + i / edat::num_cols;
         tileIDGrid[colIndex + rowIndex * numCols] = tileIDs[i];
     }
 
     vector<int> neighborTiles(4, tiletypes::EMPTY);
-    for (int gridIndex = 0; gridIndex < tileIDGrid.size(); ++gridIndex) {
+    for (size_t gridIndex = 0; gridIndex < tileIDGrid.size(); ++gridIndex) {
         int col = gridIndex % numCols;
         int row = gridIndex / numCols;
 

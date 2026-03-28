@@ -56,7 +56,7 @@ GraphicsManager::GraphicsManager(Sprite* gameStage, vector<Entity_Base*>& entiti
         }
     }
 
-    for (int i = 0; i < graphics.size(); ++i) {
+    for (size_t i = 0; i < graphics.size(); ++i) {
         root->addChild(graphics[i]);
     }
 

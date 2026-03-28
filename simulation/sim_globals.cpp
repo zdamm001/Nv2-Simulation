@@ -77,7 +77,7 @@ string sim_globals::BAtoString(ByteArray& bytes) {
 ByteArray sim_globals::StringtoBA(string hexString) {
     HORRIBLY_HACKY_DOES_STRING_TO_BA_ERROR_EXIST = false;
     ByteArray bytes;
-    for (int i = 0; i < hexString.size(); i += 2) {
+    for (size_t i = 0; i < hexString.size(); i += 2) {
         unsigned int byteValue = BAS_hint(hexString[i]) + (BAS_hint(hexString[i + 1]) << 4);
         bytes.writeByte(byteValue);
     }

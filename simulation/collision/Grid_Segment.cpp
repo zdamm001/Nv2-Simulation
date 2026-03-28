@@ -17,8 +17,8 @@ Grid_Segment::Grid_Segment(int num_cols, int num_rows, double cell_size, vector<
 }
 
 void Grid_Segment::DEBUG_Draw(SimpleRenderer& rend) {
-    for (int i = 0; i < cells.size(); i++) {
-        for (int j = 0; j < cells[i].size(); j++) {
+    for (size_t i = 0; i < cells.size(); i++) {
+        for (size_t j = 0; j < cells[i].size(); j++) {
             cells[i][j]->DebugDraw(rend);
         }
     }
@@ -164,7 +164,7 @@ void Grid_Segment::Clear() {
 
 void Grid_Segment::AddSegToCell(int cell_u, int cell_v, Segment* seg) {
     int index = GetCellIndexFromGridspacePosition(cell_u, cell_v);
-    if (index < 0 || index >= cells.size()) {
+    if (index < 0) {
         return;
     }
     cells[index].push_back(seg);
@@ -240,7 +240,7 @@ Segment* Grid_Segment::DOOR_GetSegment(int cell_index, int seg_index) {
 
     vector<Segment*>& cell = cells[cell_index];
 
-    if (seg_index < 0 || seg_index >= cell.size()) {
+    if (seg_index < 0 || seg_index >= int(cell.size())) {
         return nullptr;
     }
 

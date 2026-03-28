@@ -68,7 +68,7 @@ void Entity_Turret::Think(Simulator* sim) {
                     aimDeltaX /= distToAim;
                     aimDeltaY /= distToAim;
                     double hitDist = sim->segGrid->GetRaycastDistance(pos.x, pos.y, aimDeltaX, aimDeltaY, HACKY_hit_pos, HACKY_hit_n);
-                    for (int i = 0; i < sim->playerList.size(); ++i) {
+                    for (size_t i = 0; i < sim->playerList.size(); ++i) {
                         if (!sim->playerList[i]->IsDead()) {
                             vec2 ninjaPos = sim->playerList[i]->GetPos();
                             double ninjaRadius = sim->playerList[i]->GetRadius();
@@ -149,7 +149,7 @@ void Entity_Turret::UpdateAim(const vec2& ninjaPos, const vec2& ninjaVel) {
     double deltaY = predictedY - aim_pos.y;
     double distanceSquared = deltaX * deltaX + deltaY * deltaY;
     aim_region = 0;
-    for (int i = 0; i < threshold2.size(); ++i) {
+    for (size_t i = 0; i < threshold2.size(); ++i) {
         if (distanceSquared > threshold2[i]) {
             break;
         }

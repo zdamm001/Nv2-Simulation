@@ -11,7 +11,7 @@ int colutils::GetSingleClosestPoint_Signed(Grid_Segment* gridSegment, vec2& poin
 
     gridSegment->GatherCellContentsFromWorldspaceRegion(point.x - radius, point.y - radius, point.x + radius, point.y + radius, segmentList);
 
-    for (int i = 0; i < segmentList.size(); ++i) {
+    for (size_t i = 0; i < segmentList.size(); ++i) {
         isPointBackfacing = segmentList[i]->GetClosestPoint_IsBackfacing(point, closestPoint);
         double deltaX = closestPoint.x - point.x;
         double deltaY = closestPoint.y - point.y;

@@ -39,7 +39,7 @@ bool Entity_FloorGuard::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, co
 
 void Entity_FloorGuard::Think(Simulator* sim) {
     if (CUR_STATE == 0) {
-        for (int i = 0; i < sim->playerList.size(); ++i) {
+        for (size_t i = 0; i < sim->playerList.size(); ++i) {
             Ninja* ninja = sim->playerList[i];
             if (!ninja->IsDead()) {
                 vec2 ninjaPos = ninja->GetPos();

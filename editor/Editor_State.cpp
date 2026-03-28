@@ -14,11 +14,11 @@ Editor_State Editor_State::Load_From_Bytes(ByteArray& bytes) {
         return Editor_State();
     }
 
-    for (int i = 0; i < editorState.tileIDs.size(); ++i) {
+    for (size_t i = 0; i < editorState.tileIDs.size(); ++i) {
         editorState.tileIDs[i] = bytes.readUnsignedByte();
     }
 
-    for (int i = 0; i < edat::num_structtypes; ++i) {
+    for (size_t i = 0; i < edat::num_structtypes; ++i) {
         if (bytes.bytesAvailable() < 2) {
             return Editor_State();
         }
@@ -69,7 +69,7 @@ Editor_State Editor_State::Load_From_Bytes(ByteArray& bytes) {
                 if (bytes.bytesAvailable() < edat::STRUCT_SIZE[i]) {
                     return Editor_State();
                 }
-                for (int k = 0; k < edat::STRUCT_SIZE[i]; ++k) {
+                for (unsigned int k = 0; k < edat::STRUCT_SIZE[i]; ++k) {
                     entityData.push_back(bytes.readUnsignedByte());
                 }
                 editorState.entities.push_back(entityData);

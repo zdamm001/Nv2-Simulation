@@ -12,8 +12,8 @@ int PlayerKeys::getActionKeyForPlayer(unsigned int keyType, unsigned int playerI
 
 vector<int> PlayerKeys::getActions(const vector<int>& keyTypes) {
     vector<int> actionKeys;
-    for (int player = 0; player < MAX_NUMBER_OF_PLAYERS; ++player) {
-        for (int i = 0; i < keyTypes.size(); ++i) {
+    for (unsigned int player = 0; player < MAX_NUMBER_OF_PLAYERS; ++player) {
+        for (size_t i = 0; i < keyTypes.size(); ++i) {
             actionKeys.push_back(getActionKeyForPlayer(keyTypes[i], player));
         }
     }

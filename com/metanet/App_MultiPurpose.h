@@ -69,7 +69,7 @@ class App_MultiPurpose : public Actor, public App {
         bool _isHighscore;
         bool _isPersonalBest;
         vector<ByteArray*> _levelSet;
-        int _currentLevelInSet;
+        unsigned int _currentLevelInSet;
         int _startingTicks;
         int _defaultStartingTicks;
         int _currentTicks;

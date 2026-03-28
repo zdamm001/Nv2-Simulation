@@ -52,7 +52,7 @@ bool Entity_Drone_Chaser::ChooseNextDirAndGoal(Grid_Edges* edges, const vector<N
         old_chase_DIR = -1;
     }
 
-    for (int i = 0; i < playerList.size(); ++i) {
+    for (size_t i = 0; i < playerList.size(); ++i) {
         if (!playerList[i]->IsDead()) {
             vec2 ninjaPos = playerList[i]->GetPos();
             for (int j = -1; j <= 1; j++) {
