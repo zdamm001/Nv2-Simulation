@@ -9,6 +9,7 @@ class Grid_Base {
         double cellsize;
     public:
         Grid_Base(int num_cols, int num_rows, double cell_size);
+        virtual ~Grid_Base() = default;
     protected:
         virtual int WorldspaceToGridspace(double pos) const final;
         virtual int GetCellIndexFromWorldspacePosition(double pos_x, double pos_y) const final;
