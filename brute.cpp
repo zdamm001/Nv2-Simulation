@@ -52,9 +52,10 @@ void InitSettings(App_MultiPurpose& app);
 
 enum bruteTypes {nonJumpCombos, nonJumpCombosKeepJump};
 enum finishTypes {holdUntilGrounded, holdUntilCanJump, completeUnlessInAir, continueUntilFrame};
-enum clocks {N, J, L, LJ, R, RJ, LR, LRJ};
+enum inputs {N, J, L, LJ, R, RJ, LR, LRJ};
+vector<char> inputChar = {'N', 'J', 'L', '\\', 'R', '/', '-', '|'};
 
-void bruteForce(ByteArray&, ByteArray&, unsigned int, unsigned int, unsigned int, unsigned int, vector<pair<unsigned int,vector<char>>>, char, unsigned int);
+void bruteForce(ByteArray&, ByteArray&, unsigned int, unsigned int, unsigned int, unsigned int, vector<unsigned int>, vector<pair<unsigned int,vector<char>>>, char, unsigned int);
 
 ofstream fout;
 
@@ -66,12 +67,15 @@ int main() {
     unsigned int numFrames = 20;
     unsigned int bruteType = bruteTypes::nonJumpCombosKeepJump;
     unsigned int finishType = finishTypes::holdUntilCanJump;
+
+    vector<unsigned int> inputTypes = {inputs::L, inputs::N, inputs::R}; // can switch order or have just two
     
     vector<pair<unsigned int,vector<char>>> replayTweaks = {
-        {414, {clocks::RJ, clocks::RJ, clocks::RJ, clocks::RJ}}
+        {414, {inputs::RJ, inputs::RJ, inputs::RJ, inputs::RJ}},
+        {439, {inputs::LJ}}
     };
-    
-    char holdInput = clocks::L;
+
+    char holdInput = inputs::L;
     unsigned int finishFrame = 439;
     
     ByteArray levelBytes = sim_globals::StringtoBA("0000" + level); //added empty title
@@ -82,13 +86,13 @@ int main() {
     fout.open(outputFile);
     if (!fout.is_open()) {cerr << "Error opening " << outputFile << endl; return 1;}
 
-    bruteForce(levelBytes, replayBytes, startFrame, numFrames, bruteType, finishType, replayTweaks, holdInput, finishFrame);
+    bruteForce(levelBytes, replayBytes, startFrame, numFrames, bruteType, finishType, inputTypes, replayTweaks, holdInput, finishFrame);
     
     fout.close();
     return 0;
 }
 
-void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFrame, unsigned int numBruteFrames, unsigned int bruteType, unsigned int finishType, vector<pair<unsigned int,vector<char>>> replayTweaks, char holdInput, unsigned int finishFrame) {
+void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFrame, unsigned int numBruteFrames, unsigned int bruteType, unsigned int finishType, vector<unsigned int> inputTypes, vector<pair<unsigned int,vector<char>>> replayTweaks, char holdInput, unsigned int finishFrame) {
     App_MultiPurpose app;
     Inject(app);
     Initialize(app);
@@ -116,24 +120,21 @@ void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFram
         cout << app.NEW_getDebugOneLine() << '\n';
     }
     app.NEW_SaveState();
-    fout << "brute_clocks end_frame posx posy velx vely ticks\n";
+    fout << "brute_inputs end_frame posx posy velx vely ticks\n";
 
-    vector<int> inputTypes = {2, 0, 4};
-    vector<char> inputTypesChar = {'L', 'N', 'R'};
-    // vector<int> inputTypes = {4, 0};
-    // vector<char> inputTypesChar = {'R', 'N'};
     size_t totalCombinations = pow(inputTypes.size(), numBruteFrames);
     for (size_t i = 0; i < totalCombinations; ++i) {
         size_t num = i;
         ByteArray& replaySave = app.NEW_getSaveFrames(0);
         replaySave.setPosition(startBruteFrame - 1);
 
-        string bruteClocks = "";
+        string bruteInputs = "";
         unsigned int numTypes[3] = {0,0,0};
         for (unsigned int j = 0; j < numBruteFrames; ++j) {
             ++numTypes[num % inputTypes.size()];
-            bruteClocks += inputTypesChar[num % inputTypes.size()];
-            replaySave.writeByte(inputTypes[num % inputTypes.size()] | (bruteType == bruteTypes::nonJumpCombosKeepJump ? (replaySave[replaySave.getPosition()] & clocks::J) : clocks::N));
+            unsigned char input = inputTypes[num % inputTypes.size()] | (bruteType == bruteTypes::nonJumpCombosKeepJump ? (replaySave[replaySave.getPosition()] & inputs::J) : inputs::N);
+            bruteInputs += inputChar[input];
+            replaySave.writeByte(input);
             num /= inputTypes.size();
         }
 
@@ -183,7 +184,7 @@ void bruteForce(ByteArray& level, ByteArray& replay, unsigned int startBruteFram
         //if (!dynamic_cast<Entity_Gold*>(app.NEW_getSim()->GFX_GetEntityList()[0])->isCollected) continue;
         //Entity_Thwomp* t = dynamic_cast<Entity_Thwomp*>(app.NEW_getSim()->GFX_GetEntityList().front());
 
-        fout << bruteClocks << ' ' << app.NEW_getFrameNum() << ' ' << pos.x << ' ' << pos.y << ' ' << vel.x << ' ' << vel.y << ' ' << app.NEW_getCurrentTicks() << '\n'; //' ' << Ninja::PSTATE_TO_STRING[player->NEW_GetState()] << '\n';
+        fout << bruteInputs << ' ' << app.NEW_getFrameNum() << ' ' << pos.x << ' ' << pos.y << ' ' << vel.x << ' ' << vel.y << ' ' << app.NEW_getCurrentTicks() << '\n'; //' ' << Ninja::PSTATE_TO_STRING[player->NEW_GetState()] << '\n';
     }
 }
 
