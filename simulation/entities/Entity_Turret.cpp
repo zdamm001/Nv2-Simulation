@@ -2,7 +2,7 @@
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Turret.h"
 
 Entity_Turret::Entity_Turret(Grid_Entity* entities, double x, double y)
-    : pos(x, y), aim_pos(x, y), aim_region(0), shot_timer(0), CUR_STATE(STATE_IDLE), targetIndex(-1), gfx_triggerEvent(false), HACKY_drawtimer(0), threshold2(3), aimspeed(4), timerstep(4) {
+    : threshold2(3), aimspeed(4), timerstep(4), pos(x, y), aim_pos(x, y), aim_region(0), shot_timer(0), CUR_STATE(STATE_IDLE), targetIndex(-1), gfx_triggerEvent(false), HACKY_drawtimer(0) {
     timer_firetime = 60 * (sim_globals::sim_rate / 40);
     prefire_delay = 10 * (sim_globals::sim_rate / 40);
     postfire_delay = 10 * (sim_globals::sim_rate / 40);

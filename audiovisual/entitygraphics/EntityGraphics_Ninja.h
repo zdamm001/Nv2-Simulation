@@ -38,8 +38,8 @@ class EntityGraphics_Ninja : public EntityGraphics {
         vec2 pos;
         double vel;
         double orn;
-        int anim;
         int facing;
+        int anim;
     private:
         double run_anim_leftovers;
         double scaling_factor;

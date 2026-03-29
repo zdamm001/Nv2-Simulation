@@ -1,11 +1,11 @@
 #include "Simulator.h"
 
 Simulator::Simulator(vector<int> tileIDs, Grid_Segment* segGrid, Grid_Edges* edgeGrid, Grid_Entity* objGrid, vector<Entity_Base*> objList, vector<Ninja*> playerList)
-    : tileIDs(tileIDs),
+    : objList(objList),
+      tileIDs(tileIDs),
       segGrid(segGrid),
       edgeGrid(edgeGrid),
       objGrid(objGrid),
-      objList(objList),
       playerList(playerList),
       frame_num(0),
       num_gold_collected_during_tick(playerList.size(), 0),

@@ -6,16 +6,16 @@ Entity_Drone_Chaser::Entity_Drone_Chaser(Grid_Entity* entities, double x, double
       isChasing(false),
       speed_regular(speed),
       speed_chasing(speed_regular * 2),
-      gfx_startedChasing(false),
-      old_chase_DIR(-1) {}
+      old_chase_DIR(-1),
+      gfx_startedChasing(false) {}
 
 Entity_Drone_Chaser::Entity_Drone_Chaser(Grid_Entity* entities, entitySave& entity)
     : Entity_Drone_Zap(entities, entity),
       isChasing(entity.is),
       speed_regular(speed),
       speed_chasing(speed_regular * 2),
-      gfx_startedChasing(false),
-      old_chase_DIR(-1) {
+      old_chase_DIR(-1),
+      gfx_startedChasing(false) {
     if (isChasing) speed = speed_chasing;
 }
 

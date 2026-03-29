@@ -2,13 +2,13 @@
 #include "..\\..\\audiovisual\\entitygraphics\\EntityGraphics_Drone_Laser.h"
 
 Entity_Drone_Laser::Entity_Drone_Laser(Grid_Entity* entities, double x, double y, unsigned int facingDir, unsigned int moveType)
-    : laser_duration(80),  Entity_Drone_Shooter_Base(entities, x, y, 12.0 * (1.0 / 14.0) * 0.5 * (40.0 / sim_globals::sim_rate), facingDir, moveType, 30 * (sim_globals::sim_rate / 40), 40 * (sim_globals::sim_rate / 40)) {
+    : Entity_Drone_Shooter_Base(entities, x, y, 12.0 * (1.0 / 14.0) * 0.5 * (40.0 / sim_globals::sim_rate), facingDir, moveType, 30 * (sim_globals::sim_rate / 40), 40 * (sim_globals::sim_rate / 40)), laser_duration(80) {
     laser_timer = 0;
     laser_dir = vec2(0, 0);
 }
 
 Entity_Drone_Laser::Entity_Drone_Laser(Grid_Entity* entities, entitySave& entity)
-    : laser_duration(80),  Entity_Drone_Shooter_Base(entities, entity, 12.0 * (1.0 / 14.0) * 0.5 * (40.0 / sim_globals::sim_rate), 30 * (sim_globals::sim_rate / 40), 40 * (sim_globals::sim_rate / 40)) {
+    : Entity_Drone_Shooter_Base(entities, entity, 12.0 * (1.0 / 14.0) * 0.5 * (40.0 / sim_globals::sim_rate), 30 * (sim_globals::sim_rate / 40), 40 * (sim_globals::sim_rate / 40)), laser_duration(80) {
     laser_timer = entity.timer2;
     laser_dir = entity.dir;
     laser_hit_pos = entity.vel;

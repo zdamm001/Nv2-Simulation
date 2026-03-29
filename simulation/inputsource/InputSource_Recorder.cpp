@@ -1,12 +1,12 @@
 #include "InputSource_Recorder.h"
 
 InputSource_Recorder::InputSource_Recorder(SimpleInput& input, unsigned int keyJ, unsigned int keyL, unsigned int keyR)
-    : input(input), keycode_J(keyJ), keycode_L(keyL), keycode_R(keyR), InputSource_Base(new ByteArray()) {
+    : InputSource_Base(new ByteArray()), input(input), keycode_J(keyJ), keycode_L(keyL), keycode_R(keyR) {
     frames->length(4096);
 }
 
 InputSource_Recorder::InputSource_Recorder(SimpleInput& input, ByteArray* frames, unsigned int keyJ, unsigned int keyL, unsigned int keyR)
-    : input(input), keycode_J(keyJ), keycode_L(keyL), keycode_R(keyR), InputSource_Base(frames) {
+    : InputSource_Base(frames), input(input), keycode_J(keyJ), keycode_L(keyL), keycode_R(keyR) {
     if (frames->length() < 4096) frames->length(4096);
 }
 
