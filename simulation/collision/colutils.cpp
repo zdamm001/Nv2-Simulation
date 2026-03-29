@@ -203,14 +203,13 @@ double colutils::TimeOfIntersection_Circle_vs_Arc_HELPER(const vec2& circlePos, 
             double root_1 = d / a;
             double root_2 = c / d;
 
-            double dx = arcStart.x - arcCenter.x;
-            double dy = arcStart.y - arcCenter.y;
-            double vx = arcEnd.x - arcStart.x;
-            double vy = arcEnd.y - arcStart.y;
             double v0x = arcStart.x - arcCenter.x;
             double v0y = arcStart.y - arcCenter.y;
             double v1x = arcEnd.x - arcCenter.x;
             double v1y = arcEnd.y - arcCenter.y;
+            
+            double vx = arcEnd.x - arcStart.x;
+            double vy = arcEnd.y - arcStart.y;
 
             double vp0 = (vx * -v0y) + (vy * v0x);
             double vp1 = (vx * -v1y) + (vy * v1x);
