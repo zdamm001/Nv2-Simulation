@@ -35,6 +35,9 @@ Entity_Rocket::Entity_Rocket(Grid_Entity* entities, entitySave& entity) {
     CUR_STATE = entity.state;
     targetIndex = entity.index;
     gfx_PREV_STATE = entity.extra;
+    if (CUR_STATE == STATE_HOMING) {
+        entities->ENTITY_Add(rocket_pos, this);
+    }
 }
 
 bool Entity_Rocket::CollideVsCircle_Logical(Simulator* sim, Ninja* ninja, collision_result_logical& result, const vec2& circlePosition, const vec2& circleVelocity, const vec2& circleOldPosition, double circleRadius, double epsilon) {
