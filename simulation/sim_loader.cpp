@@ -301,6 +301,278 @@ void sim_loader::Helper_RegisterEntity(vector<Entity_Base*>& entities, Entity_Ba
     entities.push_back(entity);
 }
 
+vec2 HELPER_OldData_UnpackDirEnum(double num) {
+    if (num == 0) {
+        return vec2(1, 0);
+    }
+    if (num == 1) {
+        return vec2(0, 1);
+    }
+    if (num == 2) {
+        return vec2(-1, 0);
+    }
+    if (num == 3) {
+        return vec2(0, -1);
+    }
+    return vec2(0, 0);
+}
+
+vector<string> split(string str, char delimiter) {
+    vector<string> tokens;
+    size_t start = 0;
+    size_t end = str.find(delimiter);
+    while (end != string::npos) {
+        tokens.push_back(str.substr(start, end - start));
+        start = end + 1;
+        end = str.find(delimiter, start);
+    }
+    tokens.push_back(str.substr(start));
+}
+
+Editor_State* sim_loader::BuildEditorState_OldData(const string& data) {
+    Editor_State* state = new Editor_State();
+    int tileOffset = 0;
+    int entityOffset = 0;
+    if (edat::num_cols != 31) {
+        tileOffset = 5;
+        entityOffset = tileOffset * edat::quantize_steps_per_cell;
+    }
+    vector<string> parts = split(data, OLDDATA_SEPERATION_CHAR_LEVEL);
+    if (!parts.empty()) {
+        BuildEditorState_OldData_Tiles(parts[0], state->tileIDs, tileOffset);
+    }
+    if (parts.size() > 1) {
+        BuildEditorState_OldData_Entities(parts[1], state->entities, entityOffset);
+    }
+    return state;
+}
+
+void sim_loader::BuildEditorState_OldData_Tiles(const string& data, vector<unsigned int> tileIDs, int offset) {
+    if (data.length() != 31 * 23) {
+        return;
+    }
+    for (size_t i = 0; i < tileIDs.size(); i++) {
+        tileIDs[i] = tiletypes::FULL;
+    }
+    for (size_t i = 0; i < data.length(); i++) {
+        int row = static_cast<int>(i % edat::num_rows);
+        int col = static_cast<int>(i / edat::num_rows);
+        char c = data[i];
+        int value = static_cast<int>(c) - OLDDATA_CHAR_PAD;
+        tileIDs[col + row * edat::num_cols + offset] = tiletypes::GetTypeFromChar(value);
+    }
+}
+
+void sim_loader::BuildEditorState_OldData_Entities(const string& data, vector<vector<unsigned int>>& entities, int offset = 0) {
+    if (data.empty()) {
+        return;
+    }
+    vector<string> objectList = split(data, OLDDATA_SEPERATION_CHAR_OBJECT);
+    for (const string& objectStr : objectList) {
+        vector<string> typeSplit = split(objectStr, OLDDATA_SEPERATION_CHAR_OBJTYPE);
+        if (typeSplit.size() < 2) {
+            continue;
+        }
+        int type = stoi(typeSplit[0]);
+        vector<string> propsSplit = split(typeSplit[1], OLDDATA_SEPERATION_CHAR_OBJPARAM);
+        vector<double> props(propsSplit.size());
+        for (size_t i = 0; i < propsSplit.size(); i++) {
+            props[i] = stod(propsSplit[i]);
+        }
+        BuildEditorState_OldData_CreateEntity(type, props, entities, offset);
+    }
+}
+
+void sim_loader::BuildEditorState_OldData_CreateEntity(int type, const vector<double>& props, vector<vector<unsigned int>>& entities, int offset = 0) {
+    if (type == OLDDATA_OBJTYPE_BOUNCEBLOCK) {
+        if (props.size() == 2) {
+            vector<unsigned int> e(3);
+            e[edat::EPROP_TYPE] = edat::ETYPE_BOUNCEBLOCK;
+            e[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(props[0]) + offset;
+            e[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(props[1]);
+            entities.push_back(e);
+        }
+    }
+    else if (type == OLDDATA_OBJTYPE_GOLD) {
+        if (props.size() == 2) {
+            vector<unsigned int> e(3);
+            e[edat::EPROP_TYPE] = edat::ETYPE_GOLD;
+            e[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(props[0]) + offset;
+            e[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(props[1]);
+            entities.push_back(e);
+        }
+    }
+    else if (type == OLDDATA_OBJTYPE_LAUNCHPAD) {
+        if (props.size() == 4) {
+            vector<unsigned int> e(4);
+            e[edat::EPROP_TYPE] = edat::ETYPE_LAUNCHPAD;
+            e[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(props[0]) + offset;
+            e[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(props[1]);
+            e[edat::EPROP_DIR] = Helper_Editor_VecToDirEnum(props[2], props[3]);
+            entities.push_back(e);
+        }
+    }
+    else if (type == OLDDATA_OBJTYPE_MINE) {
+        if (props.size() == 2) {
+            vector<unsigned int> e(3);
+            e[edat::EPROP_TYPE] = edat::ETYPE_MINE;
+            e[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(props[0]) + offset;
+            e[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(props[1]);
+            entities.push_back(e);
+        }
+    }
+    else if (type == OLDDATA_OBJTYPE_ONEWAYPLATFORM) {
+        if (props.size() == 3) {
+            vec2 dir = HELPER_OldData_UnpackDirEnum(props[2]);
+            vector<unsigned int> e(4);
+            e[edat::EPROP_TYPE] = edat::ETYPE_ONEWAY;
+            e[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(props[0] + 12 * dir.x) + offset;
+            e[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(props[1] + 12 * dir.y);
+            e[edat::EPROP_DIR] = Helper_Editor_OldDirEnumToNewDirEnum(props[2]);
+            entities.push_back(e);
+        }
+    }
+    else if (type == OLDDATA_OBJTYPE_DRONE) {
+        if (props.size() == 6) {
+            vector<unsigned int> e(5);
+            if (props[3]) {
+                e[edat::EPROP_TYPE] = edat::ETYPE_CHASER;
+            }
+            else if (props[4] == 0) {
+                e[edat::EPROP_TYPE] = edat::ETYPE_ZAP;
+            }
+            else if (props[4] == 1) {
+                e[edat::EPROP_TYPE] = edat::ETYPE_LASER;
+            }
+            else if (props[4] == 2) {
+                e[edat::EPROP_TYPE] = edat::ETYPE_CHAINGUN;
+            }
+            else {
+                return;
+            }
+            e[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(props[0]) + offset;
+            e[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(props[1]);
+            e[edat::EPROP_DIR] = Helper_Editor_OldDirEnumToNewDirEnum(props[5]);
+            e[edat::EPROP_MOVE] = min(3u, static_cast<unsigned int>(props[2]));
+            entities.push_back(e);
+        }
+    }
+    else if (type == OLDDATA_OBJTYPE_EXIT) {
+        if (props.size() == 4) {
+            vector<unsigned int> door(3);
+            door[edat::EPROP_TYPE] = edat::ETYPE_EXIT_DOOR;
+            door[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(props[0]) + offset;
+            door[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(props[1]);
+            entities.push_back(door);
+            vector<unsigned int> sw(3);
+            sw[edat::EPROP_TYPE] = edat::ETYPE_EXIT_SWITCH;
+            sw[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(props[2]) + offset;
+            sw[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(props[3]);
+            entities.push_back(sw);
+        }
+    }
+    else if (type == OLDDATA_OBJTYPE_FLOORGUARD) {
+        if (props.size() == 3) {
+            vector<unsigned int> e(3);
+            e[edat::EPROP_TYPE] = edat::ETYPE_FLOORGUARD;
+            e[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(props[0]) + offset;
+            e[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(props[1]);
+            entities.push_back(e);
+        }
+    }
+    else if (type == OLDDATA_OBJTYPE_HOMINGLAUNCHER) {
+        if (props.size() == 2) {
+            vector<unsigned int> e(3);
+            e[edat::EPROP_TYPE] = edat::ETYPE_ROCKET;
+            e[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(props[0]) + offset;
+            e[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(props[1]);
+            entities.push_back(e);
+        }
+    }
+    else if (type == OLDDATA_OBJTYPE_TESTDOOR) {
+        if (props.size() == 9) {
+            int x = static_cast<int>(props[4] + props[7]);
+            int y = static_cast<int>(props[5] + props[8]);
+            bool vertical = props[2] != 1;
+            vec2 pos((0.5f + x) * 24.0f, (0.5f + y) * 24.0f);
+            unsigned int dir = 0;
+            if (vertical) {
+                pos.x += 12;
+            }
+            else {
+                pos.y += 12;
+                dir = 2;
+            }
+            if (props[3]) {
+                vector<unsigned int> door(4);
+                door[edat::EPROP_TYPE] = edat::ETYPE_DOOR_TRAP;
+                door[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(pos.x) + offset;
+                door[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(pos.y);
+                door[edat::EPROP_DIR] = dir;
+                entities.push_back(door);
+                vector<unsigned int> sw(3);
+                sw[edat::EPROP_TYPE] = edat::ETYPE_SWITCH_TRAP;
+                sw[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(props[0]) + offset;
+                sw[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(props[1]);
+                entities.push_back(sw);
+            }
+            else if (props[6]) {
+                vector<unsigned int> door(4);
+                door[edat::EPROP_TYPE] = edat::ETYPE_DOOR_LOCKED;
+                door[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(pos.x) + offset;
+                door[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(pos.y);
+                door[edat::EPROP_DIR] = dir;
+                entities.push_back(door);
+                vector<unsigned int> sw(3);
+                sw[edat::EPROP_TYPE] = edat::ETYPE_SWITCH_LOCKED;
+                sw[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(props[0]) + offset;
+                sw[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(props[1]);
+                entities.push_back(sw);
+            }
+            else {
+                vector<unsigned int> door(4);
+                door[edat::EPROP_TYPE] = edat::ETYPE_DOOR_REGULAR;
+                door[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(pos.x) + offset;
+                door[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(pos.y);
+                door[edat::EPROP_DIR] = dir;
+                entities.push_back(door);
+            }
+        }
+    }
+    else if (type == OLDDATA_OBJTYPE_THWOMP) {
+        if (props.size() == 3) {
+            vector<unsigned int> e(4);
+            e[edat::EPROP_TYPE] = edat::ETYPE_THWOMP;
+            e[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(props[0]) + offset;
+            e[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(props[1]);
+            e[edat::EPROP_DIR] = Helper_Editor_OldDirEnumToNewDirEnum(props[2]);
+            entities.push_back(e);
+        }
+    }
+    else if (type == OLDDATA_OBJTYPE_TURRET) {
+        if (props.size() == 2) {
+            vector<unsigned int> e(3);
+            e[edat::EPROP_TYPE] = edat::ETYPE_TURRET;
+            e[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(props[0]) + offset;
+            e[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(props[1]);
+            entities.push_back(e);
+        }
+    }
+    else if (type == OLDDATA_OBJTYPE_PLAYER) {
+        if (props.size() == 2) {
+            vector<unsigned int> e(3);
+            e[edat::EPROP_TYPE] = edat::ETYPE_PLAYER;
+            e[edat::EPROP_X] = Helper_Editor_GetQuantizedPosition(props[0]) + offset;
+            e[edat::EPROP_Y] = Helper_Editor_GetQuantizedPosition(props[1]);
+            entities.push_back(e);
+        }
+    }
+}
+
+unsigned int Helper_Editor_GetQuantizedPosition(double value) {
+    return value / edat::quantize_step_size;
+}
+
 unsigned int sim_loader::Helper_Editor_OldDirEnumToNewDirEnum(int oldDirEnum) {
     return oldDirEnum * 2;
 }

@@ -41,6 +41,25 @@
 using namespace std;
 
 class sim_loader {
+    private:
+        static const char OLDDATA_SEPERATION_CHAR_LEVEL = '|';
+        static const char OLDDATA_SEPERATION_CHAR_OBJECT = '!';
+        static const char OLDDATA_SEPERATION_CHAR_OBJTYPE = '^';
+        static const char OLDDATA_SEPERATION_CHAR_OBJPARAM = ',';
+        static const int OLDDATA_CHAR_PAD = 48;
+        static const int OLDDATA_OBJTYPE_GOLD = 0;
+        static const int OLDDATA_OBJTYPE_BOUNCEBLOCK = 1;
+        static const int OLDDATA_OBJTYPE_LAUNCHPAD = 2;
+        static const int OLDDATA_OBJTYPE_TURRET = 3;
+        static const int OLDDATA_OBJTYPE_FLOORGUARD = 4;
+        static const int OLDDATA_OBJTYPE_PLAYER = 5;
+        static const int OLDDATA_OBJTYPE_DRONE = 6;
+        static const int OLDDATA_OBJTYPE_ONEWAYPLATFORM = 7;
+        static const int OLDDATA_OBJTYPE_THWOMP = 8;
+        static const int OLDDATA_OBJTYPE_TESTDOOR = 9;
+        static const int OLDDATA_OBJTYPE_HOMINGLAUNCHER = 10;
+        static const int OLDDATA_OBJTYPE_EXIT = 11;
+        static const int OLDDATA_OBJTYPE_MINE = 12;
     public:
         sim_loader() = delete;
         static Simulator* LoadLevel_EditorState(const vector<int>& playerKeys, const vector<unsigned int>& playerColors, SimpleInput& input, ByteArray* replayData, int playerCount, const Editor_State& editorState);
@@ -51,6 +70,14 @@ class sim_loader {
         static void LoadLevel_BuildTileEdges(Grid_Edges* gridEdges, int colIndex, int rowIndex, int tileType);
         static void LoadLevel_EditorState_Entities(const vector<vector<unsigned int>>& entityData, Grid_Segment* gridSegment, Grid_Edges* gridEdges, Grid_Entity* gridEntity, vector<Entity_Base*>& entities, vector<vec2>& ninjaSpawnLocations, double cellSize, double cellHalfWidth);
         static void Helper_RegisterEntity(vector<Entity_Base*>& entities, Entity_Base* entity);
+        static vec2 HELPER_OldData_UnpackDirEnum(double num);
+    public:
+        static Editor_State* BuildEditorState_OldData(const string& data);
+    private:
+        static void BuildEditorState_OldData_Tiles(const string& data, vector<unsigned int> tileIDs, int offset);
+        static void BuildEditorState_OldData_Entities(const string& data, vector<vector<unsigned int>>& entities, int offset = 0);
+        static void BuildEditorState_OldData_CreateEntity(int type, const vector<double>& props, vector<vector<unsigned int>>& entities, int offset = 0);
+        static unsigned int Helper_Editor_GetQuantizedPosition(double value);
         static unsigned int Helper_Editor_OldDirEnumToNewDirEnum(int oldDirEnum);
         static int Helper_Editor_NewDirEnumToOldDirEnum(unsigned int newDirEnum);
         static unsigned int Helper_Editor_VecToDirEnum(double x, double y);
