@@ -12,5 +12,6 @@ class Editor_State {
         vector<vector<unsigned int>> entities;
     public:
         Editor_State();
-        static Editor_State Load_From_Bytes(ByteArray& bytes); //endianness might mess this up
+        static Editor_State Load_From_Bytes(ByteArray& bytes);
+        static ByteArray Save_To_Bytes(const Editor_State& state);
 };
