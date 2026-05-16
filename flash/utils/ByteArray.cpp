@@ -42,6 +42,20 @@ void ByteArray::writeByte(unsigned char byte) {
     data[position++] = byte;
 }
 
+void ByteArray::writeShort(unsigned int value) {
+    if (2 > bytesAvailable()) {
+        data.resize(position + 2, 0);
+    }
+    if (endian == Endian::BIG_ENDIAN) {
+        data[position] = (value >> 8) & 0xFF;
+        data[position + 1] = value & 0xFF;
+    } else {
+        data[position] = value & 0xFF;
+        data[position + 1] = (value >> 8) & 0xFF;
+    }
+    position += 2;
+}
+
 unsigned char ByteArray::readUnsignedByte() {
     if (1 > bytesAvailable()) {
         throw runtime_error("EOFError: not enough bytes available");

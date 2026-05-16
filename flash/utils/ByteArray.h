@@ -21,6 +21,7 @@ class ByteArray {
         void setPosition(unsigned int newPosition);
         unsigned int bytesAvailable() const;
         void writeByte(unsigned char byte);
+        void writeShort(unsigned int value);
         unsigned char readUnsignedByte();
         signed char readByte();
         signed short readShort();
