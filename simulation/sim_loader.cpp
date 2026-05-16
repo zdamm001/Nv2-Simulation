@@ -348,7 +348,7 @@ Editor_State* sim_loader::BuildEditorState_OldData(const string& data) {
     return state;
 }
 
-void sim_loader::BuildEditorState_OldData_Tiles(const string& data, vector<unsigned int> tileIDs, int offset) {
+void sim_loader::BuildEditorState_OldData_Tiles(const string& data, vector<unsigned int>& tileIDs, int offset) {
     if (data.length() != 31 * 23) {
         return;
     }
