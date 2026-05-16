@@ -301,7 +301,7 @@ void sim_loader::Helper_RegisterEntity(vector<Entity_Base*>& entities, Entity_Ba
     entities.push_back(entity);
 }
 
-vec2 HELPER_OldData_UnpackDirEnum(double num) {
+vec2 sim_loader::HELPER_OldData_UnpackDirEnum(double num) {
     if (num == 0) {
         return vec2(1, 0);
     }
@@ -327,6 +327,7 @@ vector<string> split(string str, char delimiter) {
         end = str.find(delimiter, start);
     }
     tokens.push_back(str.substr(start));
+    return tokens;
 }
 
 Editor_State* sim_loader::BuildEditorState_OldData(const string& data) {
@@ -569,7 +570,7 @@ void sim_loader::BuildEditorState_OldData_CreateEntity(int type, const vector<do
     }
 }
 
-unsigned int Helper_Editor_GetQuantizedPosition(double value) {
+unsigned int sim_loader::Helper_Editor_GetQuantizedPosition(double value) {
     return value / edat::quantize_step_size;
 }
 

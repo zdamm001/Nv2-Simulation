@@ -75,8 +75,8 @@ class sim_loader {
         static Editor_State* BuildEditorState_OldData(const string& data);
     private:
         static void BuildEditorState_OldData_Tiles(const string& data, vector<unsigned int> tileIDs, int offset);
-        static void BuildEditorState_OldData_Entities(const string& data, vector<vector<unsigned int>>& entities, int offset = 0);
-        static void BuildEditorState_OldData_CreateEntity(int type, const vector<double>& props, vector<vector<unsigned int>>& entities, int offset = 0);
+        static void BuildEditorState_OldData_Entities(const string& data, vector<vector<unsigned int>>& entities, int offset);
+        static void BuildEditorState_OldData_CreateEntity(int type, const vector<double>& props, vector<vector<unsigned int>>& entities, int offset);
         static unsigned int Helper_Editor_GetQuantizedPosition(double value);
         static unsigned int Helper_Editor_OldDirEnumToNewDirEnum(int oldDirEnum);
         static int Helper_Editor_NewDirEnumToOldDirEnum(unsigned int newDirEnum);
